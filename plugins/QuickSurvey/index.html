@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>Atlas Quick Survey DEMO</title>
+</head>
+<body>
+<h1>Atlas Quick Survey DEMO</h1>
+
+<script src="aqs.js"></script>
+<style>
+.__aqs_title__ {
+  font-size: 12pt;
+  font-weight: 800;
+  float: left;
+}
+.__aqs_close__ {
+  float: right;
+}
+.__aqs_description__ {
+  font-size: 11pt;
+  clear: both;
+}
+</style>
+<script src="../../dist/atj.min.js"></script>
+<script src="../../dist/c2p.js"></script>
+
+<script>
+var content = ''+
+'<label>選択肢A<input type="checkbox" name="selection" value="A" /></label>'+
+'<label>選択肢B<input type="checkbox" name="selection" value="B" /></label>'+
+'<hr />'+
+'<select name="example">'+
+'<option value="サンプル1">サンプル1</option>'+
+'<option value="サンプル2">サンプル2</option>'+
+'<option value="サンプル3">サンプル3</option>'+
+'</select>'+
+'<hr />'+
+'<textarea name="freeanswer"></textarea>'+
+'<hr />'+
+'<input type="text" name="sometext"></input>'+
+'<hr />'+
+'<label>1<input type="radio" name="nps" value="1" /></label>'+
+'<label>2<input type="radio" name="nps" value="2" /></label>'+
+'<label>3<input type="radio" name="nps" value="3" /></label>'+
+'<label>4<input type="radio" name="nps" value="4" /></label>'+
+'<label>5<input type="radio" name="nps" value="5" /></label>'+
+'<label>6<input type="radio" name="nps" value="6" /></label>'+
+'<label>7<input type="radio" name="nps" value="7" /></label>'+
+'<label>8<input type="radio" name="nps" value="8" /></label>'+
+'<label>9<input type="radio" name="nps" value="9" /></label>'+
+'<label>10<input type="radio" name="nps" value="10" /></label>';
+
+var style = 'border:2px solid #ccc;padding: 5px;width:260px;position:fixed;bottom:10px;right:10px;z-index:10;font-size:10pt;';
+
+aqsEasyUtils.buildSurvey('アンケート','このサービスを友人や同僚に勧めますか？', 'nps', content, style, '回答する');
+
+setTimeout(function(){aqsEasyUtils.startSurvey("test");}, 1000);
+
+</script>
+</body>
+</html>
