@@ -1,0 +1,8 @@
+node_modules
+*.swp
+.DS_Store
+test/integration/pages/assets/*.js
+dist/atj.js
+dist/atj.min.js
+dist/index.html
+test/build
