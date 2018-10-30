@@ -109,7 +109,7 @@ export default class Utils {
             }
             t = t.parentNode;
         }
-        if(e){
+        if(e && p.length > 0){
             return {
                 'element': e,
                 'path': p.join('>')
