@@ -5,7 +5,7 @@ import UUID from 'uuid/v4';
 
 // SDK Version Info
 const SDK_NAME = 'ATJ';
-const SDK_VERSION = '2.12.2';
+const SDK_VERSION = '2.12.3';
 const SDK_API_KEY = process.env.SDK_API_KEY || 'test_api_key';
 const DEFAULT_ENDPOINT = process.env.DEFAULT_ENDPOINT || 'atlas.local';
 
@@ -84,30 +84,39 @@ export default class Utils {
         }
     }
 
-    qsM(s, t) {
+    qsM(s, t, d = null) {
         if (!Element.prototype.matches)
             Element.prototype.matches = Element.prototype.msMatchesSelector;
         let e = null; // Trackable Element
-        let p = []; // DOM Path
+        let p = []; // Path
         if (t.nodeType === 3) {
             t = t.parentNode;
         }
         while (t && t !== window.parent.document) {
-            p.push({
-                'tag': t.tagName.toLowerCase(),
-                'id': t.id,
-                'class': t.className
-            });
-            if (t.matches(s)) {
-                e = t;
-                return {
-                    'element': e,
-                    'domPath': p
-                };
+            if(!d){
+                if(t.matches(s)){
+                    return {
+                        'element': t
+                    };
+                }
+            }else{
+                if(t.hasAttribute(d)){
+                    p.unshift(t.getAttribute(d));
+                }
+                if (!e && t.matches(s)) {
+                    e = t;
+                }
             }
             t = t.parentNode;
         }
-        return false;
+        if(e){
+            return {
+                'element': e,
+                'path': p.join('>')
+            };
+        }else{
+            return false;
+        }
     }
 
     getC(k) {
