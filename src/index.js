@@ -366,7 +366,7 @@ export default class AtlasTracking {
         context.events = events || null;
         utils.transmit(action, category, mandatories, user, context, {
             'action': {
-                'location': obj.location !== void 0 ? obj.location : defaults.url,
+                'location': obj.location ? obj.location : undefined,
                 'destination': obj.destination || undefined,
                 'dataset': obj.dataset || undefined,
                 'name': obj.action_name || undefined,
@@ -392,7 +392,6 @@ export default class AtlasTracking {
             const trackableElement = utils.qsM('a, button, input, [role="button"]', ev.target, targetAttribute);
             let elm = null;
             let ext = null;
-            let ctg = null;
 
             if (linkElement) {
                 elm = linkElement.element;
@@ -434,10 +433,10 @@ export default class AtlasTracking {
 
             if (trackableElement) {
                 elm = trackableElement.element;
-                ctg = elm.getAttribute(targetAttribute) || elm.tagName.toLowerCase();
-                utils.transmit('click', ctg, mandatories, user, context, {
+                utils.transmit('click', trackableElement.category, mandatories, user, context, {
                     'action': {
-                        'name': trackableElement.path,
+                        'name': elm.getAttribute(targetAttribute),
+                        'location': trackableElement.path,
                         'destination': elm.href || undefined,
                         'id': elm.id || undefined,
                         'target': elm.target || undefined,

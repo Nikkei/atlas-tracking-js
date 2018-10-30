@@ -88,6 +88,7 @@ export default class Utils {
         if (!Element.prototype.matches)
             Element.prototype.matches = Element.prototype.msMatchesSelector;
         let e = null; // Trackable Element
+        let c = 'button';
         let p = []; // Path
         if (t.nodeType === 3) {
             t = t.parentNode;
@@ -104,6 +105,9 @@ export default class Utils {
                     p.unshift(t.getAttribute(d));
                 }
                 if (!e && t.matches(s)) {
+                    if(t.tagName.toLowerCase() === 'a'){
+                        c = 'link';
+                    }
                     e = t;
                 }
             }
@@ -112,6 +116,7 @@ export default class Utils {
         if(e && p.length > 0){
             return {
                 'element': e,
+                'category': c,
                 'path': p.join('>')
             };
         }else{
