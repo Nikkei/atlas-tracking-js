@@ -366,7 +366,7 @@ export default class AtlasTracking {
         context.events = events || null;
         utils.transmit(action, category, mandatories, user, context, {
             'action': {
-                'location': obj.location ? obj.location : undefined,
+                'location': obj.location || undefined,
                 'destination': obj.destination || undefined,
                 'dataset': obj.dataset || undefined,
                 'name': obj.action_name || undefined,
