@@ -374,7 +374,7 @@ export default class AtlasTracking {
                 'elapsed_since_prev_action': (now - prevActionOccurredAt) / 1000,
                 'content_id': obj.content_id || undefined,
                 'content_name': obj.content_name || undefined,
-                'custom_vars': obj.custom_value || {}
+                'custom_vars': obj.custom_vars || {}
             }
         }, options.useGet, debug);
         context.events = null;
