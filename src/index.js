@@ -366,14 +366,15 @@ export default class AtlasTracking {
         context.events = events || null;
         utils.transmit(action, category, mandatories, user, context, {
             'action': {
-                'location': obj.location !== void 0 ? obj.location : defaults.url,
+                'location': obj.location || undefined,
                 'destination': obj.destination || undefined,
+                'dataset': obj.dataset || undefined,
                 'name': obj.action_name || undefined,
                 'elapsed_since_page_load': (now - pageLoadedAt) / 1000,
                 'elapsed_since_prev_action': (now - prevActionOccurredAt) / 1000,
                 'content_id': obj.content_id || undefined,
                 'content_name': obj.content_name || undefined,
-                'custom_vars': obj.custom_value || {}
+                'custom_vars': obj.custom_vars || {}
             }
         }, options.useGet, debug);
         context.events = null;
@@ -388,10 +389,9 @@ export default class AtlasTracking {
         eventHandlerKeys['click'] = eventHandler.add(window.parent.document.body, 'click', function (ev) {
             const targetAttribute = obj.trackClick && obj.trackClick.targetAttribute ? obj.trackClick.targetAttribute : 'data-trackable';
             const linkElement = utils.qsM('a', ev.target);
-            const trackableElement = utils.qsM('[' + targetAttribute + ']', ev.target);
+            const trackableElement = utils.qsM('a, button, input, [role="button"]', ev.target, targetAttribute);
             let elm = null;
             let ext = null;
-            let ctg = null;
 
             if (linkElement) {
                 elm = linkElement.element;
@@ -402,6 +402,7 @@ export default class AtlasTracking {
                     utils.transmit('open', 'outbound_link', mandatories, user, context, {
                         'link': {
                             'destination': elm.href || undefined,
+                            'dataset': elm.dataset || undefined,
                             'target': elm.target || undefined,
                             'media': elm.media || undefined,
                             'type': elm.type || undefined,
@@ -415,6 +416,7 @@ export default class AtlasTracking {
                     utils.transmit('download', 'file', mandatories, user, context, {
                         'download': {
                             'destination': elm.href || undefined,
+                            'dataset': elm.dataset || undefined,
                             'target': elm.target || undefined,
                             'media': elm.media || undefined,
                             'type': elm.type || undefined,
@@ -431,16 +433,14 @@ export default class AtlasTracking {
 
             if (trackableElement) {
                 elm = trackableElement.element;
-                ctg = elm.getAttribute(targetAttribute) || elm.tagName;
-                utils.transmit('click', ctg, mandatories, user, context, {
+                utils.transmit('click', trackableElement.category, mandatories, user, context, {
                     'action': {
-                        'name': ctg,
+                        'name': elm.getAttribute(targetAttribute),
+                        'location': trackableElement.path,
                         'destination': elm.href || undefined,
-                        'custom_vars': {
-                            'title': elm.title || undefined,
-                            'id': elm.id || undefined,
-                            'dataset': elm.dataset || undefined
-                        }
+                        'id': elm.id || undefined,
+                        'target': elm.target || undefined,
+                        'dataset': elm.dataset || undefined
                     }
                 }, options.useGet, debug);
             }

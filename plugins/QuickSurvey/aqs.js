@@ -49,7 +49,7 @@ var atlasQuickSurvey = {
         var result = this.buildResult(name, elm);
         atlasTracking.trackAction('answer', 'survey', null, {
             action_name: name,
-            custom_value: result
+            custom_vars: result
         });
     }
 
