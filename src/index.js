@@ -332,6 +332,7 @@ export default class AtlasTracking {
                 'tracking_code': obj.context.tracking_code || undefined,
                 'campaign': obj.context.campaign || undefined,
                 'search': obj.context.search || undefined,
+                'published_at': obj.context.published_at || undefined,
                 'events': obj.context.events || undefined,
                 'custom_object': obj.context.custom_object || {},
                 'funnel': obj.context.funnel || {},
