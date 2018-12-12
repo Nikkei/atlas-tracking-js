@@ -395,7 +395,7 @@ export default class AtlasTracking {
 
             if (linkElement) {
                 elm = linkElement.element;
-                ext = elm.pathname.match(/.+\/.+?\.([a-z]+([?#;].*)?$)/);
+                ext = (elm.pathname || '').match(/.+\/.+?\.([a-z]+([?#;].*)?$)/);
 
                 // Outbound
                 if (obj.trackLink && obj.trackLink.enable && elm.hostname && window.parent.location.hostname !== elm.hostname && obj.trackLink.internalDomains.indexOf(elm.hostname) < 0) {
