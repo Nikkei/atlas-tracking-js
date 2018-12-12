@@ -1,6 +1,6 @@
 {
   "name": "atlas-tracking-js",
-  "version": "2.12.4",
+  "version": "2.12.5",
   "description": "ATJ: Atlas Tracking JS provides capabilities for measuring user activities on your website.",
   "main": "index.js",
   "scripts": {
