@@ -5,7 +5,7 @@ import UUID from 'uuid/v4';
 
 // SDK Version Info
 const SDK_NAME = 'ATJ';
-const SDK_VERSION = '2.12.4';
+const SDK_VERSION = process.env.npm_package_version;
 const SDK_API_KEY = process.env.SDK_API_KEY || 'test_api_key';
 const DEFAULT_ENDPOINT = process.env.DEFAULT_ENDPOINT || 'atlas.local';
 
