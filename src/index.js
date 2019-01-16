@@ -331,7 +331,7 @@ export default class AtlasTracking {
                 'category_l3': obj.context.category_l3 || undefined,
                 'tracking_code': obj.context.tracking_code || undefined,
                 'campaign': obj.context.campaign || undefined,
-                'site_search': obj.context.site_search || undefined,
+                'search': obj.context.search || undefined,
                 'events': obj.context.events || undefined,
                 'custom_object': obj.context.custom_object || {},
                 'funnel': obj.context.funnel || {},
@@ -395,7 +395,7 @@ export default class AtlasTracking {
 
             if (linkElement) {
                 elm = linkElement.element;
-                ext = elm.pathname.match(/.+\/.+?\.([a-z]+([?#;].*)?$)/);
+                ext = (elm.pathname || '').match(/.+\/.+?\.([a-z]+([?#;].*)?$)/);
 
                 // Outbound
                 if (obj.trackLink && obj.trackLink.enable && elm.hostname && window.parent.location.hostname !== elm.hostname && obj.trackLink.internalDomains.indexOf(elm.hostname) < 0) {

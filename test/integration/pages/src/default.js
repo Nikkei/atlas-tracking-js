@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 'term': decodeURIComponent(atlasTracking.getQueryValue('utm_term')),
                 'content': decodeURIComponent(atlasTracking.getQueryValue('utm_content')),
             },
-            'site_search': {
+            'search': {
                 'term': null,
                 'options': null,
                 'results': null

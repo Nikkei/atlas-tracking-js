@@ -239,9 +239,9 @@
 |campaign.medium|String|GA互換のトラッキングパラメーター用変数|`atlasTracking.getQueryValue('utm_medium')`|
 |campaign.term|String|GA互換のトラッキングパラメーター用変数|`atlasTracking.getQueryValue('utm_term')`|
 |campaign.content|String|GA互換のトラッキングパラメーター用変数|`atlasTracking.getQueryValue('utm_content')`|
-|site_search.term|String|サイト内検索に用いられたキーワード|`atlasTracking.getQueryValue('keyword')`|
-|site_search.options|Map|サイト内検索で適用された検索オプション|`{Region:'Asia',Limit:20}`|
-|site_search.results|Integer|サイト内検索の結果の件数|`document.getElementsByClassName('result-item').length`|
+|search.term|String|サイト内検索に用いられたキーワード|`atlasTracking.getQueryValue('keyword')`|
+|search.options|Map|サイト内検索で適用された検索オプション|`{Region:'Asia',Limit:20}`|
+|search.results|Integer|サイト内検索の結果の件数|`document.getElementsByClassName('result-item').length`|
 |funnel.funnel_name|String|フォームの名前|`Subscription`|
 |funnel.funnel_steps|Integer|フォーム内の総ステップ数|`4`|
 |funnel.step_name|String|現在のフォームのステップの分かりやすい名前|`Confirmation`|

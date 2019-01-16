@@ -5,7 +5,7 @@ import UUID from 'uuid/v4';
 
 // SDK Version Info
 const SDK_NAME = 'ATJ';
-const SDK_VERSION = '2.12.3';
+const SDK_VERSION = process.env.npm_package_version;
 const SDK_API_KEY = process.env.SDK_API_KEY || 'test_api_key';
 const DEFAULT_ENDPOINT = process.env.DEFAULT_ENDPOINT || 'atlas.local';
 
@@ -85,8 +85,6 @@ export default class Utils {
     }
 
     qsM(s, t, d = null) {
-        if (!Element.prototype.matches)
-            Element.prototype.matches = Element.prototype.msMatchesSelector;
         let e = null; // Trackable Element
         let c = 'button';
         let p = []; // Path
@@ -94,8 +92,9 @@ export default class Utils {
             t = t.parentNode;
         }
         while (t && t !== window.parent.document) {
+            let matches = (t.matches || t.msMatchesSelector || function () {return false;}).bind(t);
             if(!d){
-                if(t.matches(s)){
+                if(matches(s)){
                     return {
                         'element': t
                     };
@@ -104,7 +103,7 @@ export default class Utils {
                 if(t.hasAttribute(d)){
                     p.unshift(t.getAttribute(d));
                 }
-                if (!e && t.matches(s)) {
+                if (!e && matches(s)) {
                     if(t.tagName.toLowerCase() === 'a'){
                         c = 'link';
                     }

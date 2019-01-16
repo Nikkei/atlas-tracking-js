@@ -239,9 +239,9 @@ Most variables can be omitted but it will be helpful for you if you set concrete
 |campaign.medium|String|Variable for GA compatible tracking parameters|`atlasTracking.getQueryValue('utm_medium')`|
 |campaign.term|String|Variable for GA compatible tracking parameters|`atlasTracking.getQueryValue('utm_term')`|
 |campaign.content|String|Variable for GA compatible tracking parameters|`atlasTracking.getQueryValue('utm_content')`|
-|site_search.term|String|Keyword which is searched in site search|`atlasTracking.getQueryValue('keyword')`|
-|site_search.options|Map|Search options applied to site search|`{Region:'Asia',Limit:20}`|
-|site_search.results|Integer|Number of result of site search|`document.getElementsByClassName('result-item').length`|
+|search.term|String|Keyword which is searched in site search|`atlasTracking.getQueryValue('keyword')`|
+|search.options|Map|Search options applied to site search|`{Region:'Asia',Limit:20}`|
+|search.results|Integer|Number of result of site search|`document.getElementsByClassName('result-item').length`|
 |funnel.funnel_name|String|Name of thr form|`Subscription`|
 |funnel.funnel_steps|Integer|Total steps in the form|`4`|
 |funnel.step_name|String|Current step of the form in user friendly name|`Confirmation`|
