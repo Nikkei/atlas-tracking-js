@@ -92,19 +92,21 @@ export default class Utils {
             t = t.parentNode;
         }
         while (t && t !== window.parent.document) {
-            let matches = (t.matches || t.msMatchesSelector || function () {return false;}).bind(t);
-            if(!d){
-                if(matches(s)){
+            let matches = (t.matches || t.msMatchesSelector || function () {
+                return false;
+            }).bind(t);
+            if (!d) {
+                if (matches(s)) {
                     return {
                         'element': t
                     };
                 }
-            }else{
-                if(t.hasAttribute(d)){
+            } else {
+                if (t.hasAttribute(d)) {
                     p.unshift(t.getAttribute(d));
                 }
                 if (!e && matches(s)) {
-                    if(t.tagName.toLowerCase() === 'a'){
+                    if (t.tagName.toLowerCase() === 'a') {
                         c = 'link';
                     }
                     e = t;
@@ -112,13 +114,13 @@ export default class Utils {
             }
             t = t.parentNode;
         }
-        if(e && p.length > 0){
+        if (e && p.length > 0) {
             return {
                 'element': e,
                 'category': c,
                 'path': p.join('>')
             };
-        }else{
+        } else {
             return false;
         }
     }
@@ -147,11 +149,11 @@ export default class Utils {
         return '';
     }
 
-    getLS(k){
+    getLS(k) {
         let r = '';
         try {
             r = window.parent.localStorage[k];
-        } catch(e) {
+        } catch (e) {
             r = '';
         }
         return r;
@@ -362,16 +364,20 @@ export default class Utils {
         return f;
     }
 
+    generateRootId() {
+        return (atlasId + UUID().replace(/-/g, ''));
+    }
+
     buildIngest(u, c, s) {
-        let igt = {}; //ingest
+        let igt = {
+            'user': u,
+            'context': {}
+        }; //ingest
         let lyt = 'unknown'; //layout
         if (window.parent.orientation) {
             lyt = ((Math.abs(window.parent.orientation) === 90) ? 'landscape' : 'portrait');
         }
-        igt = {
-            'user': u,
-            'context': {}
-        };
+
         for (let i in c) {
             igt.context[i] = c[i];
         }
@@ -463,35 +469,17 @@ export default class Utils {
             + `&i=${encodeURIComponent(md.content_id)}&u=${encodeURIComponent(md.user_id)}`
             + '&aqe=%'; //endpointUrl
 
-        let b = JSON.stringify(this.buildIngest(ur, ct, sp)); //body
+        let b = JSON.stringify(this.buildIngest(ur, ct, sp));
         let eb = null; //encodedPayload
+
+        if (dg && dg.outputLog) {
+            console.dir(JSON.parse(b));
+        }
 
         if (ug) {
             eb = this.compress(encodeURIComponent(b));
             b = null;
             u = `${u}&d=${eb}`;
-        }
-
-        if (dg && dg.outputLog) {
-            console.log({
-                action: ac,
-                category: ca,
-                request: {
-                    endpoint: u,
-                    body: b
-                },
-                identity: {
-                    atlasId: atlasId,
-                    fpcStatus: f,
-                    optout: o
-                },
-                variables: {
-                    mandatories: md,
-                    user: ur,
-                    context: ct,
-                    supplement: sp
-                }
-            });
         }
 
         if (!o) {

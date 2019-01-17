@@ -222,8 +222,6 @@
 |app_version|String|`app` に関して、アプリケーションやマイクロサービスのバージョン|`2.1.3`|
 |source|String|コンテンツがどこから提供されているか|`Nikkei`|
 |edition|String|コンテンツのエディション|`Online`|
-|id|String|ID for the event but is not used in Atlas||
-|root_id|String|Parent ID for the event but is not used in Atlas||
 |content_id|String|コンテンツを識別するための一意な値|`abc123`|
 |content_name|String|コンテンツの見出し|`Nikkei made Atlas public as an opensource software`|
 |content_status|String|ペイウォールやメーターシステムを持つサービスの場合、コンテンツの可視性についてセットできる|`open`|

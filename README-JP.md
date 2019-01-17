@@ -91,12 +91,11 @@ npm install
 ATJによってエンドポイントに送られた値を把握したり、どのタイミングでデータが送信されたかを確認できる
 
 1. ブラウザの「デベロッパーコンソール」または「デベロッパーツール」を開く
-2. 「コンソール」タブへ行き、 `atlasTracking.debug('enable');` を実行する
+2. 「コンソール」タブへ行き、 `document.cookie='atlasOutputLog=true';` を実行する
 3. ページをリロードすると、巨大なmapオブジェクトを持つコンソールログを見ることができる
 4. ログ付近のトグルアイコンを押すことで、ATJがエンドポイントに送信している個々の値を確認できる
 
-- デバッグ機能はセッションCookieを使う。 `atlasTracking.debug('disable');` を実行することで無効化できる
-- デバッグ機能の現在の設定状況は、 `atlasTracking.debug('status');` を実行するか `atlasOutputLog` Cookie の値で参照可能
+- デバッグ機能はセッションCookieを使う。 `atlasOutputLog`という名前のCookieを削除することで無効化できる
 
 #### Adobe DTMを用いて、ATJを本番サイト上でテストする
 これはATJの機能ではなく、Adobe DTMの機能である

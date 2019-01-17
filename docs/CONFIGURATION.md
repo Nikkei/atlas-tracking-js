@@ -222,8 +222,6 @@ Most variables can be omitted but it will be helpful for you if you set concrete
 |app_version|String|Version of application or micro-service. Related to `app` var|`2.1.3`|
 |source|String|Where content provided from|`Nikkei`|
 |edition|String|Edition of content|`Online`|
-|id|String|イベントに対するIDだがAtlas内では利用されない||
-|root_id|String|イベントに対する親IDだがAtlas内では利用されない||
 |content_id|String|Unique value for identifying specific content|`abc123`|
 |content_name|String|Title of content|`Nikkei made Atlas public as an opensource software`|
 |content_status|String|If your service has a paywall or a meter system, you can set the status of content visibility here|`open`|

@@ -97,8 +97,6 @@
                 'app_version': null,
                 'source': null,
                 'edition': null,
-                'id': null,
-                'root_id': null,
                 'content_id': null,
                 'content_name': null,
                 'content_status': null,
