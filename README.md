@@ -91,12 +91,11 @@ The debug method is not special and is similar to other web analytics tool. If y
 You can recognize values transmitted to the endpoint by ATJ, and can identify the timing that data has been sent.
 
 1. Open the web browser's "developer console" or "developer tools"
-2. Go to the "Console" tab, and then execute `atlasTracking.debug('enable');`
+2. Go to the "Console" tab, and then execute `document.cookie='atlasOutputLog=true';`
 3. Reload the page, and you will see console logs containing a massive map object.
 4. Click the toggle icon near the log, you can check each values which ATJ is sending to the endpoint.
 
-- The debug feature uses a session Cookie. If you want to disable this, execute `atlasTracking.debug('disable');`.
-- You can get the current status of debug mode by running `atlasTracking.debug('status');` or checking the value of `atlasOutputLog` Cookie.
+- The debug feature uses a session Cookie. If you want to disable this, remove a cookie named `atlasOutputLog`.
 
 #### Testing ATJ on your production web site with Adobe DTM
 This is not ATJ's feature but Adobe DTM's.

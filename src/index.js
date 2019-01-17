@@ -56,7 +56,9 @@ export default class AtlasTracking {
             window.parent.requestAnimationFrame = function (callback) {
                 let currTime = Date.now();
                 let timeToCall = Math.max(0, 16 - (currTime - lastTime));
-                let id = window.parent.setTimeout(function () {callback(currTime + timeToCall);},timeToCall);
+                let id = window.parent.setTimeout(function () {
+                    callback(currTime + timeToCall);
+                }, timeToCall);
                 lastTime = currTime + timeToCall;
                 return id;
             };
@@ -99,7 +101,7 @@ export default class AtlasTracking {
      * @param  {string} k key of the localStorage index key.
      * @return {string}   value associated with the key.
      */
-    getLocalStorageValue(k){
+    getLocalStorageValue(k) {
         return utils.getLS(k) || '';
     }
 
@@ -204,26 +206,6 @@ export default class AtlasTracking {
     }
 
     /**
-     * toggle debug mode.
-     * if debug mode is enabled, tracking event is printed on console.
-     * @param  {string} s whether debug mode is enabled or not. ('enable'|'disable')
-     */
-    debug(s) {
-        let c = utils.getC('atlasOutputLog');
-        if (s === 'enable') {
-            window.parent.document.cookie = 'atlasOutputLog=true';
-        } else if (s === 'disable') {
-            window.parent.document.cookie = 'atlasOutputLog=';
-        } else {
-            if (c === 'true') {
-                console.log('enabled');
-            } else {
-                console.log('disabled');
-            }
-        }
-    }
-
-    /**
      * toggle optout.
      * if optout is enabled, tracking is disabled.
      * @param  {string} s whether optout is enabled or not. ('enable'|'disable')
@@ -293,9 +275,8 @@ export default class AtlasTracking {
      * @param  {Object} obj initialization config object.
      */
     initPage(obj) {
-        if (debug && debug.outputLog) {
-            console.log('ATJ initialized Page');
-        }
+
+
         if (obj.context !== void 0 && obj.user !== void 0) {
             mandatories = {
                 'url': obj.context.url !== void 0 ? obj.context.url : defaults.url,
@@ -315,6 +296,7 @@ export default class AtlasTracking {
         }
         if (obj.context !== void 0) {
             context = {
+                'root_id': utils.generateRootId(),
                 'product_family': obj.context.product_family !== void 0 ? obj.context.product_family : defaults.product_family,
                 'product': obj.context.product || defaults.product,
                 'app': obj.context.app || undefined,
@@ -344,6 +326,11 @@ export default class AtlasTracking {
             context.navigation_timing = performanceInfo.performanceResult || {};
             context.navigation_type = performanceInfo.navigationType || {};
         }
+
+        if (debug && debug.outputLog) {
+            console.log('ATJ initialized Page');
+        }
+
         this.initEventListeners();
     }
 
