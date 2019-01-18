@@ -213,7 +213,7 @@ export default class AtlasTracking {
     optout(s) {
         let c = utils.getC('atlasOptout');
         if (s === 'enable') {
-            window.parent.document.cookie = 'atlasOptout=true;path=/';
+            window.parent.document.cookie = 'atlasOptout=true;path=/;max-age=4133948399';
         } else if (s === 'disable') {
             window.parent.document.cookie = 'atlasOptout=';
         } else {
