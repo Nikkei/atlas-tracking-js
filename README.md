@@ -91,7 +91,7 @@ The debug method is not special and is similar to other web analytics tool. If y
 You can recognize values transmitted to the endpoint by ATJ, and can identify the timing that data has been sent.
 
 1. Open the web browser's "developer console" or "developer tools"
-2. Go to the "Console" tab, and then execute `document.cookie='atlasOutputLog=true';`
+2. Go to the "Console" tab, and then execute `document.cookie='atlasOutputLog=true;path=/';`
 3. Reload the page, and you will see console logs containing a massive map object.
 4. Click the toggle icon near the log, you can check each values which ATJ is sending to the endpoint.
 
