@@ -473,7 +473,12 @@ export default class Utils {
         let eb = null; //encodedPayload
 
         if (dg && dg.outputLog) {
-            console.dir(JSON.parse(b));
+            console.dir({
+                'action': ac,
+                'category': ca,
+                'mandatory_values': md,
+                'payload': JSON.parse(b)
+            });
         }
 
         if (ug) {
