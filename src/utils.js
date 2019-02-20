@@ -473,7 +473,14 @@ export default class Utils {
         let eb = null; //encodedPayload
 
         if (dg && dg.outputLog) {
-            console.dir(JSON.parse(b));
+            let logObj = JSON.parse(b);
+            logObj.action = ac;
+            logObj.category = ca;
+            logObj.context.url = md.url;
+            logObj.context.referrer = md.referrer;
+            logObj.context.content_id = md.content_id;
+            logObj.user.user_id = md.user_id;
+            console.dir(logObj);
         }
 
         if (ug) {
