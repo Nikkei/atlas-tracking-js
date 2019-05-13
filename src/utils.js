@@ -34,11 +34,12 @@ export default class Utils {
         atlasBeaconTimeout = system.beaconTimeout ? system.beaconTimeout : 2000;
         atlasCookieName = system.cookieName ? system.cookieName : 'atlasId';
 
-        atlasId = cookies[atlasCookieName];
+        atlasId = cookies[atlasCookieName] || getLS('atlasId');
 
         if (!atlasId || atlasId === '0' || atlasId === 0 || atlasId === '1' || atlasId === 1 || atlasId.length < 5) {
             atlasId = (UUID() + UUID()).replace(/-/g, '');
         }
+        setLS('atlasId', atlasId)
     }
 
     qsM(s, t, d = null) {
