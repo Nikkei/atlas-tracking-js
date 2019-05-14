@@ -13,8 +13,6 @@ let atlasEndpoint = null;
 let atlasApiKey = null;
 let atlasBeaconTimeout = null;
 let atlasCookieName = null;
-let atlasCookieMaxAge = null;
-let atlasCookieDomain = null;
 let atlasId = '0';
 let handlerEvents = {};
 let handlerKey = 0;
@@ -30,58 +28,18 @@ export default class Utils {
 
     initSystem(system) {
         const cookies = Cookie.parse(window.parent.document.cookie);
-        let hostname = window.parent.location.hostname;
-        let parsedHostname = hostname.split('.').reverse();
 
         atlasEndpoint = system.endpoint ? system.endpoint : DEFAULT_ENDPOINT;
         atlasApiKey = system.apiKey ? system.apiKey : SDK_API_KEY;
         atlasBeaconTimeout = system.beaconTimeout ? system.beaconTimeout : 2000;
         atlasCookieName = system.cookieName ? system.cookieName : 'atlasId';
-        atlasCookieMaxAge = system.cookieMaxAge ? system.cookieMaxAge : (2 * 365 * 24 * 60 * 60);
 
-        if (system.cookieDomain) {
-            atlasCookieDomain = system.cookieDomain;
-        } else {
-            if (parsedHostname.length <= 2) {
-                atlasCookieDomain = hostname;
-            } else {
-                if (parsedHostname[1].length > 2) {
-                    atlasCookieDomain = parsedHostname[1] + '.' + parsedHostname[0];
-                } else if (parsedHostname[0].length === 2 && parsedHostname[1].length === 2) {
-                    atlasCookieDomain = parsedHostname[2] + '.' + parsedHostname[1] + '.' + parsedHostname[0];
-                } else {
-                    atlasCookieDomain = hostname;
-                }
-            }
-        }
+        atlasId = cookies[atlasCookieName] || getLS('atlasId');
 
-        atlasId = cookies[atlasCookieName];
         if (!atlasId || atlasId === '0' || atlasId === 0 || atlasId === '1' || atlasId === 1 || atlasId.length < 5) {
             atlasId = (UUID() + UUID()).replace(/-/g, '');
-            window.parent.document.cookie = Cookie.serialize(atlasCookieName, atlasId, {
-                maxAge: atlasCookieMaxAge,
-                domain: atlasCookieDomain,
-                path: '/'
-            });
         }
-    }
-
-    setAtlasIdFromParam(k, d) {
-        if (!atlasId && window.parent.document.referrer) {
-            let r = window.parent.document.createElement('a');
-            r.href = window.parent.document.referrer;
-            if (d.indexOf(r.hostname) >= 0) {
-                let p = this.getQ(k);
-                if (p) {
-                    atlasId = p;
-                    window.parent.document.cookie = Cookie.serialize(atlasCookieName, atlasId, {
-                        maxAge: atlasCookieMaxAge,
-                        domain: atlasCookieDomain,
-                        path: '/'
-                    });
-                }
-            }
-        }
+        setLS('atlasId', atlasId)
     }
 
     qsM(s, t, d = null) {
@@ -157,6 +115,20 @@ export default class Utils {
             r = '';
         }
         return r;
+    }
+
+    setLS(k, v) {
+        try {
+            window.parent.localStorage.setItem(k, v)
+        } catch (e) {
+        }
+    }
+
+    delLS(k) {
+        try {
+            window.parent.localStorage.removeItem(k)
+        } catch (e) {
+        }
     }
 
     getP() {
@@ -456,7 +428,7 @@ export default class Utils {
         const sync = (dg && dg.syncMode) ? '&sync=true' : '';
         const m = ug ? 'GET' : 'POST'; //method
         const a = (!(ac === 'unload' && ca === 'page')); //async
-        const o = (this.getC('atlasOptout') === 'true') ? true : false;
+        const o = (this.getLS('atlasOptout') === 'true') ? true : false;
         let f = 1; //fpcStatus
         if (this.getC(atlasCookieName) !== atlasId) {
             f = 0;

@@ -145,9 +145,6 @@ export default class AtlasTracking {
         debug = obj.debug !== void 0 ? obj.debug : {};
         options = obj.options !== void 0 ? obj.options : {};
         utils.initSystem(system);
-        if (options && options.exchangeAtlasId && options.exchangeAtlasId.catch) {
-            utils.setAtlasIdFromParam(options.exchangeAtlasId.catchParamKey, options.exchangeAtlasId.catchTargetDomains);
-        }
         if (utils.getC('atlasOutputLog') === 'true' || (debug && debug.outputLog)) {
             debug.outputLog = true;
             console.log('ATJ configured');
@@ -211,11 +208,11 @@ export default class AtlasTracking {
      * @param  {string} s whether optout is enabled or not. ('enable'|'disable')
      */
     optout(s) {
-        let c = utils.getC('atlasOptout');
+        let c = utils.getLS('atlasOptout');
         if (s === 'enable') {
-            window.parent.document.cookie = 'atlasOptout=true;path=/;max-age=4133948399';
+            utils.setLS('atlasOptout', true);
         } else if (s === 'disable') {
-            window.parent.document.cookie = 'atlasOptout=';
+            utils.delLS('atlasOptout');
         } else {
             if (c === 'true') {
                 console.log('enabled');
