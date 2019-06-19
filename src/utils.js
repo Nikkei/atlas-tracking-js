@@ -1,8 +1,5 @@
 'use strict';
 
-import Cookie from 'cookie';
-import UUID from 'uuid/v4';
-
 // SDK Version Info
 const SDK_NAME = 'ATJ';
 const SDK_VERSION = process.env.npm_package_version;
@@ -27,19 +24,24 @@ export default class Utils {
     }
 
     initSystem(system) {
-        const cookies = Cookie.parse(window.parent.document.cookie);
-
         atlasEndpoint = system.endpoint ? system.endpoint : DEFAULT_ENDPOINT;
         atlasApiKey = system.apiKey ? system.apiKey : SDK_API_KEY;
         atlasBeaconTimeout = system.beaconTimeout ? system.beaconTimeout : 2000;
         atlasCookieName = system.cookieName ? system.cookieName : 'atlasId';
 
-        atlasId = cookies[atlasCookieName] || getLS('atlasId');
+        atlasId = this.getC(atlasCookieName) || this.getLS('atlasId');
 
         if (!atlasId || atlasId === '0' || atlasId === 0 || atlasId === '1' || atlasId === 1 || atlasId.length < 5) {
-            atlasId = (UUID() + UUID()).replace(/-/g, '');
+            atlasId = this.uid() + this.uid();
         }
-        setLS('atlasId', atlasId)
+        this.setLS('atlasId', atlasId);
+    }
+
+    uid() {
+        const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        return ('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'.replace(/x/g, () => {
+            return chars[Math.floor(Math.random() * (chars.length))];
+        }));
     }
 
     qsM(s, t, d = null) {
@@ -84,11 +86,8 @@ export default class Utils {
     }
 
     getC(k) {
-        const c = Cookie.parse(window.parent.document.cookie);
-        if (c[k]) {
-            return c[k];
-        }
-        return '';
+        const cookies = window.parent.document.cookie || '';
+        return ((`; ${cookies};`).match(`; ${k}=([^¥S;]*)`) || [])[1] || '';
     }
 
     getQ(k) {
@@ -119,14 +118,14 @@ export default class Utils {
 
     setLS(k, v) {
         try {
-            window.parent.localStorage.setItem(k, v)
+            window.parent.localStorage.setItem(k, v);
         } catch (e) {
         }
     }
 
     delLS(k) {
         try {
-            window.parent.localStorage.removeItem(k)
+            window.parent.localStorage.removeItem(k);
         } catch (e) {
         }
     }
@@ -337,7 +336,7 @@ export default class Utils {
     }
 
     generateRootId() {
-        return (atlasId + UUID().replace(/-/g, ''));
+        return (atlasId + this.uid());
     }
 
     buildIngest(u, c, s) {
@@ -473,7 +472,14 @@ export default class Utils {
                 }
                 return true;
             } else {
-                this.xhr(u, b, m, a);
+                if ('fetch' in window.parent && typeof window.parent.fetch === 'function') {
+                    const controller = new AbortController();
+                    const signal = controller.signal;
+                    setTimeout(() => controller.abort(), atlasBeaconTimeout);
+                    window.parent.fetch(u, {signal, method: 'POST', cache: 'no-store', keepalive: true, body: b});
+                } else {
+                    this.xhr(u, b, m, a);
+                }
                 return true;
             }
         }
