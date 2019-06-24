@@ -472,7 +472,8 @@ export default class Utils {
                 }
                 return true;
             } else {
-                if ('fetch' in window.parent && typeof window.parent.fetch === 'function') {
+                if (('fetch' in window.parent && typeof window.parent.fetch === 'function')
+                    && ('AbortController' in window.parent && typeof window.parent.AbortController === 'function')) {
                     const controller = new AbortController();
                     const signal = controller.signal;
                     setTimeout(() => controller.abort(), atlasBeaconTimeout);
