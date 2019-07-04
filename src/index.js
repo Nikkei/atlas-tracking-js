@@ -373,6 +373,8 @@ export default class AtlasTracking {
         if (options.trackPerformance && options.trackPerformance.enable) {
             window.parent.removeEventListener('DOMContentLoaded', atlasDOMContentLoadedHandler);
         }
+
+        options = {}
     }
 
     /**
