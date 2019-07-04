@@ -15,6 +15,7 @@ let dataSrc = {};
 let defaults = {};
 let supplement = {};
 let performanceInfo = {};
+let atlasDOMContentLoadedHandler = null;
 let eventHandlerKeys = {
     unload: null,
     scroll: null,
@@ -259,11 +260,12 @@ export default class AtlasTracking {
             this.trackForm(options.trackForm.target);
         }
         if (options.trackPerformance && options.trackPerformance.enable) {
-            window.parent.addEventListener('DOMContentLoaded', function () {
+            atlasDOMContentLoadedHandler = function () {
                 performanceInfo = utils.getP();
                 context.navigation_timing = performanceInfo.performanceResult || {};
                 context.navigation_type = performanceInfo.navigationType || {};
-            }, false);
+            };
+            window.parent.addEventListener('DOMContentLoaded', atlasDOMContentLoadedHandler, false);
         }
     }
 
@@ -369,7 +371,7 @@ export default class AtlasTracking {
             }
         }
         if (options.trackPerformance && options.trackPerformance.enable) {
-            window.parent.removeEventListener('DOMContentLoaded');
+            window.parent.removeEventListener('DOMContentLoaded', atlasDOMContentLoadedHandler);
         }
     }
 
