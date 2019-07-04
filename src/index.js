@@ -332,6 +332,48 @@ export default class AtlasTracking {
     }
 
     /**
+     * remove tracking options and handlers
+     */
+    disableTracking() {
+        if (debug && debug.outputLog) {
+            console.log('ATJ removed EventListeners and tracking options');
+        }
+        if ((options.exchangeAtlasId && options.exchangeAtlasId.pass) || (options.trackClick && options.trackClick.enable) || (options.trackLink && options.trackLink.enable) || (options.trackDownload && options.trackDownload.enable)) {
+            eventHandler.remove(eventHandlerKeys['click']);
+        }
+        if (options.trackUnload && options.trackUnload.enable) {
+            eventHandler.remove(eventHandlerKeys['unload']);   
+        }
+        if (options.trackScroll && options.trackScroll.enable) {
+            eventHandler.remove(eventHandlerKeys['scroll']);
+        }
+        if (options.trackInfinityScroll && options.trackInfinityScroll.enable) {
+            eventHandler.remove(eventHandlerKeys['infinityScroll']);
+        }
+        if (options.trackRead && options.trackRead.enable) {
+            eventHandler.remove(eventHandlerKeys['read']);
+        }
+        if (options.trackViewability && options.trackViewability.enable) {
+            eventHandler.remove(eventHandlerKeys['viewability']);
+        }
+        if (options.trackMedia && options.trackMedia.enable) {
+            const targetEvents = ['play', 'pause', 'end'];
+            for (const event of targetEvents) {
+                eventHandler.remove(eventHandlerKeys['media'][event]);
+            }
+        }
+        if (options.trackForm && options.trackForm.enable && options.trackForm.target !== null) {
+            const targetEvents = ['focus', 'change'];
+            for (const event of targetEvents) {
+                eventHandler.remove(eventHandlerKeys['form'][event]);
+            }
+        }
+        if (options.trackPerformance && options.trackPerformance.enable) {
+            window.parent.removeEventListener('DOMContentLoaded');
+        }
+    }
+
+    /**
      * track page view.
      */
     trackPage() {
