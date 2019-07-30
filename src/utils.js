@@ -39,7 +39,7 @@ export default class Utils {
         if (!atlasId || atlasId === '0' || atlasId === 0 || atlasId === '1' || atlasId === 1 || atlasId.length < 5) {
             atlasId = (UUID() + UUID()).replace(/-/g, '');
         }
-        setLS('atlasId', atlasId)
+        this.setLS('atlasId', atlasId)
     }
 
     qsM(s, t, d = null) {
