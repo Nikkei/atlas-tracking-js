@@ -431,7 +431,6 @@ export default class Utils {
         let f = 1; //fpcStatus
         if (this.getC(atlasCookieName) !== atlasId) {
             f = 0;
-            atlasId = 0;
         }
 
         let u = `${protocol}//${atlasEndpoint}/${SDK_NAME}-${SDK_VERSION}/${now}/${encodeURIComponent(atlasId)}/${f}`
