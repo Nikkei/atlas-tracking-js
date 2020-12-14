@@ -47,6 +47,9 @@
                     'fileExtensions': ['pdf', 'zip', 'laz', 'tar', 'gz', 'tgz', 'docx', 'xlsx', 'pptx', 'doc', 'xls', 'ppt'],
                     'nameAttribute': 'data-atlas-link-name',
                 },
+                'trackNavigation': {
+                    'enable': true,
+                },
                 'trackPerformance': {
                     'enable': true,
                 },

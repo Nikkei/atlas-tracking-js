@@ -18,6 +18,7 @@ Most variables except `system` can be omitted but strongly recommend to specify 
         'trackClick': {...},
         'trackLink': {...},
         'trackDownload': {...},
+        'trackNavigation': {...},
         'trackPerformance': {...},
         'trackScroll': {...},
         'trackInfinityScroll': {...},
@@ -107,6 +108,12 @@ Most variables except `system` can be omitted but strongly recommend to specify 
 |trackDownload.enable|Boolean|Use this feature or not|`true`|
 |trackDownload.fileExtensions|Array|Array of file extensions you want to track downloads|`['pdf','zip','tar','gz']`|
 |trackDownload.nameAttribute|String|You can set an alternative name for the file by adding data attribution and specify the attribution name here|`data-atlas-link-name`|                    
+#### trackNavigation (under options)
+
+|Variable|Type|Purpose|Example|
+|:----:|:----:|:----:|:----:|
+|trackNavigation.enable|Boolean|Use this feature or not|`true`|
+
 
 #### trackPerformance (under options)
 

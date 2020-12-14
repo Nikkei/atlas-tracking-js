@@ -319,7 +319,9 @@ export default class AtlasTracking {
                 'visibility': window.parent.document.visibilityState || 'unknown'
             };
         }
-
+        if (options.trackNavigation && options.trackNavigation.enable) {
+            context.navigation = utils.getNav() || {};
+        }
         if (options.trackPerformance && options.trackPerformance.enable) {
             performanceInfo = utils.getP();
             context.navigation_timing = performanceInfo.performanceResult || {};
