@@ -346,7 +346,7 @@ export default class AtlasTracking {
             eventHandler.remove(eventHandlerKeys['click']);
         }
         if (options.trackUnload && options.trackUnload.enable) {
-            eventHandler.remove(eventHandlerKeys['unload']);   
+            eventHandler.remove(eventHandlerKeys['unload']);
         }
         if (options.trackScroll && options.trackScroll.enable) {
             eventHandler.remove(eventHandlerKeys['scroll']);
