@@ -30,11 +30,11 @@ jobs:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
-        
+
       - run: yarn test
 
       - persist_to_workspace:
-          root: ~/workspace 
+          root: ~/workspace
           paths:
               - ./*
 

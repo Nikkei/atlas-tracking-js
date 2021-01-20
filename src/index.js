@@ -319,7 +319,9 @@ export default class AtlasTracking {
                 'visibility': window.parent.document.visibilityState || 'unknown'
             };
         }
-
+        if (options.trackNavigation && options.trackNavigation.enable) {
+            context.navigation = utils.getNav() || {};
+        }
         if (options.trackPerformance && options.trackPerformance.enable) {
             performanceInfo = utils.getP();
             context.navigation_timing = performanceInfo.performanceResult || {};
@@ -344,7 +346,7 @@ export default class AtlasTracking {
             eventHandler.remove(eventHandlerKeys['click']);
         }
         if (options.trackUnload && options.trackUnload.enable) {
-            eventHandler.remove(eventHandlerKeys['unload']);   
+            eventHandler.remove(eventHandlerKeys['unload']);
         }
         if (options.trackScroll && options.trackScroll.enable) {
             eventHandler.remove(eventHandlerKeys['scroll']);

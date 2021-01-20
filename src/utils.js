@@ -130,6 +130,30 @@ export default class Utils {
         }
     }
 
+    getNav() {
+        let nav = {
+            history_length: window.parent.history.length
+        };
+        if ('performance' in window.parent) {
+            let p = window.parent.performance;
+            if ('getEntriesByType' in p) {
+                let navs = p.getEntriesByType("navigation");
+                if(navs.length >= 1) {
+                    nav.type = navs[0].type;
+                    nav.redirectCount = navs[0].redirectCount;
+                    nav.domContentLoaded = navs[0].domContentLoadedEventStart;
+                }
+            }
+            if ('getEntriesByName' in p) {
+                let paints = p.getEntriesByName("first-paint");
+                if(paints.length >= 1) {
+                    nav.first_paint = paints[0].startTime;
+                }
+            }
+        }
+        return nav;
+    }
+
     getP() {
         let p = {}; // Performance Timing
         let t = {}; // Navigation Type

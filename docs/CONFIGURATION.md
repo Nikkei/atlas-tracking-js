@@ -18,6 +18,7 @@ Most variables except `system` can be omitted but strongly recommend to specify 
         'trackClick': {...},
         'trackLink': {...},
         'trackDownload': {...},
+        'trackNavigation': {...},
         'trackPerformance': {...},
         'trackScroll': {...},
         'trackInfinityScroll': {...},
@@ -91,7 +92,7 @@ Most variables except `system` can be omitted but strongly recommend to specify 
 |:----:|:----:|:----:|:----:|
 |trackClick.enable|Boolean|Use this feature or not|`true`|
 |trackClick.targetAttribute|String|ATJ collects data when user clicked elements which has this data attribution |`data-atlas-trackable`|
-                    
+
 #### trackLink (under options)
 
 |Variable|Type|Purpose|Example|
@@ -106,7 +107,15 @@ Most variables except `system` can be omitted but strongly recommend to specify 
 |:----:|:----:|:----:|:----:|
 |trackDownload.enable|Boolean|Use this feature or not|`true`|
 |trackDownload.fileExtensions|Array|Array of file extensions you want to track downloads|`['pdf','zip','tar','gz']`|
-|trackDownload.nameAttribute|String|You can set an alternative name for the file by adding data attribution and specify the attribution name here|`data-atlas-link-name`|                    
+|trackDownload.nameAttribute|String|You can set an alternative name for the file by adding data attribution and specify the attribution name here|`data-atlas-link-name`|
+
+
+#### trackNavigation (under options)
+
+|Variable|Type|Purpose|Example|
+|:----:|:----:|:----:|:----:|
+|trackNavigation.enable|Boolean|Use this feature or not|`true`|
+
 
 #### trackPerformance (under options)
 
@@ -213,7 +222,8 @@ Most variables can be omitted but it will be helpful for you if you set concrete
 - `user` is to store user side information such as user ID and environment.
 - Atlas Endpoint has built-in session management so `site_session` is not necessary to handle sessions.
 - `external_ids` can be managed by `setCustomId()` and `delCustomId()` after `initPage()`
-                		
+
+
 #### context
 
 |Variable|Type|Purpose|Example|

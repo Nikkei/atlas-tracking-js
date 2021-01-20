@@ -39,6 +39,9 @@ document.addEventListener('DOMContentLoaded', function () {
             'trackDownload': {
                 'enable': false,
             },
+            'trackNavigation': {
+                'enable': true,
+            },
             'trackPerformance': {
                 'enable': false,
             },

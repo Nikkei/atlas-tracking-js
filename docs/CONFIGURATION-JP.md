@@ -18,6 +18,7 @@
         'trackClick': {...},
         'trackLink': {...},
         'trackDownload': {...},
+        'trackNavigation': {...},
         'trackPerformance': {...},
         'trackScroll': {...},
         'trackInfinityScroll': {...},
@@ -91,7 +92,8 @@
 |:----:|:----:|:----:|:----:|
 |trackClick.enable|Boolean|この機能を使うか否か|`true`|
 |trackClick.targetAttribute|String|ATJはユーザーがこのデータ属性を持つ要素をクリックしたときにデータを収集する|`data-atlas-trackable`|
-                    
+
+
 #### trackLink (オプション以下)
 
 |変数|型|目的|例|
@@ -106,7 +108,15 @@
 |:----:|:----:|:----:|:----:|
 |trackDownload.enable|Boolean|この機能を使うか否か|`true`|
 |trackDownload.fileExtensions|Array|ダウンロード計測の対象とするファイル拡張子の配列|`['pdf','zip','tar','gz']`|
-|trackDownload.nameAttribute|String|ここで指定したデータ属性を追加して、ダウンロードリンクに任意の名前を設定できる|`data-atlas-link-name`|                    
+|trackDownload.nameAttribute|String|ここで指定したデータ属性を追加して、ダウンロードリンクに任意の名前を設定できる|`data-atlas-link-name`|
+
+
+#### trackNavigation (オプション以下)
+
+|変数|型|目的|例|
+|:----:|:----:|:----:|:----:|
+|trackNavigation.enable|Boolean|この機能を使うか否か|`true`|
+
 
 #### trackPerformance (オプション以下)
 
@@ -213,7 +223,8 @@
 - `user` はユーザーIDや環境などユーザー側の情報を格納するためのもの。
 - Atlas エンドポイントはセッション管理を内蔵しているので `site_session` はセッション管理に不要である。
 - `external_ids` は `initPage()` 以降に `setCustomId()` と `delCustomId()` で管理される。
-                		
+
+
 #### context
 
 |変数|型|目的|例|
