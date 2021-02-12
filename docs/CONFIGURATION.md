@@ -93,6 +93,9 @@ Most variables except `system` can be omitted but strongly recommend to specify 
 |trackClick.enable|Boolean|Use this feature or not|`true`|
 |trackClick.targetAttribute|String|ATJ collects data when user clicked elements which has this data attribution |`data-atlas-trackable`|
 
+- If `enable` is `true` and `targetAttribute` has a value, elements with data-attribute specified as `targetAttribute` is tracked.
+- If `enable` is `true` but `targetAttribute` is not specified or has `false`, all clickable elements are tracked.
+
 #### trackLink (under options)
 
 |Variable|Type|Purpose|Example|

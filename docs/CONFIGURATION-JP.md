@@ -93,6 +93,8 @@
 |trackClick.enable|Boolean|この機能を使うか否か|`true`|
 |trackClick.targetAttribute|String|ATJはユーザーがこのデータ属性を持つ要素をクリックしたときにデータを収集する|`data-atlas-trackable`|
 
+- `enable` が `true` であり、 `targetAttribute` に何らかの値が指定されている場合、 `targetAttribute` に指定されたdata属性を持つ要素のみが計測対象となる
+- `enable` が `true` であり、 `targetAttribute` が未指定または `false` の場合、全てのクリッカブル要素が計測対象となる
 
 #### trackLink (オプション以下)
 
