@@ -44,7 +44,7 @@ export default class Utils {
         }));
     }
 
-    qsM(s, t, d = null) {
+    qsM(s, t, d = false) {
         let e = null; // Trackable Element
         let c = 'button';
         let p = []; // Path
@@ -52,26 +52,37 @@ export default class Utils {
             t = t.parentNode;
         }
         while (t && t !== window.parent.document) {
-            let matches = (t.matches || t.msMatchesSelector || function () {
-                return false;
-            }).bind(t);
-            if (!d) {
-                if (matches(s)) {
-                    return {
-                        'element': t
-                    };
+            let matches = (
+                t.matches ||
+                t.msMatchesSelector ||
+                function () {
+                    return false;
                 }
-            } else {
+            ).bind(t);
+
+            if (d) {
                 if (t.hasAttribute(d)) {
                     p.unshift(t.getAttribute(d));
                 }
-                if (!e && matches(s)) {
-                    if (t.tagName.toLowerCase() === 'a') {
-                        c = 'link';
+            } else {
+                let elm = t.tagName.toLowerCase();
+                if (elm !== 'html' && elm !== 'body') {
+                    if (t.id) {
+                        elm += `.${t.id}`;
                     }
-                    e = t;
+                    p.unshift(elm);
                 }
             }
+
+            if (!e && matches(s)) {
+                if (t.tagName.toLowerCase() === 'a') {
+                    c = 'link';
+                } else {
+                    c = t.tagName.toLowerCase();
+                }
+                e = t;
+            }
+
             t = t.parentNode;
         }
         if (e && p.length > 0) {
@@ -137,7 +148,7 @@ export default class Utils {
         if ('performance' in window.parent) {
             let p = window.parent.performance;
             if ('getEntriesByType' in p) {
-                let navs = p.getEntriesByType("navigation");
+                let navs = p.getEntriesByType('navigation');
                 if(navs.length >= 1) {
                     nav.type = navs[0].type;
                     nav.redirectCount = navs[0].redirectCount;
@@ -145,7 +156,7 @@ export default class Utils {
                 }
             }
             if ('getEntriesByName' in p) {
-                let paints = p.getEntriesByName("first-paint");
+                let paints = p.getEntriesByName('first-paint');
                 if(paints.length >= 1) {
                     nav.first_paint = paints[0].startTime;
                 }
