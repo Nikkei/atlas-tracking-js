@@ -68,7 +68,10 @@ export default class Utils {
                 let elm = t.tagName.toLowerCase();
                 if (elm !== 'html' && elm !== 'body') {
                     if (t.id) {
-                        elm += `.${t.id}`;
+                        elm += `#${t.id}`;
+                    }
+                    if (t.className) {
+                        elm += `.${t.className}`;
                     }
                     p.unshift(elm);
                 }
