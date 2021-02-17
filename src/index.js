@@ -473,7 +473,7 @@ export default class AtlasTracking {
                         'tag': elm.tagName.toLowerCase(),
                         'id': elm.id || undefined,
                         'class': elm.className || undefined,
-                        'text': (elm.innerText || elm.value || undefined).substr(0,63),
+                        'text': (elm.innerText || elm.value || '').substr(0,63) || undefined,
                         'target': elm.target || undefined,
                         'dataset': elm.dataset || undefined
                     }
