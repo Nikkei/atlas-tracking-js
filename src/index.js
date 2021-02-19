@@ -376,7 +376,7 @@ export default class AtlasTracking {
             window.parent.removeEventListener('DOMContentLoaded', atlasDOMContentLoadedHandler);
         }
 
-        options = {}
+        options = {};
     }
 
     /**
@@ -419,7 +419,7 @@ export default class AtlasTracking {
     delegateClickEvents(obj) {
         eventHandler.remove(eventHandlerKeys['click']);
         eventHandlerKeys['click'] = eventHandler.add(window.parent.document.body, 'click', function (ev) {
-            const targetAttribute = obj.trackClick && obj.trackClick.targetAttribute ? obj.trackClick.targetAttribute : 'data-trackable';
+            const targetAttribute = obj.trackClick && obj.trackClick.targetAttribute ? obj.trackClick.targetAttribute : false;
             const linkElement = utils.qsM('a', ev.target);
             const trackableElement = utils.qsM('a, button, input, [role="button"]', ev.target, targetAttribute);
             let elm = null;
@@ -463,14 +463,17 @@ export default class AtlasTracking {
                 }
             }
 
-            if (trackableElement) {
+            if (trackableElement && obj.trackClick.enable) {
                 elm = trackableElement.element;
                 utils.transmit('click', trackableElement.category, mandatories, user, context, {
                     'action': {
                         'name': elm.getAttribute(targetAttribute),
                         'location': trackableElement.path,
                         'destination': elm.href || undefined,
+                        'tag': elm.tagName.toLowerCase(),
                         'id': elm.id || undefined,
+                        'class': elm.className || undefined,
+                        'text': (elm.innerText || elm.value || '').substr(0,63) || undefined,
                         'target': elm.target || undefined,
                         'dataset': elm.dataset || undefined
                     }
