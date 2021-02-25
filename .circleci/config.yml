@@ -7,7 +7,7 @@ version: 2
 definitions:
   workspace: &workspace
     docker:
-      - image: circleci/node:8.11-browsers
+      - image: circleci/node:10.24.0-browsers
 
     working_directory: ~/workspace
 
