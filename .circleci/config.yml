@@ -7,12 +7,12 @@ version: 2
 definitions:
   workspace: &workspace
     docker:
-      - image: circleci/node:8.11-browsers
+      - image: circleci/node:10.24.0-browsers
 
     working_directory: ~/workspace
 
 jobs:
-  build:
+  build-and-test:
     <<: *workspace
 
     steps:
@@ -40,10 +40,7 @@ jobs:
 
 workflows:
   version: 2
-  build_and_deploy:
+  build_and_test:
     jobs:
-      - build:
-          filters:
-            tags:
-              only: /v[0-9]+(\.[0-9]+)*/
+      - build-and-test
 
