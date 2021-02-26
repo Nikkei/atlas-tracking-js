@@ -421,7 +421,7 @@ export default class AtlasTracking {
         eventHandlerKeys['click'] = eventHandler.add(window.parent.document.body, 'click', function (ev) {
             const targetAttribute = obj.trackClick && obj.trackClick.targetAttribute ? obj.trackClick.targetAttribute : false;
             const linkElement = utils.qsM('a', ev.target);
-            const trackableElement = utils.qsM('a, button, input, [role="button"]', ev.target, targetAttribute);
+            const trackableElement = utils.qsM('a, button, [role="button"]', ev.target, targetAttribute);
             let elm = null;
             let ext = null;
 
