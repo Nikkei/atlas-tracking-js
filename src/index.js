@@ -268,7 +268,7 @@ export default class AtlasTracking {
             this.trackForm(options.trackForm.target);
         }
         if (options.trackPerformance && options.trackPerformance.enable) {
-            atlasDOMContentLoadedHandler = function () {
+            atlasDOMContentLoadedHandler = () => {
                 performanceInfo = this.utils.getP();
                 context.navigation_timing = performanceInfo.performanceResult || {};
                 context.navigation_type = performanceInfo.navigationType || {};
@@ -426,7 +426,7 @@ export default class AtlasTracking {
      */
     delegateClickEvents(obj) {
         this.eventHandler.remove(eventHandlerKeys['click']);
-        eventHandlerKeys['click'] = this.eventHandler.add(targetWindow.document.body, 'click', function (ev) {
+        eventHandlerKeys['click'] = this.eventHandler.add(targetWindow.document.body, 'click', (ev) => {
             const targetAttribute = obj.trackClick && obj.trackClick.targetAttribute ? obj.trackClick.targetAttribute : false;
             const linkElement = this.utils.qsM('a', ev.target);
             const trackableElement = this.utils.qsM('a, button, [role="button"]', ev.target, targetAttribute);
@@ -495,7 +495,7 @@ export default class AtlasTracking {
      */
     setEventToUnload() {
         this.eventHandler.remove(eventHandlerKeys['unload']);
-        eventHandlerKeys['unload'] = this.eventHandler.add(targetWindow, unloadEvent, function () {
+        eventHandlerKeys['unload'] = this.eventHandler.add(targetWindow, unloadEvent, () => {
             this.utils.transmit('unload', 'page', mandatories, user, context, {
                 'action': {
                     'name': 'leave_from_page',
@@ -518,13 +518,13 @@ export default class AtlasTracking {
         let cvr = 0; //currentViewRate
         let pvr = 0; //prevViewRate
         this.eventHandler.remove(eventHandlerKeys['scroll']);
-        eventHandlerKeys['scroll'] = this.eventHandler.add(targetWindow, 'atlasVisibilityStatus', function () {
+        eventHandlerKeys['scroll'] = this.eventHandler.add(targetWindow, 'atlasVisibilityStatus', () => {
             r = this.utils.getV(null);
             if (r.detail.documentIsVisible !== 'hidden' && r.detail.documentIsVisible !== 'prerender') {
                 now = Date.now();
                 cvr = Math.round(r.detail.documentScrollRate * steps) * each;
                 if (cvr > pvr && cvr >= 0 && cvr <= 100) {
-                    setTimeout(function () {
+                    setTimeout(() => {
                         if (cvr > pvr) {
                             this.utils.transmit('scroll', 'page', mandatories, user, context, {
                                 'scroll_depth': {
@@ -555,13 +555,13 @@ export default class AtlasTracking {
         let cvp = 0; //currentViewRate
         let pvp = 0; //prevViewRate
         this.eventHandler.remove(eventHandlerKeys['infinityScroll']);
-        eventHandlerKeys['infinityScroll'] = this.eventHandler.add(targetWindow, 'atlasVisibilityStatus', function () {
+        eventHandlerKeys['infinityScroll'] = this.eventHandler.add(targetWindow, 'atlasVisibilityStatus', () => {
             r = this.utils.getV(null);
             if (r.detail.documentIsVisible !== 'hidden' && r.detail.documentIsVisible !== 'prerender') {
                 now = Date.now();
                 cvp = r.detail.documentScrollUntil;
                 if (cvp > pvp && cvp >= pvp && cvp >= step) {
-                    setTimeout(function () {
+                    setTimeout(() => {
                         if (cvp > pvp) {
                             this.utils.transmit('infinity_scroll', 'page', mandatories, user, context, {
                                 'scroll_depth': {
@@ -599,7 +599,7 @@ export default class AtlasTracking {
         let cvr = 0; //currentViewRate
         let pvr = 0; //prevViewRate
         this.eventHandler.remove(eventHandlerKeys['read']);
-        eventHandlerKeys['read'] = this.eventHandler.add(targetWindow, 'atlasVisibilityStatus', function () {
+        eventHandlerKeys['read'] = this.eventHandler.add(targetWindow, 'atlasVisibilityStatus', () => {
             r = this.utils.getV(target);
             if (r.detail.documentIsVisible !== 'hidden' && r.detail.documentIsVisible !== 'prerender' && r.status.isInView) {
                 now = Date.now();
@@ -633,7 +633,7 @@ export default class AtlasTracking {
                 }
                 cvr = Math.round(r.detail.targetScrollRate * steps) * each;
                 if (cvr > pvr && cvr >= 0 && cvr <= 100) {
-                    setTimeout(function () {
+                    setTimeout(() => {
                         if (cvr > pvr) {
                             this.utils.transmit('read', 'article', mandatories, user, context, {
                                 'read': {
@@ -663,12 +663,12 @@ export default class AtlasTracking {
         let r = {}; //results
         let f = {}; //flags
         this.eventHandler.remove(eventHandlerKeys['viewability']);
-        eventHandlerKeys['viewability'] = this.eventHandler.add(targetWindow, 'atlasVisibilityStatus', function () {
+        eventHandlerKeys['viewability'] = this.eventHandler.add(targetWindow, 'atlasVisibilityStatus', () => {
             for (let i = 0; i < targets.length; i++) {
                 if (targets[i]) {
                     r[i] = this.utils.getV(targets[i]);
                     if (r[i].status.isInView === true && r[i].detail.documentIsVisible !== 'hidden' && r[i].detail.documentIsVisible !== 'prerender' && r[i].detail.targetViewableRate >= 0.5 && !f[i]) {
-                        setTimeout(function () {
+                        setTimeout(() => {
                             if (r[i].detail.targetViewableRate >= 0.5 && !f[i]) {
                                 now = Date.now();
                                 f[i] = true;
@@ -699,7 +699,7 @@ export default class AtlasTracking {
         let f = {}; //flags
         for (let i = 0; i < targetEvents.length; i++) {
             this.eventHandler.remove(eventHandlerKeys['media'][targetEvents[i]]);
-            eventHandlerKeys['media'][targetEvents[i]] = this.eventHandler.add(targetWindow.document.body, targetEvents[i], function (ev) {
+            eventHandlerKeys['media'][targetEvents[i]] = this.eventHandler.add(targetWindow.document.body, targetEvents[i], (ev) => {
                 if (this.utils.qsM(selector, ev.target)) {
                     const details = this.utils.getM(ev.target);
                     this.utils.transmit(targetEvents[i], details.tag, mandatories, user, context, {
@@ -710,14 +710,14 @@ export default class AtlasTracking {
         }
 
         this.eventHandler.remove(eventHandlerKeys['media']['timeupdate']);
-        eventHandlerKeys['media']['timeupdate'] = this.eventHandler.add(targetWindow.document, 'timeupdate', function (ev) {
+        eventHandlerKeys['media']['timeupdate'] = this.eventHandler.add(targetWindow.document, 'timeupdate', (ev) => {
             if (this.utils.qsM(selector, ev.target)) {
                 const details = this.utils.getM(ev.target);
                 const index = details.tag + '-' + details.id + '-' + details.src;
                 if (f[index]) {
                     return false;
                 }
-                f[index] = setTimeout(function () {
+                f[index] = setTimeout(() => {
                     if (ev.target.paused !== true && ev.target.ended !== true) {
                         this.utils.transmit('playing', details.tag, mandatories, user, context, {
                             'media': details
@@ -741,12 +741,12 @@ export default class AtlasTracking {
         };
         for (let i = 0; i < targetEvents.length; i++) {
             this.eventHandler.remove(eventHandlerKeys['form'][targetEvents[i]]);
-            eventHandlerKeys['form'][targetEvents[i]] = this.eventHandler.add(target, targetEvents[i], function (ev) {
+            eventHandlerKeys['form'][targetEvents[i]] = this.eventHandler.add(target, targetEvents[i], (ev) => {
                 f = this.utils.getF(f, targetEvents[i], ev.target, pageLoadedAt);
             }, false);
         }
         this.eventHandler.remove(eventHandlerKeys['unload']);
-        eventHandlerKeys['unload'] = this.eventHandler.add(targetWindow, unloadEvent, function () {
+        eventHandlerKeys['unload'] = this.eventHandler.add(targetWindow, unloadEvent, () => {
             this.utils.transmit('track', 'form', mandatories, user, context, {
                 'form': f
             }, options.useGet, debug);
