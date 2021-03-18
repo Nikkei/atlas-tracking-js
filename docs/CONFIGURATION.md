@@ -43,6 +43,7 @@ Most variables except `system` can be omitted but strongly recommend to specify 
 |cookieName|String|Cookie name to store Atlas ID|`atlasId`|
 |cookieMaxAge|Integer|Atlas ID Cookie lifetime|`(2 * 365 * 24 * 60 * 60)` (2 years)|
 |cookieDomain|String|Domain to be used as domain-attribute when ATJ set Atlas ID Cookie|`your.domain`|
+|targetWindow|String|A name of (relative) target window where ATJ work in|`parent`| 
 
 #### defaults
 

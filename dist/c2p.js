@@ -12,7 +12,8 @@
                 'beaconTimeout': 2000,
                 'cookieName': 'atlasId',
                 'cookieMaxAge': (2 * 365 * 24 * 60 * 60),
-                'cookieDomain': 'CHANGE_ME'
+                'cookieDomain': 'CHANGE_ME',
+                'targetWindow': 'self'
             },
             'defaults': {
                 'pageUrl': window.parent.document.location.href,

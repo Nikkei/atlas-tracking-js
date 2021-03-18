@@ -43,6 +43,7 @@
 |cookieName|String|Atlas IDを保存するCookie名|`atlasId`|
 |cookieMaxAge|Integer|Atlas IDのCookieの有効期間|`(2 * 365 * 24 * 60 * 60)` (2 years)|
 |cookieDomain|String|Cookieを保存する際にドメイン属性として利用するドメイン名|`your.domain`|
+|targetWindow|String|ATJが動く（相対的な）ウィンドウ名|`parent`| 
 
 #### defaults
 
