@@ -2,8 +2,6 @@
 
 import Utils from './utils.js';
 
-const utils = new Utils;
-const eventHandler = new utils.handler;
 
 let debug = {};
 let system = {};
@@ -36,7 +34,7 @@ let prevActionOccurredAt = pageLoadedAt;
 
 export default class AtlasTracking {
     constructor() {
-        
+
     }
 
     /**
@@ -45,7 +43,7 @@ export default class AtlasTracking {
      * @return {string}   value associated with the key.
      */
     getQueryValue(k) {
-        return utils.getQ(k) || '';
+        return this.utils.getQ(k) || '';
     }
 
     /**
@@ -54,7 +52,7 @@ export default class AtlasTracking {
      * @return {string}   value associated with the key.
      */
     getCookieValue(k) {
-        return utils.getC(k) || '';
+        return this.utils.getC(k) || '';
     }
 
 
@@ -64,7 +62,7 @@ export default class AtlasTracking {
      * @return {string}   value associated with the key.
      */
     getLocalStorageValue(k) {
-        return utils.getLS(k) || '';
+        return this.utils.getLS(k) || '';
     }
 
     /**
@@ -90,7 +88,7 @@ export default class AtlasTracking {
      * @return {Object} inspection result.
      */
     getVisibility(t) {
-        return utils.getV(t) || '';
+        return this.utils.getV(t) || '';
     }
 
     /**
@@ -107,6 +105,9 @@ export default class AtlasTracking {
         defaults.product_family = obj.product.productFamily !== void 0 ? obj.product.productFamily : null;
         defaults.product = obj.product.productName !== void 0 ? obj.product.productName : null;
 
+        this.utils = new Utils(targetWindow);
+        this.eventHandler = new this.utils.handler;
+
         if ('onbeforeunload' in targetWindow) {
             unloadEvent = 'beforeunload';
         } else if ('onpagehide' in targetWindow) {
@@ -114,7 +115,7 @@ export default class AtlasTracking {
         } else {
             unloadEvent = 'unload';
         }
-        
+
         try {
             visibilityEvent = new CustomEvent('atlasVisibilityStatus');
         } catch (e) {
@@ -149,11 +150,11 @@ export default class AtlasTracking {
                 timerFrequency = null;
             }, 250);
         })();
-        
+
         debug = obj.debug !== void 0 ? obj.debug : {};
         options = obj.options !== void 0 ? obj.options : {};
-        utils.initSystem(system);
-        if (utils.getC('atlasOutputLog') === 'true' || (debug && debug.outputLog)) {
+        this.utils.initSystem(system);
+        if (this.utils.getC('atlasOutputLog') === 'true' || (debug && debug.outputLog)) {
             debug.outputLog = true;
             console.log('ATJ configured');
         }
@@ -216,11 +217,11 @@ export default class AtlasTracking {
      * @param  {string} s whether optout is enabled or not. ('enable'|'disable')
      */
     optout(s) {
-        let c = utils.getLS('atlasOptout');
+        let c = this.utils.getLS('atlasOptout');
         if (s === 'enable') {
-            utils.setLS('atlasOptout', true);
+            this.utils.setLS('atlasOptout', true);
         } else if (s === 'disable') {
-            utils.delLS('atlasOptout');
+            this.utils.delLS('atlasOptout');
         } else {
             if (c === 'true') {
                 console.log('enabled');
@@ -268,7 +269,7 @@ export default class AtlasTracking {
         }
         if (options.trackPerformance && options.trackPerformance.enable) {
             atlasDOMContentLoadedHandler = function () {
-                performanceInfo = utils.getP();
+                performanceInfo = this.utils.getP();
                 context.navigation_timing = performanceInfo.performanceResult || {};
                 context.navigation_type = performanceInfo.navigationType || {};
             };
@@ -302,7 +303,7 @@ export default class AtlasTracking {
         }
         if (obj.context !== void 0) {
             context = {
-                'root_id': utils.generateRootId(),
+                'root_id': this.utils.generateRootId(),
                 'product_family': obj.context.product_family !== void 0 ? obj.context.product_family : defaults.product_family,
                 'product': obj.context.product || defaults.product,
                 'app': obj.context.app || undefined,
@@ -327,10 +328,10 @@ export default class AtlasTracking {
             };
         }
         if (options.trackNavigation && options.trackNavigation.enable) {
-            context.navigation = utils.getNav() || {};
+            context.navigation = this.utils.getNav() || {};
         }
         if (options.trackPerformance && options.trackPerformance.enable) {
-            performanceInfo = utils.getP();
+            performanceInfo = this.utils.getP();
             context.navigation_timing = performanceInfo.performanceResult || {};
             context.navigation_type = performanceInfo.navigationType || {};
         }
@@ -350,33 +351,33 @@ export default class AtlasTracking {
             console.log('ATJ removed EventListeners and tracking options');
         }
         if ((options.exchangeAtlasId && options.exchangeAtlasId.pass) || (options.trackClick && options.trackClick.enable) || (options.trackLink && options.trackLink.enable) || (options.trackDownload && options.trackDownload.enable)) {
-            eventHandler.remove(eventHandlerKeys['click']);
+            this.eventHandler.remove(eventHandlerKeys['click']);
         }
         if (options.trackUnload && options.trackUnload.enable) {
-            eventHandler.remove(eventHandlerKeys['unload']);
+            this.eventHandler.remove(eventHandlerKeys['unload']);
         }
         if (options.trackScroll && options.trackScroll.enable) {
-            eventHandler.remove(eventHandlerKeys['scroll']);
+            this.eventHandler.remove(eventHandlerKeys['scroll']);
         }
         if (options.trackInfinityScroll && options.trackInfinityScroll.enable) {
-            eventHandler.remove(eventHandlerKeys['infinityScroll']);
+            this.eventHandler.remove(eventHandlerKeys['infinityScroll']);
         }
         if (options.trackRead && options.trackRead.enable) {
-            eventHandler.remove(eventHandlerKeys['read']);
+            this.eventHandler.remove(eventHandlerKeys['read']);
         }
         if (options.trackViewability && options.trackViewability.enable) {
-            eventHandler.remove(eventHandlerKeys['viewability']);
+            this.eventHandler.remove(eventHandlerKeys['viewability']);
         }
         if (options.trackMedia && options.trackMedia.enable) {
             const targetEvents = ['play', 'pause', 'end'];
             for (const event of targetEvents) {
-                eventHandler.remove(eventHandlerKeys['media'][event]);
+                this.eventHandler.remove(eventHandlerKeys['media'][event]);
             }
         }
         if (options.trackForm && options.trackForm.enable && options.trackForm.target !== null) {
             const targetEvents = ['focus', 'change'];
             for (const event of targetEvents) {
-                eventHandler.remove(eventHandlerKeys['form'][event]);
+                this.eventHandler.remove(eventHandlerKeys['form'][event]);
             }
         }
         if (options.trackPerformance && options.trackPerformance.enable) {
@@ -390,7 +391,7 @@ export default class AtlasTracking {
      * track page view.
      */
     trackPage() {
-        utils.transmit('view', 'page', mandatories, user, context, supplement, options.useGet, debug);
+        this.utils.transmit('view', 'page', mandatories, user, context, supplement, options.useGet, debug);
     }
 
     /**
@@ -403,7 +404,7 @@ export default class AtlasTracking {
     trackAction(action = 'action', category = 'unknown', events = null, obj = {}) {
         const now = Date.now();
         context.events = events || null;
-        utils.transmit(action, category, mandatories, user, context, {
+        this.utils.transmit(action, category, mandatories, user, context, {
             'action': {
                 'location': obj.location || undefined,
                 'destination': obj.destination || undefined,
@@ -424,11 +425,11 @@ export default class AtlasTracking {
      * @private
      */
     delegateClickEvents(obj) {
-        eventHandler.remove(eventHandlerKeys['click']);
-        eventHandlerKeys['click'] = eventHandler.add(targetWindow.document.body, 'click', function (ev) {
+        this.eventHandler.remove(eventHandlerKeys['click']);
+        eventHandlerKeys['click'] = this.eventHandler.add(targetWindow.document.body, 'click', function (ev) {
             const targetAttribute = obj.trackClick && obj.trackClick.targetAttribute ? obj.trackClick.targetAttribute : false;
-            const linkElement = utils.qsM('a', ev.target);
-            const trackableElement = utils.qsM('a, button, [role="button"]', ev.target, targetAttribute);
+            const linkElement = this.utils.qsM('a', ev.target);
+            const trackableElement = this.utils.qsM('a, button, [role="button"]', ev.target, targetAttribute);
             let elm = null;
             let ext = null;
 
@@ -438,7 +439,7 @@ export default class AtlasTracking {
 
                 // Outbound
                 if (obj.trackLink && obj.trackLink.enable && elm.hostname && targetWindow.location.hostname !== elm.hostname && obj.trackLink.internalDomains.indexOf(elm.hostname) < 0) {
-                    utils.transmit('open', 'outbound_link', mandatories, user, context, {
+                    this.utils.transmit('open', 'outbound_link', mandatories, user, context, {
                         'link': {
                             'destination': elm.href || undefined,
                             'dataset': elm.dataset || undefined,
@@ -452,7 +453,7 @@ export default class AtlasTracking {
 
                 // Download
                 if (obj.trackDownload && obj.trackDownload.enable && elm.hostname && ext && obj.trackDownload.fileExtensions.indexOf(ext[1]) >= 0) {
-                    utils.transmit('download', 'file', mandatories, user, context, {
+                    this.utils.transmit('download', 'file', mandatories, user, context, {
                         'download': {
                             'destination': elm.href || undefined,
                             'dataset': elm.dataset || undefined,
@@ -466,13 +467,13 @@ export default class AtlasTracking {
 
                 // Passing Atlas ID
                 if (obj.passAtlasId && obj.passAtlasId.pass && elm.hostname && targetWindow.location.hostname !== elm.hostname && obj.passAtlasId.passTargetDomains.indexOf(elm.hostname) >= 0) {
-                    elm.href = utils.buildLink(elm.href, obj.passAtlasId.passParamKey);
+                    elm.href = this.utils.buildLink(elm.href, obj.passAtlasId.passParamKey);
                 }
             }
 
             if (trackableElement && obj.trackClick.enable) {
                 elm = trackableElement.element;
-                utils.transmit('click', trackableElement.category, mandatories, user, context, {
+                this.utils.transmit('click', trackableElement.category, mandatories, user, context, {
                     'action': {
                         'name': elm.getAttribute(targetAttribute),
                         'location': trackableElement.path,
@@ -493,9 +494,9 @@ export default class AtlasTracking {
      * @private
      */
     setEventToUnload() {
-        eventHandler.remove(eventHandlerKeys['unload']);
-        eventHandlerKeys['unload'] = eventHandler.add(targetWindow, unloadEvent, function () {
-            utils.transmit('unload', 'page', mandatories, user, context, {
+        this.eventHandler.remove(eventHandlerKeys['unload']);
+        eventHandlerKeys['unload'] = this.eventHandler.add(targetWindow, unloadEvent, function () {
+            this.utils.transmit('unload', 'page', mandatories, user, context, {
                 'action': {
                     'name': 'leave_from_page',
                     'elapsed_since_page_load': ((Date.now()) - pageLoadedAt) / 1000
@@ -516,16 +517,16 @@ export default class AtlasTracking {
         let r = {}; //result
         let cvr = 0; //currentViewRate
         let pvr = 0; //prevViewRate
-        eventHandler.remove(eventHandlerKeys['scroll']);
-        eventHandlerKeys['scroll'] = eventHandler.add(targetWindow, 'atlasVisibilityStatus', function () {
-            r = utils.getV(null);
+        this.eventHandler.remove(eventHandlerKeys['scroll']);
+        eventHandlerKeys['scroll'] = this.eventHandler.add(targetWindow, 'atlasVisibilityStatus', function () {
+            r = this.utils.getV(null);
             if (r.detail.documentIsVisible !== 'hidden' && r.detail.documentIsVisible !== 'prerender') {
                 now = Date.now();
                 cvr = Math.round(r.detail.documentScrollRate * steps) * each;
                 if (cvr > pvr && cvr >= 0 && cvr <= 100) {
                     setTimeout(function () {
                         if (cvr > pvr) {
-                            utils.transmit('scroll', 'page', mandatories, user, context, {
+                            this.utils.transmit('scroll', 'page', mandatories, user, context, {
                                 'scroll_depth': {
                                     'page_height': r.detail.documentHeight,
                                     'viewed_until': r.detail.documentScrollUntil,
@@ -553,16 +554,16 @@ export default class AtlasTracking {
         let r = {}; //result
         let cvp = 0; //currentViewRate
         let pvp = 0; //prevViewRate
-        eventHandler.remove(eventHandlerKeys['infinityScroll']);
-        eventHandlerKeys['infinityScroll'] = eventHandler.add(targetWindow, 'atlasVisibilityStatus', function () {
-            r = utils.getV(null);
+        this.eventHandler.remove(eventHandlerKeys['infinityScroll']);
+        eventHandlerKeys['infinityScroll'] = this.eventHandler.add(targetWindow, 'atlasVisibilityStatus', function () {
+            r = this.utils.getV(null);
             if (r.detail.documentIsVisible !== 'hidden' && r.detail.documentIsVisible !== 'prerender') {
                 now = Date.now();
                 cvp = r.detail.documentScrollUntil;
                 if (cvp > pvp && cvp >= pvp && cvp >= step) {
                     setTimeout(function () {
                         if (cvp > pvp) {
-                            utils.transmit('infinity_scroll', 'page', mandatories, user, context, {
+                            this.utils.transmit('infinity_scroll', 'page', mandatories, user, context, {
                                 'scroll_depth': {
                                     'page_height': r.detail.documentHeight,
                                     'viewed_until': cvp,
@@ -597,9 +598,9 @@ export default class AtlasTracking {
         let pm = null; //prevMilestone
         let cvr = 0; //currentViewRate
         let pvr = 0; //prevViewRate
-        eventHandler.remove(eventHandlerKeys['read']);
-        eventHandlerKeys['read'] = eventHandler.add(targetWindow, 'atlasVisibilityStatus', function () {
-            r = utils.getV(target);
+        this.eventHandler.remove(eventHandlerKeys['read']);
+        eventHandlerKeys['read'] = this.eventHandler.add(targetWindow, 'atlasVisibilityStatus', function () {
+            r = this.utils.getV(target);
             if (r.detail.documentIsVisible !== 'hidden' && r.detail.documentIsVisible !== 'prerender' && r.status.isInView) {
                 now = Date.now();
                 if (now - prev >= 1000) {
@@ -614,7 +615,7 @@ export default class AtlasTracking {
                     }
                 });
                 if (cm && pm !== cm) {
-                    utils.transmit('read', 'article', mandatories, user, context, {
+                    this.utils.transmit('read', 'article', mandatories, user, context, {
                         'read': {
                             'mode': 'time',
                             'milestone': cm,
@@ -634,7 +635,7 @@ export default class AtlasTracking {
                 if (cvr > pvr && cvr >= 0 && cvr <= 100) {
                     setTimeout(function () {
                         if (cvr > pvr) {
-                            utils.transmit('read', 'article', mandatories, user, context, {
+                            this.utils.transmit('read', 'article', mandatories, user, context, {
                                 'read': {
                                     'mode': 'scroll',
                                     'page_height': r.detail.documentHeight,
@@ -661,17 +662,17 @@ export default class AtlasTracking {
         let now = Date.now();
         let r = {}; //results
         let f = {}; //flags
-        eventHandler.remove(eventHandlerKeys['viewability']);
-        eventHandlerKeys['viewability'] = eventHandler.add(targetWindow, 'atlasVisibilityStatus', function () {
+        this.eventHandler.remove(eventHandlerKeys['viewability']);
+        eventHandlerKeys['viewability'] = this.eventHandler.add(targetWindow, 'atlasVisibilityStatus', function () {
             for (let i = 0; i < targets.length; i++) {
                 if (targets[i]) {
-                    r[i] = utils.getV(targets[i]);
+                    r[i] = this.utils.getV(targets[i]);
                     if (r[i].status.isInView === true && r[i].detail.documentIsVisible !== 'hidden' && r[i].detail.documentIsVisible !== 'prerender' && r[i].detail.targetViewableRate >= 0.5 && !f[i]) {
                         setTimeout(function () {
                             if (r[i].detail.targetViewableRate >= 0.5 && !f[i]) {
                                 now = Date.now();
                                 f[i] = true;
-                                utils.transmit('viewable_impression', 'ad', mandatories, user, context, {
+                                this.utils.transmit('viewable_impression', 'ad', mandatories, user, context, {
                                     'viewability': {
                                         'page_height': r[i].detail.documentHeight,
                                         'element_order_in_target': i,
@@ -697,28 +698,28 @@ export default class AtlasTracking {
         const targetEvents = ['play', 'pause', 'end'];
         let f = {}; //flags
         for (let i = 0; i < targetEvents.length; i++) {
-            eventHandler.remove(eventHandlerKeys['media'][targetEvents[i]]);
-            eventHandlerKeys['media'][targetEvents[i]] = eventHandler.add(targetWindow.document.body, targetEvents[i], function (ev) {
-                if (utils.qsM(selector, ev.target)) {
-                    const details = utils.getM(ev.target);
-                    utils.transmit(targetEvents[i], details.tag, mandatories, user, context, {
+            this.eventHandler.remove(eventHandlerKeys['media'][targetEvents[i]]);
+            eventHandlerKeys['media'][targetEvents[i]] = this.eventHandler.add(targetWindow.document.body, targetEvents[i], function (ev) {
+                if (this.utils.qsM(selector, ev.target)) {
+                    const details = this.utils.getM(ev.target);
+                    this.utils.transmit(targetEvents[i], details.tag, mandatories, user, context, {
                         'media': details
                     }, options.useGet, debug);
                 }
             }, {capture: true});
         }
 
-        eventHandler.remove(eventHandlerKeys['media']['timeupdate']);
-        eventHandlerKeys['media']['timeupdate'] = eventHandler.add(targetWindow.document, 'timeupdate', function (ev) {
-            if (utils.qsM(selector, ev.target)) {
-                const details = utils.getM(ev.target);
+        this.eventHandler.remove(eventHandlerKeys['media']['timeupdate']);
+        eventHandlerKeys['media']['timeupdate'] = this.eventHandler.add(targetWindow.document, 'timeupdate', function (ev) {
+            if (this.utils.qsM(selector, ev.target)) {
+                const details = this.utils.getM(ev.target);
                 const index = details.tag + '-' + details.id + '-' + details.src;
                 if (f[index]) {
                     return false;
                 }
                 f[index] = setTimeout(function () {
                     if (ev.target.paused !== true && ev.target.ended !== true) {
-                        utils.transmit('playing', details.tag, mandatories, user, context, {
+                        this.utils.transmit('playing', details.tag, mandatories, user, context, {
                             'media': details
                         }, options.useGet, debug);
                     }
@@ -739,14 +740,14 @@ export default class AtlasTracking {
             'items_detail': {}
         };
         for (let i = 0; i < targetEvents.length; i++) {
-            eventHandler.remove(eventHandlerKeys['form'][targetEvents[i]]);
-            eventHandlerKeys['form'][targetEvents[i]] = eventHandler.add(target, targetEvents[i], function (ev) {
-                f = utils.getF(f, targetEvents[i], ev.target, pageLoadedAt);
+            this.eventHandler.remove(eventHandlerKeys['form'][targetEvents[i]]);
+            eventHandlerKeys['form'][targetEvents[i]] = this.eventHandler.add(target, targetEvents[i], function (ev) {
+                f = this.utils.getF(f, targetEvents[i], ev.target, pageLoadedAt);
             }, false);
         }
-        eventHandler.remove(eventHandlerKeys['unload']);
-        eventHandlerKeys['unload'] = eventHandler.add(targetWindow, unloadEvent, function () {
-            utils.transmit('track', 'form', mandatories, user, context, {
+        this.eventHandler.remove(eventHandlerKeys['unload']);
+        eventHandlerKeys['unload'] = this.eventHandler.add(targetWindow, unloadEvent, function () {
+            this.utils.transmit('track', 'form', mandatories, user, context, {
                 'form': f
             }, options.useGet, debug);
         }, false);
