@@ -14,14 +14,13 @@ let atlasId = '0';
 let handlerEvents = {};
 let handlerKey = 0;
 let sendBeaconStatus = true;
-let targetWindow = window['parent'];
 
 /**
  * @ignore
  */
 export default class Utils {
-    constructor() {
-
+    constructor(targetWindow) {
+        this.targetWindow = targetWindow;
     }
 
     initSystem(system) {
@@ -29,7 +28,6 @@ export default class Utils {
         atlasApiKey = system.apiKey ? system.apiKey : SDK_API_KEY;
         atlasBeaconTimeout = system.beaconTimeout ? system.beaconTimeout : 2000;
         atlasCookieName = system.cookieName ? system.cookieName : 'atlasId';
-        targetWindow = system.targetWindow ? window[system.targetWindow] : window['parent'];
 
         atlasId = this.getC(atlasCookieName) || this.getLS('atlasId');
 
@@ -53,7 +51,7 @@ export default class Utils {
         if (t.nodeType === 3) {
             t = t.parentNode;
         }
-        while (t && t !== targetWindow.document) {
+        while (t && t !== this.targetWindow.document) {
             let matches = (
                 t.matches ||
                 t.msMatchesSelector ||
@@ -102,12 +100,12 @@ export default class Utils {
     }
 
     getC(k) {
-        const cookies = targetWindow.document.cookie || '';
+        const cookies = this.targetWindow.document.cookie || '';
         return ((`; ${cookies};`).match(`; ${k}=([^¥S;]*)`) || [])[1] || '';
     }
 
     getQ(k) {
-        const s = targetWindow.location.search.slice(1);
+        const s = this.targetWindow.location.search.slice(1);
         if (s === '') {
             return '';
         }
@@ -125,7 +123,7 @@ export default class Utils {
     getLS(k) {
         let r = '';
         try {
-            r = targetWindow.localStorage[k];
+            r = this.targetWindow.localStorage[k];
         } catch (e) {
             r = '';
         }
@@ -134,24 +132,24 @@ export default class Utils {
 
     setLS(k, v) {
         try {
-            targetWindow.localStorage.setItem(k, v);
+            this.targetWindow.localStorage.setItem(k, v);
         } catch (e) {
         }
     }
 
     delLS(k) {
         try {
-            targetWindow.localStorage.removeItem(k);
+            this.targetWindow.localStorage.removeItem(k);
         } catch (e) {
         }
     }
 
     getNav() {
         let nav = {
-            history_length: targetWindow.history.length
+            history_length: this.targetWindow.history.length
         };
-        if ('performance' in targetWindow) {
-            let p = targetWindow.performance;
+        if ('performance' in this.targetWindow) {
+            let p = this.targetWindow.performance;
             if ('getEntriesByType' in p) {
                 let navs = p.getEntriesByType('navigation');
                 if(navs.length >= 1) {
@@ -174,8 +172,8 @@ export default class Utils {
         let p = {}; // Performance Timing
         let t = {}; // Navigation Type
         let r = {}; // Result
-        if ('performance' in targetWindow) {
-            p = targetWindow.performance.timing;
+        if ('performance' in this.targetWindow) {
+            p = this.targetWindow.performance.timing;
             r = {
                 'unload': p.unloadEventEnd - p.unloadEventStart,
                 'redirect': p.redirectEnd - p.redirectStart,
@@ -189,7 +187,7 @@ export default class Utils {
                 'untilResponseComplete': (p.responseEnd - p.navigationStart < 0 || p.responseEnd - p.navigationStart > 3600000) ? null : p.responseEnd - p.navigationStart,
                 'untilDomComplete': (p.domContentLoadedEventStart - p.navigationStart < 0 || p.domContentLoadedEventStart - p.navigationStart > 3600000) ? null : p.domContentLoadedEventStart - p.navigationStart
             };
-            t = (targetWindow.performance || {}).navigation;
+            t = (this.targetWindow.performance || {}).navigation;
         }
         return {
             'performanceResult': r,
@@ -226,12 +224,12 @@ export default class Utils {
             tgr = {};
         }
 
-        const vph = targetWindow.innerHeight; //viewportHeight
-        const dch = targetWindow.document.documentElement.scrollHeight; //documentHeight
-        const div = targetWindow.document.visibilityState || 'unknown'; //documentIsVisible
-        const dvt = 'pageYOffset' in targetWindow ?
-            targetWindow.pageYOffset :
-            (targetWindow.document.documentElement || targetWindow.document.body.parentNode || targetWindow.document.body).scrollTop; //documentVisibleTop
+        const vph = this.targetWindow.innerHeight; //viewportHeight
+        const dch = this.targetWindow.document.documentElement.scrollHeight; //documentHeight
+        const div = this.targetWindow.document.visibilityState || 'unknown'; //documentIsVisible
+        const dvt = 'pageYOffset' in this.targetWindow ?
+            this.targetWindow.pageYOffset :
+            (this.targetWindow.document.documentElement || this.targetWindow.document.body.parentNode || this.targetWindow.document.body).scrollTop; //documentVisibleTop
         const dvb = dvt + vph; //documentVisibleBottom
         const tgh = tgr.height; //targetHeight
         const tmt = tgr.top <= 0 ? 0 : tgr.top; //targetMarginTop
@@ -385,8 +383,8 @@ export default class Utils {
             'context': {}
         }; //ingest
         let lyt = 'unknown'; //layout
-        if (targetWindow.orientation) {
-            lyt = ((Math.abs(targetWindow.orientation) === 90) ? 'landscape' : 'portrait');
+        if (this.targetWindow.orientation) {
+            lyt = ((Math.abs(this.targetWindow.orientation) === 90) ? 'landscape' : 'portrait');
         }
 
         for (let i in c) {
@@ -398,10 +396,10 @@ export default class Utils {
         const currentTime = new Date();
         igt.user.timezone = currentTime.getTimezoneOffset() / 60 * -1;
         igt.user.timestamp = currentTime.toISOString();
-        igt.user.viewport_height = targetWindow.innerHeight;
-        igt.user.viewport_width = targetWindow.innerWidth;
-        igt.user.screen_height = targetWindow.screen.height;
-        igt.user.screen_width = targetWindow.screen.width;
+        igt.user.viewport_height = this.targetWindow.innerHeight;
+        igt.user.viewport_width = this.targetWindow.innerWidth;
+        igt.user.screen_height = this.targetWindow.screen.height;
+        igt.user.screen_width = this.targetWindow.screen.width;
         igt.user.layout = lyt;
         return igt;
     }
@@ -435,7 +433,7 @@ export default class Utils {
 
     xhr(u, b, m, a) {
         let x = null;
-        if (targetWindow.XDomainRequest) {
+        if (this.targetWindow.XDomainRequest) {
             x = new XDomainRequest();
             x.ontimeout = function () {
             };
@@ -511,12 +509,12 @@ export default class Utils {
                 }
                 return true;
             } else {
-                if (('fetch' in targetWindow && typeof targetWindow.fetch === 'function')
-                    && ('AbortController' in targetWindow && typeof targetWindow.AbortController === 'function')) {
+                if (('fetch' in this.targetWindow && typeof this.targetWindow.fetch === 'function')
+                    && ('AbortController' in this.targetWindow && typeof this.targetWindow.AbortController === 'function')) {
                     const controller = new AbortController();
                     const signal = controller.signal;
                     setTimeout(() => controller.abort(), atlasBeaconTimeout);
-                    targetWindow.fetch(u, {signal, method: 'POST', cache: 'no-store', keepalive: true, body: b});
+                    this.targetWindow.fetch(u, {signal, method: 'POST', cache: 'no-store', keepalive: true, body: b});
                 } else {
                     this.xhr(u, b, m, a);
                 }
