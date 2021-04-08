@@ -240,7 +240,6 @@ export default class AtlasTracking {
         }
         if ((options.exchangeAtlasId && options.exchangeAtlasId.pass) || (options.trackClick && options.trackClick.enable) || (options.trackLink && options.trackLink.enable) || (options.trackDownload && options.trackDownload.enable)) {
             this.delegateClickEvents({
-                'passAtlasId': options.exchangeAtlasId,
                 'trackClick': options.trackClick,
                 'trackLink': options.trackLink,
                 'trackDownload': options.trackDownload
@@ -437,6 +436,8 @@ export default class AtlasTracking {
                 elm = linkElement.element;
                 ext = (elm.pathname || '').match(/.+\/.+?\.([a-z]+([?#;].*)?$)/);
 
+
+
                 // Outbound
                 if (obj.trackLink && obj.trackLink.enable && elm.hostname && targetWindow.location.hostname !== elm.hostname && obj.trackLink.internalDomains.indexOf(elm.hostname) < 0) {
                     this.utils.transmit('open', 'outbound_link', mandatories, user, context, {
@@ -463,11 +464,6 @@ export default class AtlasTracking {
                             'name': obj.trackLink.nameAttribute ? elm.getAttribute(obj.trackDownload.nameAttribute) : undefined
                         }
                     }, options.useGet, debug);
-                }
-
-                // Passing Atlas ID
-                if (obj.passAtlasId && obj.passAtlasId.pass && elm.hostname && targetWindow.location.hostname !== elm.hostname && obj.passAtlasId.passTargetDomains.indexOf(elm.hostname) >= 0) {
-                    elm.href = this.utils.buildLink(elm.href, obj.passAtlasId.passParamKey);
                 }
             }
 

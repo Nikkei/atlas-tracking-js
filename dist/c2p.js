@@ -25,15 +25,6 @@
                 'productName': 'CHANGE_ME'
             },
             'options': {
-                'useGet': true,
-                'exchangeAtlasId': {
-                    'pass': false,
-                    'passParamKey': 'atlas_id',
-                    'passTargetDomains': [],
-                    'catch': false,
-                    'catchParamKey': 'atlas_id',
-                    'catchTargetDomains': [],
-                },
                 'trackClick': {
                     'enable': true,
                     'targetAttribute': 'data-atlas-trackable',
