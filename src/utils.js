@@ -126,7 +126,7 @@ export default class Utils {
             r = this.targetWindow.localStorage[k];
         } catch (e) {
             r = '';
-            console.log('failed to access LocalStorage');
+            //console.log('failed to access LocalStorage');
         }
         return r;
     }
@@ -135,7 +135,7 @@ export default class Utils {
         try {
             this.targetWindow.localStorage.setItem(k, v);
         } catch (e) {
-            console.log('failed to access LocalStorage');
+            //console.log('failed to access LocalStorage');
         }
     }
 
@@ -143,7 +143,7 @@ export default class Utils {
         try {
             this.targetWindow.localStorage.removeItem(k);
         } catch (e) {
-            console.log('failed to access LocalStorage');
+            //console.log('failed to access LocalStorage');
         }
     }
 
@@ -457,7 +457,7 @@ export default class Utils {
         try{
             x.send();
         }catch(e){
-            console.log('failed XHR');
+            //console.log('failed XHR');
         }
     }
 
@@ -493,7 +493,7 @@ export default class Utils {
                 try{
                     this.targetWindow.fetch(u, {signal, method: 'GET', cache: 'no-store', keepalive: true});
                 }catch(e){
-                    console.log('failed Fetch');
+                    //console.log('failed Fetch');
                 }
             } else {
                 this.xhr(u, a);
