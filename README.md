@@ -78,33 +78,6 @@ npm install
 - Also, c2p.js is able to have some custom codes to retrieve and/or prepare data.
 - If your web site is SPA (Single Page Application), you can call `initPage()` and `trackPage()` each times when screen has been changed. (no need to re-initialize ATJ itself)
 
-### Debugging
-
-#### Standard Check
-The debug method is not special and is similar to other web analytics tool. If you see beacons without script error, ATJ may be working properly.
-
-1. Open the web browser's "developer console" or "developer tools"
-2. Switch the tab to "Console" and search any script errors related to ATJ. If there is nothing, it's OK.
-3. Move to "Resources" or "Network" tab, and filter the result by entering a keyword as `ATJ-`. If you see records having your endpoint location, ATJ is sending beacons.
-
-#### ATJ Built-In Debugging Feature
-You can recognize values transmitted to the endpoint by ATJ, and can identify the timing that data has been sent.
-
-1. Open the web browser's "developer console" or "developer tools"
-2. Go to the "Console" tab, and then execute `document.cookie='atlasOutputLog=true;path=/';`
-3. Reload the page, and you will see console logs containing a massive map object.
-4. Click the toggle icon near the log, you can check each values which ATJ is sending to the endpoint.
-
-- The debug feature uses a session Cookie. If you want to disable this, remove a cookie named `atlasOutputLog`.
-
-#### Testing ATJ on your production web site with Adobe DTM
-This is not ATJ's feature but Adobe DTM's.
-
-1. At the first, ATJ must be deployed through Adobe DTM.
-2. Run `localStorage.setItem('sdsat_stagingLibrary',true)` in browser's console. When the browser has this flag, DTM will load the staging tags.
-3. Reload the page and you can test the tags saved as "Staging" in DTM, only on your browser.
-4. Also, `_satellite.setDebug(true)` will helps you to find every events occurring on the page.
-
 ### Opt-out for Privacy
 ATJ has a built-in method to add "opt-out from tracking" feature in your service. This is strongly recommended at any cases from the privacy perspective. It's necessary to consider the opt-out feature if your service is used from countries which is applied GDPR.
 
