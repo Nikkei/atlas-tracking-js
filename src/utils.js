@@ -126,6 +126,7 @@ export default class Utils {
             r = this.targetWindow.localStorage[k];
         } catch (e) {
             r = '';
+            console.log('failed to access LocalStorage');
         }
         return r;
     }
@@ -134,6 +135,7 @@ export default class Utils {
         try {
             this.targetWindow.localStorage.setItem(k, v);
         } catch (e) {
+            console.log('failed to access LocalStorage');
         }
     }
 
@@ -141,6 +143,7 @@ export default class Utils {
         try {
             this.targetWindow.localStorage.removeItem(k);
         } catch (e) {
+            console.log('failed to access LocalStorage');
         }
     }
 
@@ -431,7 +434,7 @@ export default class Utils {
         return r;
     }
 
-    xhr(u, b, m, a) {
+    xhr(u, a) {
         let x = null;
         if (this.targetWindow.XDomainRequest) {
             x = new XDomainRequest();
@@ -445,81 +448,60 @@ export default class Utils {
             x = new XMLHttpRequest();
         }
 
-        x.open(m, u, a);
+        x.open('GET', u, a);
         if (a === true) {
             x.timeout = atlasBeaconTimeout;
         }
         x.withCredentials = true;
 
-        if (m === 'GET') {
+        try{
             x.send();
-        } else {
-            x.send(b);
+        }catch(e){
+            console.log('failed XHR');
         }
-
     }
 
-    transmit(ac, ca, md, ur, ct, sp, ug, dg) {
-        const protocol = (document.location && document.location.protocol === 'http:') ? 'http:' : 'https:'; //protocol
+    transmit(ac, ca, md, ur, ct, sp) {
         const now = Date.now();
-        const sync = (dg && dg.syncMode) ? '&sync=true' : '';
-        const m = ug ? 'GET' : 'POST'; //method
         const a = (!(ac === 'unload' && ca === 'page')); //async
-        const o = (this.getLS('atlasOptout') === 'true') ? true : false;
         let f = 1; //fpcStatus
         if (this.getC(atlasCookieName) !== atlasId) {
             f = 0;
         }
 
-        let u = `${protocol}//${atlasEndpoint}/${SDK_NAME}-${SDK_VERSION}/${now}/${encodeURIComponent(atlasId)}/${f}`
-            + `/ingest?k=${atlasApiKey}${sync}&a=${ac}&c=${ca}`
+        let b = JSON.stringify(this.buildIngest(ur, ct, sp));
+        let u = `https://${atlasEndpoint}/${SDK_NAME}-${SDK_VERSION}/${now}/${encodeURIComponent(atlasId)}/${f}`
+            + `/ingest?k=${atlasApiKey}&a=${ac}&c=${ca}`
             + `&g=${encodeURIComponent(md.url)}&r=${encodeURIComponent(md.referrer)}`
             + `&i=${encodeURIComponent(md.content_id)}&u=${encodeURIComponent(md.user_id)}`
-            + '&aqe=%'; //endpointUrl
+            + '&aqe=%'
+            + `&d=${this.compress(encodeURIComponent(b))}`; //endpointUrl
 
-        let b = JSON.stringify(this.buildIngest(ur, ct, sp));
-        let eb = null; //encodedPayload
-
-        if (dg && dg.outputLog) {
-            let logObj = JSON.parse(b);
-            logObj.action = ac;
-            logObj.category = ca;
-            logObj.context.url = md.url;
-            logObj.context.referrer = md.referrer;
-            logObj.context.content_id = md.content_id;
-            logObj.user.user_id = md.user_id;
-            console.dir(logObj);
-        }
-
-        if (ug) {
-            eb = this.compress(encodeURIComponent(b));
-            b = null;
-            u = `${u}&d=${eb}`;
-        }
-
-        if (!o) {
-            if ('sendBeacon' in navigator && sendBeaconStatus === true) {
-                try {
-                    sendBeaconStatus = navigator.sendBeacon(u, b);
-                } catch (e) {
-                    sendBeaconStatus = false;
-                }
-                if (!sendBeaconStatus) {
-                    this.xhr(u, b, m, a);
-                }
-                return true;
-            } else {
-                if (('fetch' in this.targetWindow && typeof this.targetWindow.fetch === 'function')
-                    && ('AbortController' in this.targetWindow && typeof this.targetWindow.AbortController === 'function')) {
-                    const controller = new AbortController();
-                    const signal = controller.signal;
-                    setTimeout(() => controller.abort(), atlasBeaconTimeout);
-                    this.targetWindow.fetch(u, {signal, method: 'POST', cache: 'no-store', keepalive: true, body: b});
-                } else {
-                    this.xhr(u, b, m, a);
-                }
-                return true;
+        if ('sendBeacon' in navigator && sendBeaconStatus === true) {
+            try {
+                sendBeaconStatus = navigator.sendBeacon(u, null);
+            } catch (e) {
+                sendBeaconStatus = false;
             }
+            if (!sendBeaconStatus) {
+                this.xhr(u, a);
+            }
+            return true;
+        } else {
+            if (('fetch' in this.targetWindow && typeof this.targetWindow.fetch === 'function')
+                && ('AbortController' in this.targetWindow && typeof this.targetWindow.AbortController === 'function')) {
+                const controller = new AbortController();
+                const signal = controller.signal;
+                setTimeout(() => controller.abort(), atlasBeaconTimeout);
+                try{
+                    this.targetWindow.fetch(u, {signal, method: 'GET', cache: 'no-store', keepalive: true});
+                }catch(e){
+                    console.log('failed Fetch');
+                }
+            } else {
+                this.xhr(u, a);
+            }
+            return true;
         }
     }
 }

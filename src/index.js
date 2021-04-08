@@ -2,8 +2,6 @@
 
 import Utils from './utils.js';
 
-
-let debug = {};
 let system = {};
 let options = {};
 let user = {};
@@ -151,13 +149,8 @@ export default class AtlasTracking {
             }, 250);
         })();
 
-        debug = obj.debug !== void 0 ? obj.debug : {};
         options = obj.options !== void 0 ? obj.options : {};
         this.utils.initSystem(system);
-        if (this.utils.getC('atlasOutputLog') === 'true' || (debug && debug.outputLog)) {
-            debug.outputLog = true;
-            console.log('ATJ configured');
-        }
     }
 
     /**
@@ -212,32 +205,9 @@ export default class AtlasTracking {
     }
 
     /**
-     * toggle optout.
-     * if optout is enabled, tracking is disabled.
-     * @param  {string} s whether optout is enabled or not. ('enable'|'disable')
-     */
-    optout(s) {
-        let c = this.utils.getLS('atlasOptout');
-        if (s === 'enable') {
-            this.utils.setLS('atlasOptout', true);
-        } else if (s === 'disable') {
-            this.utils.delLS('atlasOptout');
-        } else {
-            if (c === 'true') {
-                console.log('enabled');
-            } else {
-                console.log('disabled');
-            }
-        }
-    }
-
-    /**
      * re-attach event listeners to DOMs.
      */
     initEventListeners() {
-        if (debug && debug.outputLog) {
-            console.log('ATJ initialized EventListeners');
-        }
         if ((options.exchangeAtlasId && options.exchangeAtlasId.pass) || (options.trackClick && options.trackClick.enable) || (options.trackLink && options.trackLink.enable) || (options.trackDownload && options.trackDownload.enable)) {
             this.delegateClickEvents({
                 'trackClick': options.trackClick,
@@ -335,10 +305,6 @@ export default class AtlasTracking {
             context.navigation_type = performanceInfo.navigationType || {};
         }
 
-        if (debug && debug.outputLog) {
-            console.log('ATJ initialized Page');
-        }
-
         this.initEventListeners();
     }
 
@@ -346,9 +312,6 @@ export default class AtlasTracking {
      * remove tracking options and handlers
      */
     disableTracking() {
-        if (debug && debug.outputLog) {
-            console.log('ATJ removed EventListeners and tracking options');
-        }
         if ((options.exchangeAtlasId && options.exchangeAtlasId.pass) || (options.trackClick && options.trackClick.enable) || (options.trackLink && options.trackLink.enable) || (options.trackDownload && options.trackDownload.enable)) {
             this.eventHandler.remove(eventHandlerKeys['click']);
         }
@@ -390,7 +353,7 @@ export default class AtlasTracking {
      * track page view.
      */
     trackPage() {
-        this.utils.transmit('view', 'page', mandatories, user, context, supplement, options.useGet, debug);
+        this.utils.transmit('view', 'page', mandatories, user, context, supplement);
     }
 
     /**
@@ -415,7 +378,7 @@ export default class AtlasTracking {
                 'content_name': obj.content_name || undefined,
                 'custom_vars': obj.custom_vars || {}
             }
-        }, options.useGet, debug);
+        });
         context.events = null;
         prevActionOccurredAt = now;
     }
@@ -449,7 +412,7 @@ export default class AtlasTracking {
                             'type': elm.type || undefined,
                             'name': obj.trackLink.nameAttribute ? elm.getAttribute(obj.trackLink.nameAttribute) : undefined
                         }
-                    }, options.useGet, debug);
+                    });
                 }
 
                 // Download
@@ -463,7 +426,7 @@ export default class AtlasTracking {
                             'type': elm.type || undefined,
                             'name': obj.trackLink.nameAttribute ? elm.getAttribute(obj.trackDownload.nameAttribute) : undefined
                         }
-                    }, options.useGet, debug);
+                    });
                 }
             }
 
@@ -481,7 +444,7 @@ export default class AtlasTracking {
                         'target': elm.target || undefined,
                         'dataset': elm.dataset || undefined
                     }
-                }, options.useGet, debug);
+                });
             }
         }, false);
     }
@@ -497,7 +460,7 @@ export default class AtlasTracking {
                     'name': 'leave_from_page',
                     'elapsed_since_page_load': ((Date.now()) - pageLoadedAt) / 1000
                 }
-            }, options.useGet, debug);
+            });
         }, false);
     }
 
@@ -530,7 +493,7 @@ export default class AtlasTracking {
                                     'elapsed_since_page_load': (now - pageLoadedAt) / 1000,
                                     'elapsed_since_prev_action': (now - prev) / 1000
                                 }
-                            }, options.useGet, debug);
+                            });
                             pvr = cvr;
                         }
                         prev = now;
@@ -567,7 +530,7 @@ export default class AtlasTracking {
                                     'elapsed_since_page_load': (now - pageLoadedAt) / 1000,
                                     'elapsed_since_prev_action': (now - prev) / 1000
                                 }
-                            }, options.useGet, debug);
+                            });
                             pvp = cvp + step;
                         }
                         prev = now;
@@ -623,7 +586,7 @@ export default class AtlasTracking {
                             'elapsed_since_page_load': (now - pageLoadedAt) / 1000,
                             'elapsed_since_prev_action': (now - prev) / 1000
                         }
-                    }, options.useGet, debug);
+                    });
                     pm = cm;
                     cm = null;
                 }
@@ -642,7 +605,7 @@ export default class AtlasTracking {
                                     'elapsed_since_page_load': (now - pageLoadedAt) / 1000,
                                     'elapsed_since_prev_action': (now - prev) / 1000
                                 }
-                            }, options.useGet, debug);
+                            });
                             pvr = cvr;
                         }
                     }, 1000);
@@ -678,7 +641,7 @@ export default class AtlasTracking {
                                         'element_height': r[i].detail.targetHeight,
                                         'elapsed_since_page_load': (now - pageLoadedAt) / 1000
                                     }
-                                }, options.useGet, debug);
+                                });
                             }
                         }, 1000);
                     }
@@ -700,7 +663,7 @@ export default class AtlasTracking {
                     const details = this.utils.getM(ev.target);
                     this.utils.transmit(targetEvents[i], details.tag, mandatories, user, context, {
                         'media': details
-                    }, options.useGet, debug);
+                    });
                 }
             }, {capture: true});
         }
@@ -717,7 +680,7 @@ export default class AtlasTracking {
                     if (ev.target.paused !== true && ev.target.ended !== true) {
                         this.utils.transmit('playing', details.tag, mandatories, user, context, {
                             'media': details
-                        }, options.useGet, debug);
+                        });
                     }
                     f[index] = false;
                 }, heartbeat * 1000);
@@ -745,7 +708,7 @@ export default class AtlasTracking {
         eventHandlerKeys['unload'] = this.eventHandler.add(targetWindow, unloadEvent, () => {
             this.utils.transmit('track', 'form', mandatories, user, context, {
                 'form': f
-            }, options.useGet, debug);
+            });
         }, false);
     }
 }
