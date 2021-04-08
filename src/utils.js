@@ -461,7 +461,7 @@ export default class Utils {
         }
     }
 
-    transmit(ac, ca, md, ur, ct, sp) {
+    transmit(ac, ca, ur, ct, sp) {
         const now = Date.now();
         const a = (!(ac === 'unload' && ca === 'page')); //async
         let f = 1; //fpcStatus
@@ -471,10 +471,7 @@ export default class Utils {
 
         let b = JSON.stringify(this.buildIngest(ur, ct, sp));
         let u = `https://${atlasEndpoint}/${SDK_NAME}-${SDK_VERSION}/${now}/${encodeURIComponent(atlasId)}/${f}`
-            + `/ingest?k=${atlasApiKey}&a=${ac}&c=${ca}`
-            + `&g=${encodeURIComponent(md.url)}&r=${encodeURIComponent(md.referrer)}`
-            + `&i=${encodeURIComponent(md.content_id)}&u=${encodeURIComponent(md.user_id)}`
-            + '&aqe=%'
+            + `/ingest?k=${atlasApiKey}&a=${ac}&c=${ca}&aqe=%`
             + `&d=${this.compress(encodeURIComponent(b))}`; //endpointUrl
 
         if ('sendBeacon' in navigator && sendBeaconStatus === true) {
