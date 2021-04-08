@@ -395,7 +395,6 @@ export default class AtlasTracking {
                     'target': elm.target || undefined,
                     'media': elm.media || undefined,
                     'type': elm.type || undefined,
-                    'location': targetElement.pathDom,
                     'tag': elm.tagName.toLowerCase(),
                     'id': elm.id || undefined,
                     'class': elm.className || undefined,
@@ -409,6 +408,7 @@ export default class AtlasTracking {
                         'link': Object.assign(
                             attr,
                             {
+                                'location': targetElement.pathDom,
                                 'name': obj.trackLink.nameAttribute ? elm.getAttribute(obj.trackLink.nameAttribute) : undefined
                             }
                         )
@@ -421,6 +421,7 @@ export default class AtlasTracking {
                         'download': Object.assign(
                             attr,
                             {
+                                'location': targetElement.pathDom,
                                 'name': obj.trackLink.nameAttribute ? elm.getAttribute(obj.trackDownload.nameAttribute) : undefined
                             }
                         )
@@ -434,6 +435,7 @@ export default class AtlasTracking {
                             'action': Object.assign(
                                 attr,
                                 {
+                                    'location': targetElement.pathDom,
                                     'name': undefined
                                 }
                             )
