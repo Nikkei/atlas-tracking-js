@@ -207,7 +207,7 @@ export default class AtlasTracking {
      * re-attach event listeners to DOMs.
      */
     initEventListeners() {
-        if ((options.exchangeAtlasId && options.exchangeAtlasId.pass) || (options.trackClick && options.trackClick.enable) || (options.trackLink && options.trackLink.enable) || (options.trackDownload && options.trackDownload.enable)) {
+        if ((options.trackClick && options.trackClick.enable) || (options.trackLink && options.trackLink.enable) || (options.trackDownload && options.trackDownload.enable)) {
             this.delegateClickEvents({
                 'trackClick': options.trackClick,
                 'trackLink': options.trackLink,
@@ -305,7 +305,7 @@ export default class AtlasTracking {
      * remove tracking options and handlers
      */
     disableTracking() {
-        if ((options.exchangeAtlasId && options.exchangeAtlasId.pass) || (options.trackClick && options.trackClick.enable) || (options.trackLink && options.trackLink.enable) || (options.trackDownload && options.trackDownload.enable)) {
+        if ((options.trackClick && options.trackClick.enable) || (options.trackLink && options.trackLink.enable) || (options.trackDownload && options.trackDownload.enable)) {
             this.eventHandler.remove(eventHandlerKeys['click']);
         }
         if (options.trackUnload && options.trackUnload.enable) {
