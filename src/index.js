@@ -383,61 +383,75 @@ export default class AtlasTracking {
         this.eventHandler.remove(eventHandlerKeys['click']);
         eventHandlerKeys['click'] = this.eventHandler.add(targetWindow.document.body, 'click', (ev) => {
             const targetAttribute = obj.trackClick && obj.trackClick.targetAttribute ? obj.trackClick.targetAttribute : false;
-            const linkElement = this.utils.qsM('a', ev.target);
-            const trackableElement = this.utils.qsM('a, button, [role="button"]', ev.target, targetAttribute);
-            let elm = null;
-            let ext = null;
+            const targetElement = this.utils.qsM('a, button, [role="button"]', ev.target, targetAttribute);
 
-            if (linkElement) {
-                elm = linkElement.element;
-                ext = (elm.pathname || '').match(/.+\/.+?\.([a-z]+([?#;].*)?$)/);
+            if(targetElement){
 
-
+                let elm = targetElement.element;
+                let ext = (elm.pathname || '').match(/.+\/.+?\.([a-z]+([?#;].*)?$)/);
+                let attr = {
+                    'destination': elm.href || undefined,
+                    'dataset': elm.dataset || undefined,
+                    'target': elm.target || undefined,
+                    'media': elm.media || undefined,
+                    'type': elm.type || undefined,
+                    'location': targetElement.pathDom,
+                    'tag': elm.tagName.toLowerCase(),
+                    'id': elm.id || undefined,
+                    'class': elm.className || undefined,
+                    'text': (elm.innerText || elm.value || '').substr(0,63) || undefined,
+                    'elapsed_since_page_load': ((Date.now()) - pageLoadedAt) / 1000
+                };
 
                 // Outbound
                 if (obj.trackLink && obj.trackLink.enable && elm.hostname && targetWindow.location.hostname !== elm.hostname && obj.trackLink.internalDomains.indexOf(elm.hostname) < 0) {
                     this.utils.transmit('open', 'outbound_link', user, context, {
-                        'link': {
-                            'destination': elm.href || undefined,
-                            'dataset': elm.dataset || undefined,
-                            'target': elm.target || undefined,
-                            'media': elm.media || undefined,
-                            'type': elm.type || undefined,
-                            'name': obj.trackLink.nameAttribute ? elm.getAttribute(obj.trackLink.nameAttribute) : undefined
-                        }
+                        'link': Object.assign(
+                            attr,
+                            {
+                                'name': obj.trackLink.nameAttribute ? elm.getAttribute(obj.trackLink.nameAttribute) : undefined
+                            }
+                        )
                     });
                 }
 
                 // Download
                 if (obj.trackDownload && obj.trackDownload.enable && elm.hostname && ext && obj.trackDownload.fileExtensions.indexOf(ext[1]) >= 0) {
                     this.utils.transmit('download', 'file', user, context, {
-                        'download': {
-                            'destination': elm.href || undefined,
-                            'dataset': elm.dataset || undefined,
-                            'target': elm.target || undefined,
-                            'media': elm.media || undefined,
-                            'type': elm.type || undefined,
-                            'name': obj.trackLink.nameAttribute ? elm.getAttribute(obj.trackDownload.nameAttribute) : undefined
-                        }
+                        'download': Object.assign(
+                            attr,
+                            {
+                                'name': obj.trackLink.nameAttribute ? elm.getAttribute(obj.trackDownload.nameAttribute) : undefined
+                            }
+                        )
                     });
                 }
-            }
 
-            if (trackableElement && obj.trackClick.enable) {
-                elm = trackableElement.element;
-                this.utils.transmit('click', trackableElement.category, user, context, {
-                    'action': {
-                        'name': elm.getAttribute(targetAttribute),
-                        'location': trackableElement.path,
-                        'destination': elm.href || undefined,
-                        'tag': elm.tagName.toLowerCase(),
-                        'id': elm.id || undefined,
-                        'class': elm.className || undefined,
-                        'text': (elm.innerText || elm.value || '').substr(0,63) || undefined,
-                        'target': elm.target || undefined,
-                        'dataset': elm.dataset || undefined
+                // Click
+                if (targetElement && obj.trackClick.enable) {
+                    if(!obj.trackClick.targetAttribute){
+                        this.utils.transmit('click', targetElement.category, user, context, {
+                            'action': Object.assign(
+                                attr,
+                                {
+                                    'name': undefined
+                                }
+                            )
+                        });
+                    }else{
+                        if(targetElement.pathTrackable.length > 0){
+                            this.utils.transmit('click', targetElement.category, user, context, {
+                                'action': Object.assign(
+                                    attr,
+                                    {
+                                        'location': targetElement.pathTrackable,
+                                        'name': undefined
+                                    }
+                                )
+                            });
+                        }
                     }
-                });
+                }
             }
         }, false);
     }

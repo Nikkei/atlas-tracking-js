@@ -47,7 +47,8 @@ export default class Utils {
     qsM(s, t, d = false) {
         let e = null; // Trackable Element
         let c = 'button';
-        let p = []; // Path
+        let pt = []; // Path of data-trackable
+        let pd = []; // Path of elements
         if (t.nodeType === 3) {
             t = t.parentNode;
         }
@@ -60,22 +61,22 @@ export default class Utils {
                 }
             ).bind(t);
 
+            let elm = t.tagName.toLowerCase();
+            if (elm !== 'html' && elm !== 'body') {
+                if (t.id) {
+                    elm += `#${t.id}`;
+                }
+                if (t.className) {
+                    elm += `.${t.className}`;
+                }
+                pd.unshift(elm);
+            }
+
             if (d) {
                 if (t.hasAttribute(d)) {
-                    p.unshift(t.getAttribute(d));
+                    pt.unshift(t.getAttribute(d));
                 }
-            } else {
-                let elm = t.tagName.toLowerCase();
-                if (elm !== 'html' && elm !== 'body') {
-                    if (t.id) {
-                        elm += `#${t.id}`;
-                    }
-                    if (t.className) {
-                        elm += `.${t.className}`;
-                    }
-                    p.unshift(elm);
-                }
-            }
+            } 
 
             if (!e && matches(s)) {
                 if (t.tagName.toLowerCase() === 'a') {
@@ -88,15 +89,14 @@ export default class Utils {
 
             t = t.parentNode;
         }
-        if (e && p.length > 0) {
-            return {
-                'element': e,
-                'category': c,
-                'path': p.join('>')
-            };
-        } else {
-            return false;
-        }
+
+        return {
+            'element': e,
+            'category': c,
+            'pathTrackable': pt.join('>'),
+            'pathDom': pd.join('>')
+        };
+
     }
 
     getC(k) {
