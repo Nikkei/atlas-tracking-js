@@ -243,6 +243,9 @@ export default class AtlasTracking {
             };
             targetWindow.addEventListener('DOMContentLoaded', atlasDOMContentLoadedHandler, false);
         }
+        if (options.trackThroughMessage && options.trackThroughMessage.enable) {
+            this.trackThroughMessage();
+        }
     }
 
     /**
@@ -718,6 +721,26 @@ export default class AtlasTracking {
             this.utils.transmit('track', 'form', user, context, {
                 'form': f
             });
+        }, false);
+    }
+
+    trackThroughMessage() {
+        this.eventHandler.remove(eventHandlerKeys['message']);
+        eventHandlerKeys['message'] = this.eventHandler.add(targetWindow, 'message', (msg) => {
+            let attributes = {};
+            try{
+                attributes = JSON.parse(msg.data.attributes);
+            }catch(e){
+            }
+            if(msg && msg.data && msg.data.isAtlasEvent){
+                this.utils.transmit(
+                    msg.data.action,
+                    msg.data.category,
+                    user,
+                    context,
+                    attributes
+                );
+            }
         }, false);
     }
 }

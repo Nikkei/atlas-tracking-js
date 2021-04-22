@@ -76,6 +76,9 @@
                 },
                 'trackUnload': {
                     'enable': true,
+                },
+                'trackThroughMessage': {
+                    'enable': true,
                 }
             }
         });
