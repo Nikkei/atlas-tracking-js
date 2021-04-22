@@ -48,7 +48,7 @@ videojs.registerPlugin('atlasTracking', function(options){
     });
 
     this.on('timeupdate', function(ev) {
-        var index = ev.target.tag + '-' + ev.target.id + '-' + ev.target.src;
+        var index = ev.target.player.currentSrc();
         if (meters[index]) {
             return false;
         }
