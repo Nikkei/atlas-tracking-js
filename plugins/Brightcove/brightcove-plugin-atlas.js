@@ -1,60 +1,60 @@
 videojs.registerPlugin('atlasTracking', function(options){
 
-    function getM(t) {
-        if (t && t.player) {
+    function getM(player) {
+        if (player) {
             return {
                 'media': {
-                    'name': t.player.mediainfo.name,
-                    'is_fullscreen': t.player.isFullscreen(), // new
-                    'src': t.player.currentSrc() || 'na',
-                    'id': t.player.id() || 'na',
-                    'autoplay': t.player.autoplay() || false,
-                    'muted': t.player.muted() || false,
-                    'type': t.player.currentType() || undefined,
-                    'width': t.player.videoWidth() || undefined,
-                    'height': t.player.videoHeight() || undefined,
-                    'duration': t.player.duration(),
-                    'current_time': Math.round(t.player.currentTime() * 10) / 10,
-                    'played_percent': Math.round(t.player.currentTime() / t.player.duration() * 100),
-                    'tag': t.nodeName.toLowerCase() || 'na',
-                    'dataset': t.dataset
+                    'name': player.mediainfo.name,
+                    'is_fullscreen': player.isFullscreen(),
+                    'src': player.currentSrc() || 'na',
+                    'id': player.id() || 'na',
+                    'autoplay': player.autoplay() || false,
+                    'muted': player.muted() || false,
+                    'type': player.currentType() || undefined,
+                    'width': player.videoWidth() || undefined,
+                    'height': player.videoHeight() || undefined,
+                    'duration': player.duration(),
+                    'current_time': Math.round(player.currentTime() * 10) / 10,
+                    'played_percent': Math.round(player.currentTime() / player.duration() * 100),
+                    'tag': 'video-js',
+                    'dataset': player.tagAttributes
                 }
             };
         }
     }
 
-    function sendMessage(action, target) {
+    function atlasTrackEvent(action, event) {
         window.top.postMessage({
             isAtlasEvent: true,
             action: action,
             category: 'video',
-            attributes: JSON.stringify(getM(target))
+            attributes: JSON.stringify(getM(event.target.player))
         }, "*");
     }
 
     var heartbeat = (options && options['heartbeat']) ? options['heartbeat'] : 5;
     var meters = {};
 
-    this.on('play', function(ev) {
-        sendMessage('play', ev.target);
+    this.on('play', function(event) {
+        atlasTrackEvent('play', event);
     });
 
-    this.on('pause', function(ev) {
-        sendMessage('pause', ev.target);
+    this.on('pause', function(event) {
+        atlasTrackEvent('pause', event);
     });
 
-    this.on('ended', function(ev) {
-        sendMessage('end', ev.target);
+    this.on('ended', function(event) {
+        atlasTrackEvent('end', event);
     });
 
-    this.on('timeupdate', function(ev) {
-        var index = ev.target.player.currentSrc();
+    this.on('timeupdate', function(event) {
+        var index = event.target.player.currentSrc();
         if (meters[index]) {
             return false;
         }
         meters[index] = setTimeout(() => {
-            if (ev.target.paused !== true && ev.target.ended !== true) {
-                sendMessage('playing', ev.target);
+            if (event.target.paused !== true && event.target.ended !== true) {
+                atlasTrackEvent('playing', event);
             }
             meters[index] = false;
         }, heartbeat * 1000);
