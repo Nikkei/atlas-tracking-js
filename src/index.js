@@ -2,13 +2,10 @@
 
 import Utils from './utils.js';
 
-
-let debug = {};
 let system = {};
 let options = {};
 let user = {};
 let context = {};
-let mandatories = {};
 let dataSrc = {};
 let defaults = {};
 let supplement = {};
@@ -151,13 +148,8 @@ export default class AtlasTracking {
             }, 250);
         })();
 
-        debug = obj.debug !== void 0 ? obj.debug : {};
         options = obj.options !== void 0 ? obj.options : {};
         this.utils.initSystem(system);
-        if (this.utils.getC('atlasOutputLog') === 'true' || (debug && debug.outputLog)) {
-            debug.outputLog = true;
-            console.log('ATJ configured');
-        }
     }
 
     /**
@@ -212,35 +204,11 @@ export default class AtlasTracking {
     }
 
     /**
-     * toggle optout.
-     * if optout is enabled, tracking is disabled.
-     * @param  {string} s whether optout is enabled or not. ('enable'|'disable')
-     */
-    optout(s) {
-        let c = this.utils.getLS('atlasOptout');
-        if (s === 'enable') {
-            this.utils.setLS('atlasOptout', true);
-        } else if (s === 'disable') {
-            this.utils.delLS('atlasOptout');
-        } else {
-            if (c === 'true') {
-                console.log('enabled');
-            } else {
-                console.log('disabled');
-            }
-        }
-    }
-
-    /**
      * re-attach event listeners to DOMs.
      */
     initEventListeners() {
-        if (debug && debug.outputLog) {
-            console.log('ATJ initialized EventListeners');
-        }
-        if ((options.exchangeAtlasId && options.exchangeAtlasId.pass) || (options.trackClick && options.trackClick.enable) || (options.trackLink && options.trackLink.enable) || (options.trackDownload && options.trackDownload.enable)) {
+        if ((options.trackClick && options.trackClick.enable) || (options.trackLink && options.trackLink.enable) || (options.trackDownload && options.trackDownload.enable)) {
             this.delegateClickEvents({
-                'passAtlasId': options.exchangeAtlasId,
                 'trackClick': options.trackClick,
                 'trackLink': options.trackLink,
                 'trackDownload': options.trackDownload
@@ -275,6 +243,9 @@ export default class AtlasTracking {
             };
             targetWindow.addEventListener('DOMContentLoaded', atlasDOMContentLoadedHandler, false);
         }
+        if (options.trackThroughMessage && options.trackThroughMessage.enable) {
+            this.trackThroughMessage();
+        }
     }
 
     /**
@@ -282,18 +253,9 @@ export default class AtlasTracking {
      * @param  {Object} obj initialization config object.
      */
     initPage(obj) {
-
-
-        if (obj.context !== void 0 && obj.user !== void 0) {
-            mandatories = {
-                'url': obj.context.url !== void 0 ? obj.context.url : defaults.url,
-                'referrer': obj.context.referrer !== void 0 ? obj.context.referrer : defaults.referrer,
-                'content_id': obj.context.content_id || '',
-                'user_id': obj.user.user_id || ''
-            };
-        }
         if (obj.user !== void 0) {
             user = {
+                'user_id': obj.user.user_id || undefined,
                 'user_status': obj.user.user_status || undefined,
                 'site_session': obj.user.site_session || undefined,
                 'external_ids': {},
@@ -304,6 +266,8 @@ export default class AtlasTracking {
         if (obj.context !== void 0) {
             context = {
                 'root_id': this.utils.generateRootId(),
+                'url': obj.context.url !== void 0 ? obj.context.url : defaults.url,
+                'referrer': obj.context.referrer !== void 0 ? obj.context.referrer : defaults.referrer,
                 'product_family': obj.context.product_family !== void 0 ? obj.context.product_family : defaults.product_family,
                 'product': obj.context.product || defaults.product,
                 'app': obj.context.app || undefined,
@@ -311,6 +275,7 @@ export default class AtlasTracking {
                 'page_title': obj.context.page_title || defaults.page_title,
                 'source': obj.context.source || undefined,
                 'edition': obj.context.edition || undefined,
+                'content_id': obj.context.content_id || undefined,
                 'content_name': obj.context.content_name || undefined,
                 'content_status': obj.context.content_status || undefined,
                 'page_name': obj.context.page_name || undefined,
@@ -336,10 +301,6 @@ export default class AtlasTracking {
             context.navigation_type = performanceInfo.navigationType || {};
         }
 
-        if (debug && debug.outputLog) {
-            console.log('ATJ initialized Page');
-        }
-
         this.initEventListeners();
     }
 
@@ -347,10 +308,7 @@ export default class AtlasTracking {
      * remove tracking options and handlers
      */
     disableTracking() {
-        if (debug && debug.outputLog) {
-            console.log('ATJ removed EventListeners and tracking options');
-        }
-        if ((options.exchangeAtlasId && options.exchangeAtlasId.pass) || (options.trackClick && options.trackClick.enable) || (options.trackLink && options.trackLink.enable) || (options.trackDownload && options.trackDownload.enable)) {
+        if ((options.trackClick && options.trackClick.enable) || (options.trackLink && options.trackLink.enable) || (options.trackDownload && options.trackDownload.enable)) {
             this.eventHandler.remove(eventHandlerKeys['click']);
         }
         if (options.trackUnload && options.trackUnload.enable) {
@@ -391,7 +349,7 @@ export default class AtlasTracking {
      * track page view.
      */
     trackPage() {
-        this.utils.transmit('view', 'page', mandatories, user, context, supplement, options.useGet, debug);
+        this.utils.transmit('view', 'page', user, context, supplement);
     }
 
     /**
@@ -404,7 +362,7 @@ export default class AtlasTracking {
     trackAction(action = 'action', category = 'unknown', events = null, obj = {}) {
         const now = Date.now();
         context.events = events || null;
-        this.utils.transmit(action, category, mandatories, user, context, {
+        this.utils.transmit(action, category, user, context, {
             'action': {
                 'location': obj.location || undefined,
                 'destination': obj.destination || undefined,
@@ -416,7 +374,7 @@ export default class AtlasTracking {
                 'content_name': obj.content_name || undefined,
                 'custom_vars': obj.custom_vars || {}
             }
-        }, options.useGet, debug);
+        });
         context.events = null;
         prevActionOccurredAt = now;
     }
@@ -428,64 +386,77 @@ export default class AtlasTracking {
         this.eventHandler.remove(eventHandlerKeys['click']);
         eventHandlerKeys['click'] = this.eventHandler.add(targetWindow.document.body, 'click', (ev) => {
             const targetAttribute = obj.trackClick && obj.trackClick.targetAttribute ? obj.trackClick.targetAttribute : false;
-            const linkElement = this.utils.qsM('a', ev.target);
-            const trackableElement = this.utils.qsM('a, button, [role="button"]', ev.target, targetAttribute);
-            let elm = null;
-            let ext = null;
+            const targetElement = this.utils.qsM('a, button, [role="button"]', ev.target, targetAttribute);
 
-            if (linkElement) {
-                elm = linkElement.element;
-                ext = (elm.pathname || '').match(/.+\/.+?\.([a-z]+([?#;].*)?$)/);
+            if(targetElement){
+
+                let elm = targetElement.element;
+                let ext = (elm.pathname || '').match(/.+\/.+?\.([a-z]+([?#;].*)?$)/);
+                let attr = {
+                    'destination': elm.href || undefined,
+                    'dataset': elm.dataset || undefined,
+                    'target': elm.target || undefined,
+                    'media': elm.media || undefined,
+                    'type': elm.type || undefined,
+                    'tag': elm.tagName.toLowerCase(),
+                    'id': elm.id || undefined,
+                    'class': elm.className || undefined,
+                    'text': (elm.innerText || elm.value || '').substr(0,63) || undefined,
+                    'elapsed_since_page_load': ((Date.now()) - pageLoadedAt) / 1000
+                };
 
                 // Outbound
                 if (obj.trackLink && obj.trackLink.enable && elm.hostname && targetWindow.location.hostname !== elm.hostname && obj.trackLink.internalDomains.indexOf(elm.hostname) < 0) {
-                    this.utils.transmit('open', 'outbound_link', mandatories, user, context, {
-                        'link': {
-                            'destination': elm.href || undefined,
-                            'dataset': elm.dataset || undefined,
-                            'target': elm.target || undefined,
-                            'media': elm.media || undefined,
-                            'type': elm.type || undefined,
-                            'name': obj.trackLink.nameAttribute ? elm.getAttribute(obj.trackLink.nameAttribute) : undefined
-                        }
-                    }, options.useGet, debug);
+                    this.utils.transmit('open', 'outbound_link', user, context, {
+                        'link': Object.assign(
+                            attr,
+                            {
+                                'location': targetElement.pathDom,
+                                'name': obj.trackLink.nameAttribute ? elm.getAttribute(obj.trackLink.nameAttribute) : undefined
+                            }
+                        )
+                    });
                 }
 
                 // Download
                 if (obj.trackDownload && obj.trackDownload.enable && elm.hostname && ext && obj.trackDownload.fileExtensions.indexOf(ext[1]) >= 0) {
-                    this.utils.transmit('download', 'file', mandatories, user, context, {
-                        'download': {
-                            'destination': elm.href || undefined,
-                            'dataset': elm.dataset || undefined,
-                            'target': elm.target || undefined,
-                            'media': elm.media || undefined,
-                            'type': elm.type || undefined,
-                            'name': obj.trackLink.nameAttribute ? elm.getAttribute(obj.trackDownload.nameAttribute) : undefined
+                    this.utils.transmit('download', 'file', user, context, {
+                        'download': Object.assign(
+                            attr,
+                            {
+                                'location': targetElement.pathDom,
+                                'name': obj.trackLink.nameAttribute ? elm.getAttribute(obj.trackDownload.nameAttribute) : undefined
+                            }
+                        )
+                    });
+                }
+
+                // Click
+                if (targetElement && obj.trackClick.enable) {
+                    if(!obj.trackClick.targetAttribute){
+                        this.utils.transmit('click', targetElement.category, user, context, {
+                            'action': Object.assign(
+                                attr,
+                                {
+                                    'location': targetElement.pathDom,
+                                    'name': undefined
+                                }
+                            )
+                        });
+                    }else{
+                        if(targetElement.pathTrackable.length > 0){
+                            this.utils.transmit('click', targetElement.category, user, context, {
+                                'action': Object.assign(
+                                    attr,
+                                    {
+                                        'location': targetElement.pathTrackable,
+                                        'name': undefined
+                                    }
+                                )
+                            });
                         }
-                    }, options.useGet, debug);
-                }
-
-                // Passing Atlas ID
-                if (obj.passAtlasId && obj.passAtlasId.pass && elm.hostname && targetWindow.location.hostname !== elm.hostname && obj.passAtlasId.passTargetDomains.indexOf(elm.hostname) >= 0) {
-                    elm.href = this.utils.buildLink(elm.href, obj.passAtlasId.passParamKey);
-                }
-            }
-
-            if (trackableElement && obj.trackClick.enable) {
-                elm = trackableElement.element;
-                this.utils.transmit('click', trackableElement.category, mandatories, user, context, {
-                    'action': {
-                        'name': elm.getAttribute(targetAttribute),
-                        'location': trackableElement.path,
-                        'destination': elm.href || undefined,
-                        'tag': elm.tagName.toLowerCase(),
-                        'id': elm.id || undefined,
-                        'class': elm.className || undefined,
-                        'text': (elm.innerText || elm.value || '').substr(0,63) || undefined,
-                        'target': elm.target || undefined,
-                        'dataset': elm.dataset || undefined
                     }
-                }, options.useGet, debug);
+                }
             }
         }, false);
     }
@@ -496,12 +467,12 @@ export default class AtlasTracking {
     setEventToUnload() {
         this.eventHandler.remove(eventHandlerKeys['unload']);
         eventHandlerKeys['unload'] = this.eventHandler.add(targetWindow, unloadEvent, () => {
-            this.utils.transmit('unload', 'page', mandatories, user, context, {
+            this.utils.transmit('unload', 'page', user, context, {
                 'action': {
                     'name': 'leave_from_page',
                     'elapsed_since_page_load': ((Date.now()) - pageLoadedAt) / 1000
                 }
-            }, options.useGet, debug);
+            });
         }, false);
     }
 
@@ -526,7 +497,7 @@ export default class AtlasTracking {
                 if (cvr > pvr && cvr >= 0 && cvr <= 100) {
                     setTimeout(() => {
                         if (cvr > pvr) {
-                            this.utils.transmit('scroll', 'page', mandatories, user, context, {
+                            this.utils.transmit('scroll', 'page', user, context, {
                                 'scroll_depth': {
                                     'page_height': r.detail.documentHeight,
                                     'viewed_until': r.detail.documentScrollUntil,
@@ -534,7 +505,7 @@ export default class AtlasTracking {
                                     'elapsed_since_page_load': (now - pageLoadedAt) / 1000,
                                     'elapsed_since_prev_action': (now - prev) / 1000
                                 }
-                            }, options.useGet, debug);
+                            });
                             pvr = cvr;
                         }
                         prev = now;
@@ -563,7 +534,7 @@ export default class AtlasTracking {
                 if (cvp > pvp && cvp >= pvp && cvp >= step) {
                     setTimeout(() => {
                         if (cvp > pvp) {
-                            this.utils.transmit('infinity_scroll', 'page', mandatories, user, context, {
+                            this.utils.transmit('infinity_scroll', 'page', user, context, {
                                 'scroll_depth': {
                                     'page_height': r.detail.documentHeight,
                                     'viewed_until': cvp,
@@ -571,7 +542,7 @@ export default class AtlasTracking {
                                     'elapsed_since_page_load': (now - pageLoadedAt) / 1000,
                                     'elapsed_since_prev_action': (now - prev) / 1000
                                 }
-                            }, options.useGet, debug);
+                            });
                             pvp = cvp + step;
                         }
                         prev = now;
@@ -615,7 +586,7 @@ export default class AtlasTracking {
                     }
                 });
                 if (cm && pm !== cm) {
-                    this.utils.transmit('read', 'article', mandatories, user, context, {
+                    this.utils.transmit('read', 'article', user, context, {
                         'read': {
                             'mode': 'time',
                             'milestone': cm,
@@ -627,7 +598,7 @@ export default class AtlasTracking {
                             'elapsed_since_page_load': (now - pageLoadedAt) / 1000,
                             'elapsed_since_prev_action': (now - prev) / 1000
                         }
-                    }, options.useGet, debug);
+                    });
                     pm = cm;
                     cm = null;
                 }
@@ -635,7 +606,7 @@ export default class AtlasTracking {
                 if (cvr > pvr && cvr >= 0 && cvr <= 100) {
                     setTimeout(() => {
                         if (cvr > pvr) {
-                            this.utils.transmit('read', 'article', mandatories, user, context, {
+                            this.utils.transmit('read', 'article', user, context, {
                                 'read': {
                                     'mode': 'scroll',
                                     'page_height': r.detail.documentHeight,
@@ -646,7 +617,7 @@ export default class AtlasTracking {
                                     'elapsed_since_page_load': (now - pageLoadedAt) / 1000,
                                     'elapsed_since_prev_action': (now - prev) / 1000
                                 }
-                            }, options.useGet, debug);
+                            });
                             pvr = cvr;
                         }
                     }, 1000);
@@ -672,7 +643,7 @@ export default class AtlasTracking {
                             if (r[i].detail.targetViewableRate >= 0.5 && !f[i]) {
                                 now = Date.now();
                                 f[i] = true;
-                                this.utils.transmit('viewable_impression', 'ad', mandatories, user, context, {
+                                this.utils.transmit('viewable_impression', 'ad', user, context, {
                                     'viewability': {
                                         'page_height': r[i].detail.documentHeight,
                                         'element_order_in_target': i,
@@ -682,7 +653,7 @@ export default class AtlasTracking {
                                         'element_height': r[i].detail.targetHeight,
                                         'elapsed_since_page_load': (now - pageLoadedAt) / 1000
                                     }
-                                }, options.useGet, debug);
+                                });
                             }
                         }, 1000);
                     }
@@ -702,9 +673,9 @@ export default class AtlasTracking {
             eventHandlerKeys['media'][targetEvents[i]] = this.eventHandler.add(targetWindow.document.body, targetEvents[i], (ev) => {
                 if (this.utils.qsM(selector, ev.target)) {
                     const details = this.utils.getM(ev.target);
-                    this.utils.transmit(targetEvents[i], details.tag, mandatories, user, context, {
+                    this.utils.transmit(targetEvents[i], details.tag, user, context, {
                         'media': details
-                    }, options.useGet, debug);
+                    });
                 }
             }, {capture: true});
         }
@@ -719,9 +690,9 @@ export default class AtlasTracking {
                 }
                 f[index] = setTimeout(() => {
                     if (ev.target.paused !== true && ev.target.ended !== true) {
-                        this.utils.transmit('playing', details.tag, mandatories, user, context, {
+                        this.utils.transmit('playing', details.tag, user, context, {
                             'media': details
-                        }, options.useGet, debug);
+                        });
                     }
                     f[index] = false;
                 }, heartbeat * 1000);
@@ -747,9 +718,29 @@ export default class AtlasTracking {
         }
         this.eventHandler.remove(eventHandlerKeys['unload']);
         eventHandlerKeys['unload'] = this.eventHandler.add(targetWindow, unloadEvent, () => {
-            this.utils.transmit('track', 'form', mandatories, user, context, {
+            this.utils.transmit('track', 'form', user, context, {
                 'form': f
-            }, options.useGet, debug);
+            });
+        }, false);
+    }
+
+    trackThroughMessage() {
+        this.eventHandler.remove(eventHandlerKeys['message']);
+        eventHandlerKeys['message'] = this.eventHandler.add(targetWindow, 'message', (msg) => {
+            let attributes = {};
+            try{
+                attributes = JSON.parse(msg.data.attributes);
+            }catch(e){
+            }
+            if(msg && msg.data && msg.data.isAtlasEvent){
+                this.utils.transmit(
+                    msg.data.action,
+                    msg.data.category,
+                    user,
+                    context,
+                    attributes
+                );
+            }
         }, false);
     }
 }

@@ -66,6 +66,8 @@ Most variables except `system` can be omitted but strongly recommend to specify 
 
 #### useGet (under options)
 
+- This feature was available until 2.14.2, is no longer available in newer version.
+
 |Variable|Type|Purpose|Example|
 |:----:|:----:|:----:|:----:|
 |useGet|Boolean|Switch the method to send beacons. `true` = GET, `false` = POST|`true`|
@@ -73,6 +75,8 @@ Most variables except `system` can be omitted but strongly recommend to specify 
 - Some Japan specific proxy based security software removes a POST body but retain Content-Length header in the request. So, GET is safer ways to prevent data destruction caused by the security tool.
 
 #### exchangeAtlasId (under options)
+
+- This feature was available until 2.14.2, is no longer available in newer version.
 
 |Variable|Type|Purpose|Example|
 |:----:|:----:|:----:|:----:|
