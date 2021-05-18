@@ -52,7 +52,7 @@ videojs.registerPlugin('atlasTracking', function(options){
         if (meters[index]) {
             return false;
         }
-        meters[index] = setTimeout(() => {
+        meters[index] = setTimeout(function() {
             if (event.target.paused !== true && event.target.ended !== true) {
                 atlasTrackEvent('playing', event);
             }
