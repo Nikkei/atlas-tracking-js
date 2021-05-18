@@ -24,7 +24,7 @@ videojs.registerPlugin('atlasTracking', function(options){
     }
 
     function atlasTrackEvent(action, event) {
-        window.top.postMessage({
+        window.parent.postMessage({
             isAtlasEvent: true,
             action: action,
             category: 'video',
