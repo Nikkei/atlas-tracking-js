@@ -388,7 +388,7 @@ export default class AtlasTracking {
             const targetAttribute = obj.trackClick && obj.trackClick.targetAttribute ? obj.trackClick.targetAttribute : false;
             const targetElement = this.utils.qsM('a, button, [role="button"]', ev.target, targetAttribute);
 
-            if(targetElement){
+            if(targetElement && targetElement.element){
 
                 let elm = targetElement.element;
                 let ext = (elm.pathname || '').match(/.+\/.+?\.([a-z]+([?#;].*)?$)/);
