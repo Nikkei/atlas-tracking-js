@@ -7,7 +7,7 @@ version: 2
 definitions:
   workspace: &workspace
     docker:
-      - image: circleci/node:10.24.0-browsers
+      - image: circleci/node:15-browsers
 
     working_directory: ~/workspace
 
@@ -17,6 +17,8 @@ jobs:
 
     steps:
       - checkout
+
+      - run: sudo rm -rf /var/lib/apt/lists/* && sudo apt-get update && sudo apt-get install build-essential gcc g++
 
       - restore_cache:
           keys:
