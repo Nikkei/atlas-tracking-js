@@ -4,7 +4,7 @@ const host = 'https://example.com'
 describe('#getP', () => {
     let utils;
     beforeEach(() => {
-        utils = new Utils()
+        utils = new Utils(window.parent)
     })
 
     it('should return performance info.', () => {
