@@ -23,8 +23,8 @@ jobs:
 
       - name: npm install, build:dist
         env:
-          SDK_API_KEY: ${{ secret.SDK_API_KEY }}
-          DEFAULT_ENDPOINT: ${{ secret.DEFAULT_ENDPOINT }}
+          SDK_API_KEY: ${{ secrets.SDK_API_KEY }}
+          DEFAULT_ENDPOINT: ${{ secrets.DEFAULT_ENDPOINT }}
         run: |
           npm install
           npm run build:dist
