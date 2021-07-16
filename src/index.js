@@ -450,7 +450,7 @@ export default class AtlasTracking {
                                     attr,
                                     {
                                         'location': targetElement.pathTrackable,
-                                        'name': undefined
+                                        'name': elm.getAttribute(targetAttribute)
                                     }
                                 )
                             });
