@@ -5,9 +5,11 @@ videojs.registerPlugin('atlasTracking', function(options){
             return {
                 'media': {
                     'name': player.mediainfo.name,
+                    'video_id': player.mediainfo.id,
+                    'poster': player.mediainfo.poster,
                     'is_fullscreen': player.isFullscreen(),
-                    'src': player.currentSrc() || 'na',
-                    'id': player.id() || 'na',
+                    'src': player.currentSrc(),
+                    'id': player.id() ,
                     'autoplay': player.autoplay() || false,
                     'muted': player.muted() || false,
                     'type': player.currentType() || undefined,
@@ -17,7 +19,8 @@ videojs.registerPlugin('atlasTracking', function(options){
                     'current_time': Math.round(player.currentTime() * 10) / 10,
                     'played_percent': Math.round(player.currentTime() / player.duration() * 100),
                     'tag': 'video-js',
-                    'dataset': player.tagAttributes
+                    'dataset': player.tagAttributes,
+                    'plugin_version': '0.2.0'
                 }
             };
         }
@@ -29,7 +32,7 @@ videojs.registerPlugin('atlasTracking', function(options){
             action: action,
             category: 'video',
             attributes: JSON.stringify(getM(event.target.player))
-        }, "*");
+        }, '*');
     }
 
     var heartbeat = (options && options['heartbeat']) ? options['heartbeat'] : 5;
