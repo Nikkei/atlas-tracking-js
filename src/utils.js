@@ -404,21 +404,6 @@ export default class Utils {
         return igt;
     }
 
-    buildLink(u, k) {
-        let r = null;
-        let t = null;
-        if (atlasId) {
-            r = new RegExp('(\\?|&)' + k + '=(.*?)(&|$)');
-            t = u.search.replace(r, '');
-            if (t.length > 0) {
-                u.search = t + `&${k}=${atlasId}`;
-            } else {
-                u.search = `?${k}=${atlasId}`;
-            }
-        }
-        return u.href;
-    }
-
     compress(v) {
         let r = v;
         r = r.replace(/%22%7D%2C%22/g, '%z');
