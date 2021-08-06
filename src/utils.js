@@ -466,9 +466,10 @@ export default class Utils {
             }
             return true;
         } else {
-            if (('fetch' in this.targetWindow && typeof this.targetWindow.fetch === 'function')
-                && ('AbortController' in this.targetWindow && typeof this.targetWindow.AbortController === 'function')) {
-                const controller = new AbortController();
+            const targetWindow = this.targetWindow;
+            if (('fetch' in targetWindow && typeof targetWindow.fetch === 'function')
+                && ('AbortController' in targetWindow && typeof targetWindow.AbortController === 'function')) {
+                const controller = new targetWindow.AbortController();
                 const signal = controller.signal;
                 setTimeout(() => controller.abort(), atlasBeaconTimeout);
                 try{
