@@ -105,11 +105,11 @@
                 'category_l3': null,
                 'tracking_code': atlasTracking.getQueryValue('cid'),
                 'campaign': {
-                    'name': decodeURIComponent(atlasTracking.getQueryValue('utm_campaign')),
-                    'source': decodeURIComponent(atlasTracking.getQueryValue('utm_source')),
-                    'medium': decodeURIComponent(atlasTracking.getQueryValue('utm_medium')),
-                    'term': decodeURIComponent(atlasTracking.getQueryValue('utm_term')),
-                    'content': decodeURIComponent(atlasTracking.getQueryValue('utm_content')),
+                    'name': decodeURIComponent(atlasTracking.getQueryValue('utm_campaign')) || null,
+                    'source': decodeURIComponent(atlasTracking.getQueryValue('utm_source')) || null,
+                    'medium': decodeURIComponent(atlasTracking.getQueryValue('utm_medium')) || null,
+                    'term': decodeURIComponent(atlasTracking.getQueryValue('utm_term')) || null,
+                    'content': decodeURIComponent(atlasTracking.getQueryValue('utm_content')) || null,
                 },
                 'search': {
                     'term': null,
