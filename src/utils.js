@@ -108,10 +108,9 @@ export default class Utils {
             }
             if (cookie.indexOf(`${k}=`) === 0) {
                 return cookie.substring(`${k}=`.length, cookie.length);
-            }else{
-                return '';
             }
         }
+        return '';
     }
 
     getQ(k) {
