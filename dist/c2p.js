@@ -86,37 +86,37 @@
         // Init Page data
         atlasTracking.initPage({
             user: {
-                'user_id': null,
-                'user_status': null,
-                'site_session': null
+                'user_id': undefined,
+                'user_status': undefined,
+                'site_session': undefined
             },
             context: {
-                'app': null,
-                'app_version': null,
-                'source': null,
-                'edition': null,
-                'content_id': null,
-                'content_name': null,
-                'content_status': null,
-                'page_name': null,
-                'page_num': null,
-                'category_l1': null,
-                'category_l2': null,
-                'category_l3': null,
+                'app': undefined,
+                'app_version': undefined,
+                'source': undefined,
+                'edition': undefined,
+                'content_id': undefined,
+                'content_name': undefined,
+                'content_status': undefined,
+                'page_name': undefined,
+                'page_num': undefined,
+                'category_l1': undefined,
+                'category_l2': undefined,
+                'category_l3': undefined,
                 'tracking_code': atlasTracking.getQueryValue('cid'),
                 'campaign': {
-                    'name': decodeURIComponent(atlasTracking.getQueryValue('utm_campaign')) || null,
-                    'source': decodeURIComponent(atlasTracking.getQueryValue('utm_source')) || null,
-                    'medium': decodeURIComponent(atlasTracking.getQueryValue('utm_medium')) || null,
-                    'term': decodeURIComponent(atlasTracking.getQueryValue('utm_term')) || null,
-                    'content': decodeURIComponent(atlasTracking.getQueryValue('utm_content')) || null,
+                    'name': decodeURIComponent(atlasTracking.getQueryValue('utm_campaign')) || undefined,
+                    'source': decodeURIComponent(atlasTracking.getQueryValue('utm_source')) || undefined,
+                    'medium': decodeURIComponent(atlasTracking.getQueryValue('utm_medium')) || undefined,
+                    'term': decodeURIComponent(atlasTracking.getQueryValue('utm_term')) || undefined,
+                    'content': decodeURIComponent(atlasTracking.getQueryValue('utm_content')) || undefined,
                 },
                 'search': {
-                    'term': null,
-                    'options': null,
-                    'results': null
+                    'term': undefined,
+                    'options': undefined,
+                    'results': undefined
                 },
-                'events': null,
+                'events': undefined,
                 'custom_object': {},
                 'funnel': {}
             }
