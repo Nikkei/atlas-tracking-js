@@ -432,7 +432,7 @@ export default class AtlasTracking {
                 }
 
                 // Click
-                if (targetElement && obj.trackClick.enable) {
+                if (obj.trackClick && obj.trackClick.enable && targetElement) {
                     if(!obj.trackClick.targetAttribute){
                         this.utils.transmit('click', targetElement.category, user, context, {
                             'action': Object.assign(
