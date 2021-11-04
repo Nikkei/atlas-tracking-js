@@ -579,7 +579,7 @@ export default class AtlasTracking {
                 prev = now;
 
                 // Milestone based
-                if(milestones.length > 0 && milestones[0] <= (eiv / 1000) && (now - prev) < 1000){
+                if(milestones.length > 0 && milestones[0] <= (eiv / 1000)){
                     this.utils.transmit('read', 'article', user, context, {
                         'read': {
                             'mode': 'time',
