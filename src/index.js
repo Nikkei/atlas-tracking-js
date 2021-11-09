@@ -555,7 +555,7 @@ export default class AtlasTracking {
     /**
      * @private
      */
-    trackRead(target, granularity, milestones) {
+    trackRead(target, granularity, milestones = []) {
         if (!target) {
             return;
         }
@@ -565,8 +565,6 @@ export default class AtlasTracking {
         let prev = now;
         let r = {}; //result
         let eiv = 0; //elapsedInVisible
-        let cm = null; //currentMilestone
-        let pm = null; //prevMilestone
         let cvr = 0; //currentViewRate
         let pvr = 0; //prevViewRate
         this.eventHandler.remove(eventHandlerKeys['read']);
@@ -579,17 +577,13 @@ export default class AtlasTracking {
                 }
                 eiv = eiv + (now - prev);
                 prev = now;
-                milestones.forEach(function (milestone) {
-                    if ((eiv / 1000) | 0 >= milestone && now - prev < 1000) {
-                        milestones.shift();
-                        cm = milestone;
-                    }
-                });
-                if (cm && pm !== cm) {
+
+                // Milestone based
+                if(milestones.length > 0 && milestones[0] <= (eiv / 1000)){
                     this.utils.transmit('read', 'article', user, context, {
                         'read': {
                             'mode': 'time',
-                            'milestone': cm,
+                            'milestone': milestones[0],
                             'page_height': r.detail.documentHeight,
                             'element_height': r.detail.targetHeight,
                             'viewed_from': r.detail.targetVisibleTop,
@@ -599,9 +593,10 @@ export default class AtlasTracking {
                             'elapsed_since_prev_action': (now - prev) / 1000
                         }
                     });
-                    pm = cm;
-                    cm = null;
+                    milestones.shift();
                 }
+
+                // Scroll based
                 cvr = Math.round(r.detail.targetScrollRate * steps) * each;
                 if (cvr > pvr && cvr >= 0 && cvr <= 100) {
                     setTimeout(() => {
