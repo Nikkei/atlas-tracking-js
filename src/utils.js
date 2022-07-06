@@ -184,12 +184,12 @@ export default class Utils {
         if ('performance' in this.targetWindow) {
             p = this.targetWindow.performance.timing;
             r = {
-                'unload': p.unloadEventEnd - p.unloadEventStart,
-                'redirect': p.redirectEnd - p.redirectStart,
-                'dns': p.domainLookupEnd - p.domainLookupStart,
-                'tcp': p.connectEnd - p.connectStart,
-                'request': p.responseStart - p.requestStart,
-                'response': p.responseEnd - p.responseStart,
+                'unload': (p.unloadEventEnd - p.unloadEventStart < 0 || p.unloadEventEnd - p.unloadEventStart > 3600000) ? null : p.unloadEventEnd - p.unloadEventStart,
+                'redirect': (p.redirectEnd - p.redirectStart < 0 || p.redirectEnd - p.redirectStart > 3600000) ? null : p.redirectEnd - p.redirectStart,
+                'dns': (p.domainLookupEnd - p.domainLookupStart < 0 || p.domainLookupEnd - p.domainLookupStart > 3600000) ? null : p.domainLookupEnd - p.domainLookupStart,
+                'tcp': (p.connectEnd - p.connectStart < 0 || p.connectEnd - p.connectStart > 3600000) ? null : p.connectEnd - p.connectStart,
+                'request': (p.responseStart - p.requestStart < 0 || p.responseStart - p.requestStart > 3600000) ? null : p.responseStart - p.requestStart,
+                'response': (p.responseEnd - p.responseStart < 0 || p.responseEnd - p.responseStart > 3600000) ? null : p.responseEnd - p.responseStart,
                 'dom': (p.domContentLoadedEventStart - p.domLoading < 0 || p.domContentLoadedEventStart - p.domLoading > 3600000) ? null : p.domContentLoadedEventStart - p.domLoading,
                 'domContent': (p.domContentLoadedEventEnd - p.domContentLoadedEventStart < 0 || p.domContentLoadedEventEnd - p.domContentLoadedEventStart > 3600000) ? null : p.domContentLoadedEventEnd - p.domContentLoadedEventStart,
                 'onload': (p.loadEventEnd - p.loadEventStart < 0 || p.loadEventEnd - p.loadEventStart > 3600000) ? null : p.loadEventEnd - p.loadEventStart,
