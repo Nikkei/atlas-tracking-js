@@ -27,7 +27,7 @@ export default class Utils {
         for (const num of u32a) {
             result += num.toString(32)
         }
-        this.uniqueId = `${timestamp}-${result}`;
+        this.uniqueId = `${timestamp}.${result}`;
         this.targetWindow = targetWindow;
     }
 
