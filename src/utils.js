@@ -20,12 +20,12 @@ let sendBeaconStatus = true;
  */
 export default class Utils {
     constructor(targetWindow) {
-        const timestamp = (+new Date()).toString(36);
-        const u32a = new Uint32Array(5);
+        const timestamp = (+new Date()).toString(16);
+        const u32a = new Uint32Array(3);
         let result = '';
         self.crypto.getRandomValues(u32a);
         for (const num of u32a) {
-            result += num.toString(36)
+            result += num.toString(32)
         }
         this.uniqueId = `${timestamp}-${result}`;
         this.targetWindow = targetWindow;
