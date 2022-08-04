@@ -103,7 +103,7 @@ export default class AtlasTracking {
         defaults.product = obj.product.productName !== void 0 ? obj.product.productName : null;
 
         this.utils = new Utils(targetWindow);
-        this.eventHandler = this.utils.handler;
+        this.eventHandler = this.utils.handler();
 
         if ('onbeforeunload' in targetWindow) {
             unloadEvent = 'beforeunload';
