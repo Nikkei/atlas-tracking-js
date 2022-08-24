@@ -48,7 +48,6 @@ npm install
 ### Test
 - You can lint the code by `npm run eslint`
 - For the unit test, run `npm run test`
-- The integration test can be done by `npm run integration-test`
 
 ### Build
 - For the standalone ATJ, `npm run build:dist` (In general, this will fit with most use cases)
