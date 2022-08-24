@@ -48,7 +48,6 @@ npm install
 ### テスト
 - 構文チェックは `npm run eslint` でできます
 - ユニットテストを行う場合は `npm run test` を実行
-- 統合テストは `npm run integration-test` で行うことができます
 
 ### ビルド
 - スタンドアロンのATJは `npm run build:dist` （一般的に、これはほとんどの用途に適合します）
