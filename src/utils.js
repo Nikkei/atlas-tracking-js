@@ -134,7 +134,7 @@ export default class Utils {
         try {
             r = this.targetWindow.localStorage[k];
         } catch (e) {
-            r = '';
+            // nothing to do
         }
         return r;
     }
@@ -143,6 +143,7 @@ export default class Utils {
         try {
             this.targetWindow.localStorage.setItem(k, v);
         } catch (e) {
+            // nothing to do
         }
     }
 
@@ -150,6 +151,7 @@ export default class Utils {
         try {
             this.targetWindow.localStorage.removeItem(k);
         } catch (e) {
+            // nothing to do
         }
     }
 
@@ -448,6 +450,7 @@ export default class Utils {
         try{
             x.send();
         }catch(e){
+            // nothing to do
         }
     }
 
@@ -484,6 +487,7 @@ export default class Utils {
                 try{
                     this.targetWindow.fetch(u, {signal, method: 'GET', cache: 'no-store', keepalive: true});
                 }catch(e){
+                    // nothing to do
                 }
             } else {
                 this.xhr(u, a);

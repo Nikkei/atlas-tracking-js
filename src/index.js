@@ -726,6 +726,7 @@ export default class AtlasTracking {
             try{
                 attributes = JSON.parse(msg.data.attributes);
             }catch(e){
+                // nothing to do
             }
             if(msg && msg.data && msg.data.isAtlasEvent){
                 this.utils.transmit(
