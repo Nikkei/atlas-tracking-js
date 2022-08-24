@@ -428,19 +428,7 @@ export default class Utils {
     }
 
     xhr(u, a) {
-        let x = null;
-        if (this.targetWindow.XDomainRequest) {
-            x = new XDomainRequest();
-            x.ontimeout = function () {
-            };
-            x.onprogress = function () {
-            };
-            x.onerror = function () {
-            };
-        } else {
-            x = new XMLHttpRequest();
-        }
-
+        let x = new XMLHttpRequest();
         x.open('GET', u, a);
         if (a === true) {
             x.timeout = atlasBeaconTimeout;
