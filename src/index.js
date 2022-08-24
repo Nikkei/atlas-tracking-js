@@ -253,45 +253,26 @@ export default class AtlasTracking {
      * @param  {Object} obj initialization config object.
      */
     initPage(obj) {
-        if (obj.user !== void 0) {
-            user = {
-                'user_id': obj.user.user_id || undefined,
-                'user_status': obj.user.user_status || undefined,
-                'site_session': obj.user.site_session || undefined,
-                'external_ids': {},
-                'custom_object': obj.user.custom_object || {},
-                'federation_id': obj.user.federation_id || undefined
-            };
+        const paramUser = obj.user;
+        const paramContext = obj.context;
+        if (paramUser !== void 0) {
+            user = paramUser;
+            user.custom_object = paramUser.custom_object || {};
+            user.external_ids = paramUser.external_ids || {};
         }
-        if (obj.context !== void 0) {
-            context = {
-                'root_id': this.utils.getUniqueId(),
-                'url': obj.context.url !== void 0 ? obj.context.url : defaults.url,
-                'referrer': obj.context.referrer !== void 0 ? obj.context.referrer : defaults.referrer,
-                'product_family': obj.context.product_family !== void 0 ? obj.context.product_family : defaults.product_family,
-                'product': obj.context.product || defaults.product,
-                'app': obj.context.app || undefined,
-                'app_version': obj.context.app_version || undefined,
-                'page_title': obj.context.page_title || defaults.page_title,
-                'source': obj.context.source || undefined,
-                'edition': obj.context.edition || undefined,
-                'content_id': obj.context.content_id || undefined,
-                'content_name': obj.context.content_name || undefined,
-                'content_status': obj.context.content_status || undefined,
-                'page_name': obj.context.page_name || undefined,
-                'page_num': obj.context.page_num || 1,
-                'category_l1': obj.context.category_l1 || undefined,
-                'category_l2': obj.context.category_l2 || undefined,
-                'category_l3': obj.context.category_l3 || undefined,
-                'tracking_code': obj.context.tracking_code || undefined,
-                'campaign': obj.context.campaign || undefined,
-                'search': obj.context.search || undefined,
-                'events': obj.context.events || undefined,
-                'custom_object': obj.context.custom_object || {},
-                'funnel': obj.context.funnel || {},
-                'visibility': targetWindow.document.visibilityState || 'unknown'
-            };
+        if (paramContext !== void 0) {
+            context = paramContext;
+            context.root_id = this.utils.getUniqueId();
+            context.url = paramContext.url !== void 0 ? paramContext.url : defaults.url;
+            context.referrer = paramContext.referrer !== void 0 ? paramContext.referrer : defaults.referrer;
+            context.product_family = paramContext.product_family || defaults.product_family;
+            context.product = paramContext.product || defaults.product;
+            context.page_num = paramContext.page_num || 1;
+            context.visibility = targetWindow.document.visibilityState || 'unknown';
+            context.custom_object = paramContext.custom_object || {};
+            context.funnel = paramContext.funnel || {};
         }
+
         if (options.trackNavigation && options.trackNavigation.enable) {
             context.navigation = this.utils.getNav() || {};
         }
