@@ -27,8 +27,20 @@ You may need one of the following environment:
 
 #### Create a build environment on Docker
 ```sh
-docker build -t atj ./
-docker run --name ATJ -e SDK_API_KEY=your_sdk_api_key -e DEFAULT_ENDPOINT=your.atlas.endpoint -e SDK_NAMESPACE=atlasTracking -i -t -v ${PWD##}:/var/atj atj
+docker build \
+  --platform linux/x86_64 \
+  --tag atj \
+  ./
+
+docker run \
+  --platform linux/x86_64 \
+  --name ATJ \
+  --env SDK_API_KEY=your_sdk_api_key \
+  --env DEFAULT_ENDPOINT=your.atlas.endpoint \
+  --env SDK_NAMESPACE=atlasTracking \
+  --volume  ${PWD##}:/var/atj \
+  -it \
+  atj
 ```
 
 #### Environment Variables
