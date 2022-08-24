@@ -21,11 +21,19 @@ let sendBeaconStatus = true;
 export default class Utils {
     constructor(targetWindow) {
         const timestamp = (+new Date()).toString(16);
-        const u32a = new Uint32Array(3);
         let result = '';
-        self.crypto.getRandomValues(u32a);
-        for (const num of u32a) {
-            result += num.toString(32)
+        if (self.crypto.getRandomValues) {
+            const u32a = new Uint32Array(3);
+            self.crypto.getRandomValues(u32a);
+            for (const num of u32a) {
+                result += num.toString(32);
+            }
+        }else{
+            // For IE compatibility
+            const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+            for (let i = 0; i < 32; i++) {
+                result += chars[Math.floor(Math.random() * chars.length)];
+            }
         }
         this.uniqueId = `${timestamp}.${result}`;
         this.targetWindow = targetWindow;
