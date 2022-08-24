@@ -22,7 +22,7 @@ export default class Utils {
     constructor(targetWindow) {
         const timestamp = (+new Date()).toString(16);
         let result = '';
-        if (self.crypto.getRandomValues) {
+        if (self.crypto && self.crypto.getRandomValues) {
             const u32a = new Uint32Array(3);
             self.crypto.getRandomValues(u32a);
             for (const num of u32a) {
