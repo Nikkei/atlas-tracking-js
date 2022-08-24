@@ -1,7 +1,5 @@
 # Atlas Tracking JS (ATJ)
 
-[![Circle CI](https://circleci.com/gh/Nikkei/atlas-tracking-js/tree/master.svg?style=svg)](https://circleci.com/gh/Nikkei/atlas-tracking-js/tree/master)
-
 Atlas tracking library for general web site
 
 - ATJ is a tracking SDK for Atlas
