@@ -20,11 +20,6 @@ Atlas tracking library for general web site
 
 ## Build ATJ
 
-### Prerequisites
-You may need one of the following environment:
-1. Node 15
-2. Docker
-
 #### Create a build environment on Docker
 ```sh
 docker build \
