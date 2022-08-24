@@ -142,7 +142,7 @@ export default class Utils {
         try {
             r = this.targetWindow.localStorage[k];
         } catch (e) {
-            r = '';
+            // Nothing to do...
         }
         return r;
     }
@@ -224,7 +224,7 @@ export default class Utils {
         try {
             tgr = t.getBoundingClientRect();
         } catch (e) {
-            tgr = {};
+            // Nothing to do...
         }
 
         const vph = this.targetWindow.innerHeight; //viewportHeight
@@ -442,6 +442,7 @@ export default class Utils {
         try{
             x.send();
         }catch(e){
+            // Nothing to do...
         }
     }
 
@@ -478,6 +479,7 @@ export default class Utils {
                 try{
                     this.targetWindow.fetch(u, {signal, method: 'GET', cache: 'no-store', keepalive: true});
                 }catch(e){
+                    // Nothing to do...
                 }
             } else {
                 this.xhr(u, a);
