@@ -20,6 +20,14 @@ let sendBeaconStatus = true;
  */
 export default class Utils {
     constructor(targetWindow) {
+        const timestamp = (+new Date()).toString(16);
+        const u32a = new Uint32Array(3);
+        let result = '';
+        self.crypto.getRandomValues(u32a);
+        for (const num of u32a) {
+            result += num.toString(32)
+        }
+        this.uniqueId = `${timestamp}.${result}`;
         this.targetWindow = targetWindow;
     }
 
@@ -29,19 +37,11 @@ export default class Utils {
         atlasBeaconTimeout = system.beaconTimeout ? system.beaconTimeout : 2000;
         atlasCookieName = system.cookieName ? system.cookieName : 'atlasId';
 
-        atlasId = this.getC(atlasCookieName) || this.getLS('atlasId');
+        atlasId = this.getC(atlasCookieName);
 
         if (!atlasId || atlasId === '0' || atlasId === 0 || atlasId === '1' || atlasId === 1 || atlasId.length < 5) {
-            atlasId = this.uid() + this.uid();
+            atlasId =  this.uniqueId;
         }
-        this.setLS('atlasId', atlasId);
-    }
-
-    uid() {
-        const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        return ('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'.replace(/x/g, () => {
-            return chars[Math.floor(Math.random() * (chars.length))];
-        }));
     }
 
     qsM(s, t, d = false) {
@@ -137,20 +137,6 @@ export default class Utils {
             r = '';
         }
         return r;
-    }
-
-    setLS(k, v) {
-        try {
-            this.targetWindow.localStorage.setItem(k, v);
-        } catch (e) {
-        }
-    }
-
-    delLS(k) {
-        try {
-            this.targetWindow.localStorage.removeItem(k);
-        } catch (e) {
-        }
     }
 
     getNav() {
@@ -382,8 +368,8 @@ export default class Utils {
         return f;
     }
 
-    generateRootId() {
-        return (atlasId + this.uid());
+    getUniqueId() {
+        return  this.uniqueId;
     }
 
     buildIngest(u, c, s) {

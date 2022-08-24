@@ -265,7 +265,7 @@ export default class AtlasTracking {
         }
         if (obj.context !== void 0) {
             context = {
-                'root_id': this.utils.generateRootId(),
+                'root_id': this.utils.getUniqueId(),
                 'url': obj.context.url !== void 0 ? obj.context.url : defaults.url,
                 'referrer': obj.context.referrer !== void 0 ? obj.context.referrer : defaults.referrer,
                 'product_family': obj.context.product_family !== void 0 ? obj.context.product_family : defaults.product_family,
