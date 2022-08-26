@@ -20,15 +20,22 @@ Atlas tracking library for general web site
 
 ## Build ATJ
 
-### Prerequisites
-You may need one of the following environment:
-1. Node 15
-2. Docker
-
 #### Create a build environment on Docker
 ```sh
-docker build -t atj ./
-docker run --name ATJ -e SDK_API_KEY=your_sdk_api_key -e DEFAULT_ENDPOINT=your.atlas.endpoint -e SDK_NAMESPACE=atlasTracking -i -t -v ${PWD##}:/var/atj atj
+docker build \
+  --platform linux/x86_64 \
+  --tag atj \
+  ./
+
+docker run \
+  --platform linux/x86_64 \
+  --name ATJ \
+  --env SDK_API_KEY=your_sdk_api_key \
+  --env DEFAULT_ENDPOINT=your.atlas.endpoint \
+  --env SDK_NAMESPACE=atlasTracking \
+  --volume  ${PWD##}:/var/atj \
+  -it \
+  atj
 ```
 
 #### Environment Variables
@@ -46,7 +53,6 @@ npm install
 ### Test
 - You can lint the code by `npm run eslint`
 - For the unit test, run `npm run test`
-- The integration test can be done by `npm run integration-test`
 
 ### Build
 - For the standalone ATJ, `npm run build:dist` (In general, this will fit with most use cases)

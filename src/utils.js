@@ -142,7 +142,7 @@ export default class Utils {
         try {
             r = this.targetWindow.localStorage[k];
         } catch (e) {
-            r = '';
+            // Nothing to do...
         }
         return r;
     }
@@ -172,23 +172,26 @@ export default class Utils {
     }
 
     getP() {
+        const tsDiff = function(tsStart, tsEnd){
+            return (tsEnd - tsStart < 0 || tsEnd - tsStart > 3600000) ? undefined :  Math.round(tsEnd - tsStart);
+        };
         let p = {}; // Performance Timing
         let t = {}; // Navigation Type
         let r = {}; // Result
         if ('performance' in this.targetWindow) {
             p = this.targetWindow.performance.timing;
             r = {
-                'unload': (p.unloadEventEnd - p.unloadEventStart < 0 || p.unloadEventEnd - p.unloadEventStart > 3600000) ? null : p.unloadEventEnd - p.unloadEventStart,
-                'redirect': (p.redirectEnd - p.redirectStart < 0 || p.redirectEnd - p.redirectStart > 3600000) ? null : p.redirectEnd - p.redirectStart,
-                'dns': (p.domainLookupEnd - p.domainLookupStart < 0 || p.domainLookupEnd - p.domainLookupStart > 3600000) ? null : p.domainLookupEnd - p.domainLookupStart,
-                'tcp': (p.connectEnd - p.connectStart < 0 || p.connectEnd - p.connectStart > 3600000) ? null : p.connectEnd - p.connectStart,
-                'request': (p.responseStart - p.requestStart < 0 || p.responseStart - p.requestStart > 3600000) ? null : p.responseStart - p.requestStart,
-                'response': (p.responseEnd - p.responseStart < 0 || p.responseEnd - p.responseStart > 3600000) ? null : p.responseEnd - p.responseStart,
-                'dom': (p.domContentLoadedEventStart - p.domLoading < 0 || p.domContentLoadedEventStart - p.domLoading > 3600000) ? null : p.domContentLoadedEventStart - p.domLoading,
-                'domContent': (p.domContentLoadedEventEnd - p.domContentLoadedEventStart < 0 || p.domContentLoadedEventEnd - p.domContentLoadedEventStart > 3600000) ? null : p.domContentLoadedEventEnd - p.domContentLoadedEventStart,
-                'onload': (p.loadEventEnd - p.loadEventStart < 0 || p.loadEventEnd - p.loadEventStart > 3600000) ? null : p.loadEventEnd - p.loadEventStart,
-                'untilResponseComplete': (p.responseEnd - p.navigationStart < 0 || p.responseEnd - p.navigationStart > 3600000) ? null : p.responseEnd - p.navigationStart,
-                'untilDomComplete': (p.domContentLoadedEventStart - p.navigationStart < 0 || p.domContentLoadedEventStart - p.navigationStart > 3600000) ? null : p.domContentLoadedEventStart - p.navigationStart
+                'unload': tsDiff(p.unloadEventStart, p.unloadEventEnd),
+                'redirect': tsDiff(p.redirectStart, p.redirectEnd),
+                'dns': tsDiff(p.domainLookupStart, p.domainLookupEnd),
+                'tcp': tsDiff(p.connectStart, p.connectEnd),
+                'request': tsDiff(p.requestStart, p.responseStart),
+                'response': tsDiff(p.responseStart, p.responseEnd),
+                'dom': tsDiff(p.domLoading, p.domContentLoadedEventStart),
+                'domContent': tsDiff(p.domContentLoadedEventStart, p.domContentLoadedEventEnd),
+                'onload': tsDiff(p.loadEventStart, p.loadEventEnd),
+                'untilResponseComplete': tsDiff(p.navigationStart, p.responseEnd),
+                'untilDomComplete': tsDiff(p.navigationStart, p.domContentLoadedEventStart)
             };
             t = (this.targetWindow.performance || {}).navigation;
         }
@@ -224,7 +227,7 @@ export default class Utils {
         try {
             tgr = t.getBoundingClientRect();
         } catch (e) {
-            tgr = {};
+            // Nothing to do...
         }
 
         const vph = this.targetWindow.innerHeight; //viewportHeight
@@ -420,19 +423,7 @@ export default class Utils {
     }
 
     xhr(u, a) {
-        let x = null;
-        if (this.targetWindow.XDomainRequest) {
-            x = new XDomainRequest();
-            x.ontimeout = function () {
-            };
-            x.onprogress = function () {
-            };
-            x.onerror = function () {
-            };
-        } else {
-            x = new XMLHttpRequest();
-        }
-
+        const x = new XMLHttpRequest();
         x.open('GET', u, a);
         if (a === true) {
             x.timeout = atlasBeaconTimeout;
@@ -442,6 +433,7 @@ export default class Utils {
         try{
             x.send();
         }catch(e){
+            // Nothing to do...
         }
     }
 
@@ -478,6 +470,7 @@ export default class Utils {
                 try{
                     this.targetWindow.fetch(u, {signal, method: 'GET', cache: 'no-store', keepalive: true});
                 }catch(e){
+                    // Nothing to do...
                 }
             } else {
                 this.xhr(u, a);

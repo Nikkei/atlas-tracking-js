@@ -22,15 +22,22 @@
 
 ## ATJのビルド
 
-### 前提条件
-以下のいずれかの環境が必要になります：
-1. Node 15
-2. Docker
-
 #### ビルド環境をDockerで構築
 ```sh
-docker build -t atj ./
-docker run --name ATJ -e SDK_API_KEY=your_sdk_api_key -e DEFAULT_ENDPOINT=your.atlas.endpoint -e SDK_NAMESPACE=atlasTracking -i -t -v ${PWD##}:/var/atj atj
+docker build \
+  --platform linux/x86_64 \
+  --tag atj \
+  ./
+
+docker run \
+  --platform linux/x86_64 \
+  --name ATJ \
+  --env SDK_API_KEY=your_sdk_api_key \
+  --env DEFAULT_ENDPOINT=your.atlas.endpoint \
+  --env SDK_NAMESPACE=atlasTracking \
+  --volume  ${PWD##}:/var/atj \
+  -it \
+  atj
 ```
 
 ### 環境変数
@@ -48,7 +55,6 @@ npm install
 ### テスト
 - 構文チェックは `npm run eslint` でできます
 - ユニットテストを行う場合は `npm run test` を実行
-- 統合テストは `npm run integration-test` で行うことができます
 
 ### ビルド
 - スタンドアロンのATJは `npm run build:dist` （一般的に、これはほとんどの用途に適合します）
