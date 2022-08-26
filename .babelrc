@@ -1,17 +1,6 @@
 {
-  "presets": [
-    ["env", {
-      "targets": {
-        "browsers": ["last 2 versions", "safari >= 7"]
-      }
-    }]
-  ],
-  "env": {
-    "integration": {
-      "presets": [
-        "es2015"
-      ]
-    }
-  },
-  "plugins": ["transform-inline-environment-variables"]
+  "plugins": [
+    "transform-inline-environment-variables",
+    ["@babel/plugin-proposal-decorators", {"legacy": true}]
+  ]
 }
