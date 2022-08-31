@@ -2,6 +2,9 @@
 
 import Utils from './utils.js';
 
+const visibilityEventName = 'atlasVisibilityStatus';
+const lastClickStorageKey = 'atlasLastClick';
+
 let system = {};
 let options = {};
 let user = {};
@@ -114,10 +117,10 @@ export default class AtlasTracking {
         }
 
         try {
-            visibilityEvent = new CustomEvent('atlasVisibilityStatus');
+            visibilityEvent = new CustomEvent(visibilityEventName);
         } catch (e) {
             visibilityEvent = targetWindow.document.createEvent('CustomEvent');
-            visibilityEvent.initCustomEvent('atlasVisibilityStatus', false, false, {});
+            visibilityEvent.initCustomEvent(visibilityEventName, false, false, {});
         }
         let requestAnimationFrame = targetWindow.requestAnimationFrame || targetWindow.mozRequestAnimationFrame || targetWindow.webkitRequestAnimationFrame || targetWindow.msRequestAnimationFrame;
 
@@ -271,6 +274,27 @@ export default class AtlasTracking {
             context.visibility = targetWindow.document.visibilityState || 'unknown';
             context.custom_object = paramContext.custom_object || {};
             context.funnel = paramContext.funnel || {};
+
+            if(options.trackClick.logLastClick){
+                const ttl = options.trackClick.lastClickTtl || 5;
+                const atlasLastClickJson = sessionStorage.getItem(lastClickStorageKey);
+                let atlasLastClickObj = {};
+
+                try{
+                    atlasLastClickObj = JSON.parse(atlasLastClickJson) || {};
+                }catch(e){
+                    // Nothing to do
+                }
+
+                if((Date.now() - atlasLastClickObj.ts) <= (ttl * 1000)){
+                    try{
+                        context.last_click = atlasLastClickObj.attr;
+                        sessionStorage.removeItem(lastClickStorageKey);
+                    }catch(e){
+                        // Nothing to do
+                    }
+                }
+            }            
         }
 
         if (options.trackNavigation && options.trackNavigation.enable) {
@@ -382,60 +406,54 @@ export default class AtlasTracking {
                     'tag': elm.tagName.toLowerCase(),
                     'id': elm.id || undefined,
                     'class': elm.className || undefined,
-                    'text': (elm.innerText || elm.value || '').substr(0,63) || undefined,
+                    'location': targetElement.pathDom || undefined,
                     'elapsed_since_page_load': ((Date.now()) - pageLoadedAt) / 1000
                 };
 
                 // Outbound
                 if (obj.trackLink && obj.trackLink.enable && elm.hostname && targetWindow.location.hostname !== elm.hostname && obj.trackLink.internalDomains.indexOf(elm.hostname) < 0) {
+                    attr['name'] = this.utils.getAttr(obj.trackLink.targetAttribute, elm);
+                    attr['text'] = !obj.trackLink.disableText ? (elm.innerText || elm.value || '').substr(0,63) : undefined;
                     this.utils.transmit('open', 'outbound_link', user, context, {
-                        'link': Object.assign(
-                            attr,
-                            {
-                                'location': targetElement.pathDom,
-                                'name': obj.trackLink.nameAttribute ? elm.getAttribute(obj.trackLink.nameAttribute) : undefined
-                            }
-                        )
+                        'link': attr
                     });
                 }
 
                 // Download
                 if (obj.trackDownload && obj.trackDownload.enable && elm.hostname && ext && obj.trackDownload.fileExtensions.indexOf(ext[1]) >= 0) {
+                    attr['name'] = this.utils.getAttr(obj.trackDownload.targetAttribute, elm);
+                    attr['text'] = !obj.trackDownload.disableText ? (elm.innerText || elm.value || '').substr(0,63) : undefined;
                     this.utils.transmit('download', 'file', user, context, {
-                        'download': Object.assign(
-                            attr,
-                            {
-                                'location': targetElement.pathDom,
-                                'name': obj.trackLink.nameAttribute ? elm.getAttribute(obj.trackDownload.nameAttribute) : undefined
-                            }
-                        )
+                        'download': attr
                     });
                 }
 
                 // Click
                 if (obj.trackClick && obj.trackClick.enable && targetElement) {
-                    if(!obj.trackClick.targetAttribute){
-                        this.utils.transmit('click', targetElement.category, user, context, {
-                            'action': Object.assign(
-                                attr,
-                                {
-                                    'location': targetElement.pathDom,
-                                    'name': undefined
-                                }
-                            )
-                        });
-                    }else{
-                        if(targetElement.pathTrackable.length > 0){
-                            this.utils.transmit('click', targetElement.category, user, context, {
-                                'action': Object.assign(
-                                    attr,
-                                    {
-                                        'location': targetElement.pathTrackable,
-                                        'name': elm.getAttribute(targetAttribute)
-                                    }
-                                )
-                            });
+                    attr['name'] = this.utils.getAttr(obj.trackClick.targetAttribute, elm);
+                    attr['text'] = !obj.trackClick.disableText ? (elm.innerText || elm.value || '').substr(0,63) : undefined;
+
+                    if(targetElement.pathTrackable.length > 0){
+                        attr['location'] = targetElement.pathTrackable;
+                    }
+
+                    // Last Click
+                    if(obj.trackClick.logLastClick){
+                        try{
+                            sessionStorage.setItem(lastClickStorageKey, JSON.stringify({
+                                ts: Date.now(),
+                                attr: attr
+                            }));
+                        }catch(e){
+                            // Nothing to do
                         }
+                    }
+
+                    // If useLastClickOnly is false
+                    if(!obj.trackClick.useLastClickOnly){
+                        this.utils.transmit('click', targetElement.category, user, context, {
+                            'action': attr
+                        });
                     }
                 }
             }
@@ -470,7 +488,7 @@ export default class AtlasTracking {
         let cvr = 0; //currentViewRate
         let pvr = 0; //prevViewRate
         this.eventHandler.remove(eventHandlerKeys['scroll']);
-        eventHandlerKeys['scroll'] = this.eventHandler.add(targetWindow, 'atlasVisibilityStatus', () => {
+        eventHandlerKeys['scroll'] = this.eventHandler.add(targetWindow, visibilityEventName, () => {
             r = this.utils.getV(null);
             if (r.detail.documentIsVisible !== 'hidden' && r.detail.documentIsVisible !== 'prerender') {
                 now = Date.now();
@@ -507,7 +525,7 @@ export default class AtlasTracking {
         let cvp = 0; //currentViewRate
         let pvp = 0; //prevViewRate
         this.eventHandler.remove(eventHandlerKeys['infinityScroll']);
-        eventHandlerKeys['infinityScroll'] = this.eventHandler.add(targetWindow, 'atlasVisibilityStatus', () => {
+        eventHandlerKeys['infinityScroll'] = this.eventHandler.add(targetWindow, visibilityEventName, () => {
             r = this.utils.getV(null);
             if (r.detail.documentIsVisible !== 'hidden' && r.detail.documentIsVisible !== 'prerender') {
                 now = Date.now();
@@ -549,7 +567,7 @@ export default class AtlasTracking {
         let cvr = 0; //currentViewRate
         let pvr = 0; //prevViewRate
         this.eventHandler.remove(eventHandlerKeys['read']);
-        eventHandlerKeys['read'] = this.eventHandler.add(targetWindow, 'atlasVisibilityStatus', () => {
+        eventHandlerKeys['read'] = this.eventHandler.add(targetWindow, visibilityEventName, () => {
             r = this.utils.getV(target);
             if (r.detail.documentIsVisible !== 'hidden' && r.detail.documentIsVisible !== 'prerender' && r.status.isInView) {
                 now = Date.now();
@@ -610,7 +628,7 @@ export default class AtlasTracking {
         let r = {}; //results
         let f = {}; //flags
         this.eventHandler.remove(eventHandlerKeys['viewability']);
-        eventHandlerKeys['viewability'] = this.eventHandler.add(targetWindow, 'atlasVisibilityStatus', () => {
+        eventHandlerKeys['viewability'] = this.eventHandler.add(targetWindow, visibilityEventName, () => {
             for (let i = 0; i < targets.length; i++) {
                 if (targets[i]) {
                     r[i] = this.utils.getV(targets[i]);
