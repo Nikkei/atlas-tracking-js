@@ -39,7 +39,7 @@
 |endpoint|String|ATJがビーコンを送る宛先|`atlas-endpoint.your.domain`|
 |apiKey|String|エンドポイントはこのキーを持つビーコンを受け付ける|`abc123xyz789`|
 |beaconTimeout|Integer|エンドポイントとの通信タイムアウトをミリ秒で指定|`2000` (2 sec)|
-|cookieName|String|Atlas IDを保存するCookie名|`atlasId`|
+|cookieName|String| **廃止** Atlas IDを保存するCookie名|`atlasId`|
 |cookieMaxAge|Integer|Atlas IDのCookieの有効期間|`(2 * 365 * 24 * 60 * 60)` (2 years)|
 |cookieDomain|String|Cookieを保存する際にドメイン属性として利用するドメイン名|`your.domain`|
 |targetWindow|String|ATJが動く（相対的な）ウィンドウ名|`parent`| 
@@ -96,9 +96,14 @@
 |:----:|:----:|:----:|:----:|
 |trackClick.enable|Boolean|この機能を使うか否か|`true`|
 |trackClick.targetAttribute|String|ATJはユーザーがこのデータ属性を持つ要素をクリックしたときにデータを収集する|`data-atlas-trackable`|
+|trackClick.disableText|Boolean|クリックされた要素の文字列の記録を無効化するか否か|`false`|
+|trackClick.logLastClick|Boolean|クリックに関する情報を次のページに引き継ぎ遷移先で直前のクリックを計測する|`true`|
+|trackClick.lastClickTtl|Integer|直前のクリックについての情報の有効期間（秒）|`5`|
+|trackClick.useLastClickOnly|Boolean|直前のクリック計測のみを利用し、クリックイベント時の計測を無効化するか否か|`false`|
 
 - `enable` が `true` であり、 `targetAttribute` に何らかの値が指定されている場合、 `targetAttribute` に指定されたdata属性を持つ要素のみが計測対象となる
 - `enable` が `true` であり、 `targetAttribute` が未指定または `false` の場合、全てのクリッカブル要素が計測対象となる
+- `logLastClick` を用いる場合、 Session Storage にキー名 `atlasLastClick` でJSON文字列が格納される（次ページで削除される）
 
 #### trackLink (オプション以下)
 

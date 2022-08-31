@@ -13,7 +13,6 @@ Most variables except `system` can be omitted but strongly recommend to specify 
     'defaults': {...},
     'product': {...},
     'options': {
-        'useGet': true,
         'exchangeAtlasId': {...},
         'trackClick': {...},
         'trackLink': {...},
@@ -40,7 +39,7 @@ Most variables except `system` can be omitted but strongly recommend to specify 
 |endpoint|String|Destination which ATJ transmit beacons to|`atlas-endpoint.your.domain`|
 |apiKey|String|Atlas Endpoint will accept beacons having this key|`abc123xyz789`|
 |beaconTimeout|Integer|Time limit in milli sec to cancel the connection to the endpoint |`2000` (2 sec)|
-|cookieName|String|Cookie name to store Atlas ID|`atlasId`|
+|cookieName|String| **DEPRECATED** Cookie name to store Atlas ID|`atlasId`|
 |cookieMaxAge|Integer|Atlas ID Cookie lifetime|`(2 * 365 * 24 * 60 * 60)` (2 years)|
 |cookieDomain|String|Domain to be used as domain-attribute when ATJ set Atlas ID Cookie|`your.domain`|
 |targetWindow|String|A name of (relative) target window where ATJ work in|`parent`| 
@@ -97,9 +96,14 @@ Most variables except `system` can be omitted but strongly recommend to specify 
 |:----:|:----:|:----:|:----:|
 |trackClick.enable|Boolean|Use this feature or not|`true`|
 |trackClick.targetAttribute|String|ATJ collects data when user clicked elements which has this data attribution |`data-atlas-trackable`|
+|trackClick.disableText|Boolean|If `true`, ATJ won't send a text on clicked element|`false`|
+|trackClick.logLastClick|Boolean|Inherit click information to the next page for Last Click feature|`true`|
+|trackClick.lastClickTtl|Integer|TTL in Sec about how long ATJ keep the last click information|`5`|
+|trackClick.useLastClickOnly|Boolean|If `true`, ATJ use only Last Click, and disable beacons on click event|`false`|
 
 - If `enable` is `true` and `targetAttribute` has a value, elements with data-attribute specified as `targetAttribute` is tracked.
 - If `enable` is `true` but `targetAttribute` is not specified or has `false`, all clickable elements are tracked.
+- In case `logLastClick` is enabled, a JSON string with key name `atlasLastClick` is added to Session Storage. (this item will be deleted on next page)
 
 #### trackLink (under options)
 
