@@ -277,22 +277,19 @@ export default class AtlasTracking {
 
             if(options.trackClick.logLastClick){
                 const ttl = options.trackClick.lastClickTtl || 5;
-                const atlasLastClickJson = sessionStorage.getItem(lastClickStorageKey);
+                let atlasLastClickJson = '';
                 let atlasLastClickObj = {};
 
                 try{
+                    atlasLastClickJson = sessionStorage.getItem(lastClickStorageKey);
                     atlasLastClickObj = JSON.parse(atlasLastClickJson) || {};
+                    sessionStorage.removeItem(lastClickStorageKey);
                 }catch(e){
                     // Nothing to do
                 }
 
                 if((Date.now() - atlasLastClickObj.ts) <= (ttl * 1000)){
-                    try{
-                        context.last_click = atlasLastClickObj.attr;
-                        sessionStorage.removeItem(lastClickStorageKey);
-                    }catch(e){
-                        // Nothing to do
-                    }
+                    context.last_click = atlasLastClickObj.attr;
                 }
             }            
         }
