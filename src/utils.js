@@ -112,10 +112,6 @@ export default class Utils {
         if(attributeName){
             result = element.getAttribute(attributeName);
         }
-
-        this.targetWindow.console.log(element);
-        this.targetWindow.console.log(attributeName);
-        this.targetWindow.console.log(result);
         if(result === null) {
             result = undefined;
         }
