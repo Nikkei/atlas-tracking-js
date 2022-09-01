@@ -1,15 +1,16 @@
 'use strict';
 
 // SDK Version Info
-const SDK_NAME = 'ATJ';
 const SDK_VERSION = process.env.npm_package_version;
 const SDK_API_KEY = process.env.SDK_API_KEY || 'test_api_key';
 const DEFAULT_ENDPOINT = process.env.DEFAULT_ENDPOINT || 'atlas.local';
 
+const sdkName = 'ATJ';
+const atlasCookieName = 'atlasId';
+
 let atlasEndpoint = null;
 let atlasApiKey = null;
 let atlasBeaconTimeout = null;
-let atlasCookieName = null;
 let atlasId = '0';
 let handlerEvents = {};
 let handlerKey = 0;
@@ -43,7 +44,6 @@ export default class Utils {
         atlasEndpoint = system.endpoint ? system.endpoint : DEFAULT_ENDPOINT;
         atlasApiKey = system.apiKey ? system.apiKey : SDK_API_KEY;
         atlasBeaconTimeout = system.beaconTimeout ? system.beaconTimeout : 2000;
-        atlasCookieName = system.cookieName ? system.cookieName : 'atlasId';
 
         atlasId = this.getC(atlasCookieName);
 
@@ -105,6 +105,17 @@ export default class Utils {
             'pathDom': pd.join('>')
         };
 
+    }
+
+    getAttr(attributeName, element) {
+        let result = null;
+        if(attributeName){
+            result = element.getAttribute(attributeName);
+        }
+        if(result === null) {
+            result = undefined;
+        }
+        return result;
     }
 
     getC(k) {
@@ -446,7 +457,7 @@ export default class Utils {
         }
 
         let b = JSON.stringify(this.buildIngest(ur, ct, sp));
-        let u = `https://${atlasEndpoint}/${SDK_NAME}-${SDK_VERSION}/${now}/${encodeURIComponent(atlasId)}/${f}`
+        let u = `https://${atlasEndpoint}/${sdkName}-${SDK_VERSION}/${now}/${encodeURIComponent(atlasId)}/${f}`
             + `/ingest?k=${atlasApiKey}&a=${ac}&c=${ca}&aqe=%`
             + `&d=${this.compress(encodeURIComponent(b))}`; //endpointUrl
 

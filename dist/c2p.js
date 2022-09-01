@@ -10,7 +10,6 @@
                 'endpoint': 'CHANGE_ME',
                 'apiKey': 'CHANGE_ME',
                 'beaconTimeout': 2000,
-                'cookieName': 'atlasId',
                 'cookieMaxAge': (2 * 365 * 24 * 60 * 60),
                 'cookieDomain': 'CHANGE_ME',
                 'targetWindow': 'self'
@@ -28,6 +27,10 @@
                 'trackClick': {
                     'enable': true,
                     'targetAttribute': 'data-atlas-trackable',
+                    'disableText': false,
+                    'logLastClick': true,
+                    'lastClickTtl': 5,
+                    'useLastClickOnly': false,
                 },
                 'trackLink': {
                     'enable': true,
