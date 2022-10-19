@@ -266,6 +266,7 @@ export default class AtlasTracking {
         if (paramContext !== void 0) {
             context = paramContext;
             context.root_id = this.utils.getUniqueId();
+            context.page_title = paramContext.page_title !== void 0 ? paramContext.page_title : defaults.page_title;
             context.url = paramContext.url !== void 0 ? paramContext.url : defaults.url;
             context.referrer = paramContext.referrer !== void 0 ? paramContext.referrer : defaults.referrer;
             context.product_family = paramContext.product_family || defaults.product_family;
