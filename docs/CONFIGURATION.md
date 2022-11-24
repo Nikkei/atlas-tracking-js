@@ -246,7 +246,7 @@ Most variables can be omitted but it will be helpful for you if you set concrete
 |edition|String|Edition of content|`Online`|
 |content_id|String|Unique value for identifying specific content|`abc123`|
 |content_name|String|Title of content|`Nikkei made Atlas public as an opensource software`|
-|content_status|String|If your service has a paywall or a meter system, you can set the status of content visibility here|`open`|
+|content_status|String|If your service has a paywall or a meter system, you can set the status of content visibility (like `opened`,`locked`)|`opened`|
 |page_name|String|Pagename for the page but not content name|`article`|
 |page_num|Integer|Pagenation|`atlasTracking.getQueryValue('page') `|| 1`|
 |category_l1|String|Category name. L1 is for large group of content|`Shoes`|
