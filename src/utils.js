@@ -479,7 +479,7 @@ export default class Utils {
 
         // Calculates the number of bytes in the URL string length
         // and switches to POST if it is greater than MAX_REQUEST_URL_LENGTH
-        if (length(u).replace(/%../g, '*').length > MAX_REQUEST_URL_LENGTH) {
+        if (u.replace(/%../g, '*').length > MAX_REQUEST_URL_LENGTH) {
             m = HTTP_METHOD_POST;
             u = _u;
         }
