@@ -476,7 +476,10 @@ export default class Utils {
 
         let u = _u + `&d=${this.compress(encodeURIComponent(b))}`;
         let m = HTTP_METHOD_GET;
-        if (length(u) > MAX_REQUEST_URL_LENGTH) {
+
+        // Calculates the number of bytes in the URL string length
+        // and switches to POST if it is greater than MAX_REQUEST_URL_LENGTH
+        if (length(u).replace(/%../g, '*').length > MAX_REQUEST_URL_LENGTH) {
             m = HTTP_METHOD_POST;
             u = _u;
         }
