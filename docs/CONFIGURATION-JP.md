@@ -246,7 +246,7 @@
 |edition|String|コンテンツのエディション|`Online`|
 |content_id|String|コンテンツを識別するための一意な値|`abc123`|
 |content_name|String|コンテンツの見出し|`Nikkei made Atlas public as an opensource software`|
-|content_status|String|ペイウォールやメーターシステムを持つサービスの場合、コンテンツの可視性についてセットできる|`open`|
+|content_status|String|ペイウォールやメーターシステムを持つサービスの場合、コンテンツの可視性について全文表示中(`opened`)や一部表示(`locked`)などをセットできる|`opened`|
 |page_name|String|ページに対するページ名だが、コンテンツの見出しではない|`article`|
 |page_num|Integer|ページ番号|`atlasTracking.getQueryValue('page') `|| 1`|
 |category_l1|String|カテゴリー名。L1はコンテンツの大きなグループ|`Shoes`|
