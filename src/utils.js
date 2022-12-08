@@ -507,10 +507,11 @@ export default class Utils {
                 const signal = controller.signal;
                 setTimeout(() => controller.abort(), atlasBeaconTimeout);
                 try{
-                    const options = { signal, method: m, cache: 'no-store', keepalive: true }
+                    const options = { signal, method: m, cache: 'no-store', keepalive: true };
                     if (m === HTTP_METHOD_POST && b) {
-                        options['body'] = new Blob([b], { type: HTTP_HEADER_CONTENT_TYPE_APPLICATION_JSON })
-                        options['headers'][HTTP_HEADER_CONTENT_TYPE] = HTTP_HEADER_CONTENT_TYPE_APPLICATION_JSON
+                        options['body'] = new Blob([b], { type: HTTP_HEADER_CONTENT_TYPE_APPLICATION_JSON });
+                        options['headers'] = {}
+                        options['headers'][HTTP_HEADER_CONTENT_TYPE] = HTTP_HEADER_CONTENT_TYPE_APPLICATION_JSON;
                     }
 
                     this.targetWindow.fetch(u, options);
@@ -522,5 +523,9 @@ export default class Utils {
             }
             return true;
         }
+    }
+
+    setSendBeaconStatusForTestUse(st) {
+        sendBeaconStatus = !!st;
     }
 }
