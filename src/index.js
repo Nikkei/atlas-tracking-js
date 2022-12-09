@@ -435,24 +435,27 @@ export default class AtlasTracking {
                         attr['location'] = targetElement.pathTrackable;
                     }
 
-                    // Last Click
-                    if(obj.trackClick.logLastClick){
-                        try{
-                            sessionStorage.setItem(lastClickStorageKey, JSON.stringify({
-                                ts: Date.now(),
-                                attr: attr
-                            }));
-                        }catch(e){
-                            // Nothing to do
+                    if(!targetAttribute || targetAttribute && elm.attributes[targetAttribute]){
+                        // Last Click
+                        if(obj.trackClick.logLastClick){
+                            try{
+                                sessionStorage.setItem(lastClickStorageKey, JSON.stringify({
+                                    ts: Date.now(),
+                                    attr: attr
+                                }));
+                            }catch(e){
+                                // Nothing to do
+                            }
+                        }
+
+                        // If useLastClickOnly is false
+                        if(!obj.trackClick.useLastClickOnly){
+                            this.utils.transmit('click', targetElement.category, user, context, {
+                                'action': attr
+                            });
                         }
                     }
 
-                    // If useLastClickOnly is false
-                    if(!obj.trackClick.useLastClickOnly){
-                        this.utils.transmit('click', targetElement.category, user, context, {
-                            'action': attr
-                        });
-                    }
                 }
             }
         }, false);
