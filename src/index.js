@@ -28,9 +28,9 @@ let eventHandlerKeys = {
     form: {}
 };
 
-let pageLoadedAt = Date.now();
-let prevActionOccurredAt = pageLoadedAt;
-
+let isInitialized = false;
+let pageLoadedAt, prevActionOccurredAt;
+pageLoadedAt = prevActionOccurredAt = Date.now();
 
 export default class AtlasTracking {
     constructor() {
@@ -258,6 +258,13 @@ export default class AtlasTracking {
     initPage(obj) {
         const paramUser = obj.user;
         const paramContext = obj.context;
+
+        if(isInitialized){
+            pageLoadedAt = prevActionOccurredAt = Date.now();
+        }else{
+            isInitialized = true;
+        }
+
         if (paramUser !== void 0) {
             user = paramUser;
             user.custom_object = paramUser.custom_object || {};
