@@ -388,7 +388,8 @@ export default class AtlasTracking {
     delegateClickEvents(obj) {
         this.eventHandler.remove(eventHandlerKeys['click']);
         eventHandlerKeys['click'] = this.eventHandler.add(targetWindow.document.body, 'click', (ev) => {
-            const targetAttribute = obj.trackClick && obj.trackClick.targetAttribute ? obj.trackClick.targetAttribute : false;
+            const trackClickConfig = obj.trackClick;
+            const targetAttribute = trackClickConfig && trackClickConfig.targetAttribute ? trackClickConfig.targetAttribute : false;
             const targetElement = this.utils.qsM('a, button, [role="button"]', ev.target, targetAttribute);
 
             if(targetElement && targetElement.element){
@@ -427,17 +428,24 @@ export default class AtlasTracking {
                 }
 
                 // Click
-                if (obj.trackClick && obj.trackClick.enable && targetElement) {
-                    attr['name'] = this.utils.getAttr(obj.trackClick.targetAttribute, elm);
-                    attr['text'] = !obj.trackClick.disableText ? (elm.innerText || elm.value || '').substr(0,63) : undefined;
+                if (trackClickConfig && trackClickConfig.enable && targetElement) {
+
+                    const triggerCondition = (
+                        !targetAttribute
+                        || (targetAttribute && elm.attributes[targetAttribute])
+                        || (targetAttribute && obj.trackLink.logAllClicks)
+                    );
+
+                    attr['name'] = this.utils.getAttr(trackClickConfig.targetAttribute, elm);
+                    attr['text'] = !trackClickConfig.disableText ? (elm.innerText || elm.value || '').substr(0,63) : undefined;
 
                     if(targetElement.pathTrackable.length > 0){
                         attr['location'] = targetElement.pathTrackable;
                     }
 
-                    if(!targetAttribute || targetAttribute && elm.attributes[targetAttribute]){
+                    if(triggerCondition){
                         // Last Click
-                        if(obj.trackClick.logLastClick){
+                        if(trackClickConfig.logLastClick){
                             try{
                                 sessionStorage.setItem(lastClickStorageKey, JSON.stringify({
                                     ts: Date.now(),
@@ -449,7 +457,7 @@ export default class AtlasTracking {
                         }
 
                         // If useLastClickOnly is false
-                        if(!obj.trackClick.useLastClickOnly){
+                        if(!trackClickConfig.useLastClickOnly){
                             this.utils.transmit('click', targetElement.category, user, context, {
                                 'action': attr
                             });

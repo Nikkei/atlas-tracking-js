@@ -28,6 +28,7 @@
                     'enable': true,
                     'targetAttribute': 'data-atlas-trackable',
                     'disableText': false,
+                    'logAllClicks': true,
                     'logLastClick': true,
                     'lastClickTtl': 5,
                     'useLastClickOnly': false,
