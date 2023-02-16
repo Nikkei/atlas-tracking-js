@@ -437,20 +437,15 @@ export default class AtlasTracking {
                 // Click
                 if (trackClickConfig && trackClickConfig.enable && targetElement) {
 
-                    const triggerCondition = (
+                    if(
                         !targetAttribute
+                        || trackClickConfig.logAllClicks
                         || (targetAttribute && elm.attributes[targetAttribute])
-                        || (targetAttribute && obj.trackLink.logAllClicks)
-                    );
+                    ){
+                        attr['name'] = targetAttribute ? this.utils.getAttr(trackClickConfig.targetAttribute, elm) : undefined;
+                        attr['text'] = !trackClickConfig.disableText ? (elm.innerText || elm.value || '').substr(0,63) : undefined;
+                        attr['location'] = targetElement.pathTrackable.length > 0 ? targetElement.pathTrackable : undefined;
 
-                    attr['name'] = this.utils.getAttr(trackClickConfig.targetAttribute, elm);
-                    attr['text'] = !trackClickConfig.disableText ? (elm.innerText || elm.value || '').substr(0,63) : undefined;
-
-                    if(targetElement.pathTrackable.length > 0){
-                        attr['location'] = targetElement.pathTrackable;
-                    }
-
-                    if(triggerCondition){
                         // Last Click
                         if(trackClickConfig.logLastClick){
                             try{
