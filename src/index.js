@@ -444,7 +444,10 @@ export default class AtlasTracking {
                     ){
                         attr['name'] = targetAttribute ? this.utils.getAttr(trackClickConfig.targetAttribute, elm) : undefined;
                         attr['text'] = !trackClickConfig.disableText ? (elm.innerText || elm.value || '').substr(0,63) : undefined;
-                        attr['location'] = targetElement.pathTrackable.length > 0 ? targetElement.pathTrackable : undefined;
+
+                        if(targetElement.pathTrackable.length > 0){
+                            attr['location'] = targetElement.pathTrackable;
+                        }
 
                         // Last Click
                         if(trackClickConfig.logLastClick){
