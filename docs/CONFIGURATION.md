@@ -40,8 +40,8 @@ Most variables except `system` can be omitted but strongly recommend to specify 
 |apiKey|String|Atlas Endpoint will accept beacons having this key|`abc123xyz789`|
 |beaconTimeout|Integer|Time limit in milli sec to cancel the connection to the endpoint |`2000` (2 sec)|
 |cookieName|String| **DEPRECATED** Cookie name to store Atlas ID|`atlasId`|
-|cookieMaxAge|Integer|Atlas ID Cookie lifetime|`(2 * 365 * 24 * 60 * 60)` (2 years)|
-|cookieDomain|String|Domain to be used as domain-attribute when ATJ set Atlas ID Cookie|`your.domain`|
+|cookieMaxAge|Integer| **DEPRECATED** Atlas ID Cookie lifetime|`(2 * 365 * 24 * 60 * 60)` (2 years)|
+|cookieDomain|String| **DEPRECATED** Domain to be used as domain-attribute when ATJ set Atlas ID Cookie|`your.domain`|
 |targetWindow|String|A name of (relative) target window where ATJ work in|`parent`| 
 
 #### defaults
