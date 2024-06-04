@@ -40,8 +40,8 @@
 |apiKey|String|エンドポイントはこのキーを持つビーコンを受け付ける|`abc123xyz789`|
 |beaconTimeout|Integer|エンドポイントとの通信タイムアウトをミリ秒で指定|`2000` (2 sec)|
 |cookieName|String| **廃止** Atlas IDを保存するCookie名|`atlasId`|
-|cookieMaxAge|Integer|Atlas IDのCookieの有効期間|`(2 * 365 * 24 * 60 * 60)` (2 years)|
-|cookieDomain|String|Cookieを保存する際にドメイン属性として利用するドメイン名|`your.domain`|
+|cookieMaxAge|Integer| **廃止** Atlas IDのCookieの有効期間|`(2 * 365 * 24 * 60 * 60)` (2 years)|
+|cookieDomain|String| **廃止** Cookieを保存する際にドメイン属性として利用するドメイン名|`your.domain`|
 |targetWindow|String|ATJが動く（相対的な）ウィンドウ名|`parent`| 
 
 #### defaults
