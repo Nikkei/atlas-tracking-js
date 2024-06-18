@@ -168,7 +168,7 @@
 |trackRead.milestones|Array|ATJはまた、これらのマイルストーンを越えた時点でビーコンを送信する|`[4, 15, 30, 60, 90, 120]`|
 
 - `trackScroll` と `trackRead` の違いは：
-    - `trackScroll` はwindowに対するスクロース深度を計測する
+    - `trackScroll` はwindowに対するスクロール深度を計測する
     - `trackRead` はコンテンツ本体のブロック要素における可視性の変化に注目する
 - `trackScroll` は深度と時間の組み合わせで動くが、 `trackRead` は深度と時間を切り離して扱う
 
