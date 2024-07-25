@@ -7,12 +7,12 @@ const DEFAULT_ENDPOINT = process.env.DEFAULT_ENDPOINT || 'atlas.local';
 
 // Nginx URL Length default Limit
 // See: http://nginx.org/en/docs/http/ngx_http_core_module.html#large_client_header_buffers
-const MAX_REQUEST_URL_LENGTH = 8 * (1 << 10)
+const MAX_REQUEST_URL_LENGTH = 8 * (1 << 10);
 
-const HTTP_METHOD_GET = 'GET'
-const HTTP_METHOD_POST = 'POST'
-const HTTP_HEADER_CONTENT_TYPE = 'Content-Type'
-const HTTP_HEADER_CONTENT_TYPE_APPLICATION_JSON = 'application/json'
+const HTTP_METHOD_GET = 'GET';
+const HTTP_METHOD_POST = 'POST';
+const HTTP_HEADER_CONTENT_TYPE = 'Content-Type';
+const HTTP_HEADER_CONTENT_TYPE_APPLICATION_JSON = 'application/json';
 
 const sdkName = 'ATJ';
 const atlasCookieName = 'atlasId';
@@ -452,8 +452,8 @@ export default class Utils {
 
         try{
             if (m === HTTP_METHOD_POST && b) {
-                x.setRequestHeader(HTTP_HEADER_CONTENT_TYPE, HTTP_HEADER_CONTENT_TYPE_APPLICATION_JSON)
-                x.send(new Blob([b], { type: HTTP_HEADER_CONTENT_TYPE_APPLICATION_JSON }))
+                x.setRequestHeader(HTTP_HEADER_CONTENT_TYPE, HTTP_HEADER_CONTENT_TYPE_APPLICATION_JSON);
+                x.send(new Blob([b], { type: HTTP_HEADER_CONTENT_TYPE_APPLICATION_JSON }));
             } else {
                 x.send();
             }
@@ -488,7 +488,7 @@ export default class Utils {
             try {
                 let blob = null;
                 if (m == HTTP_METHOD_POST && b) {
-                    blob = new Blob([b], { type: HTTP_HEADER_CONTENT_TYPE_APPLICATION_JSON })
+                    blob = new Blob([b], { type: HTTP_HEADER_CONTENT_TYPE_APPLICATION_JSON });
                 }
 
                 sendBeaconStatus = navigator.sendBeacon(u, blob);
@@ -510,7 +510,7 @@ export default class Utils {
                     const options = { signal, method: m, cache: 'no-store', keepalive: true };
                     if (m === HTTP_METHOD_POST && b) {
                         options['body'] = new Blob([b], { type: HTTP_HEADER_CONTENT_TYPE_APPLICATION_JSON });
-                        options['headers'] = {}
+                        options['headers'] = {};
                         options['headers'][HTTP_HEADER_CONTENT_TYPE] = HTTP_HEADER_CONTENT_TYPE_APPLICATION_JSON;
                     }
 
