@@ -259,7 +259,7 @@ atlasTracking.delCustomId('rtoaster');
 |detail.targetHeight|Float|対象要素の高さのピクセルまたはポイント（iOS）|`269`|
 |detail.targetMarginTop|Float|viewportの上端から対象要素の上端までの距離|`455.03125`|
 |detail.targetMarginBottom|Float|viewportの下端から対象要素の下端までの距離|`169.96875`|
-|detail.targetScrollRate|Float|対象要素に対する可視領域のスクロース率。1の場合は対象要素の下端まで見えているという意味|`1`|
+|detail.targetScrollRate|Float|対象要素に対する可視領域のスクロール率。1の場合は対象要素の下端まで見えているという意味|`1`|
 |detail.targetScrollUntil|Float|対象要素のスクロール深度|`269`|
 |detail.targetViewableRate|Float|対象要素の可視領域の割合|`1`|
 |detail.targetVisibleTop|Float|対象要素の可視領域の上端位置|`0`|
