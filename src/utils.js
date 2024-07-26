@@ -5,6 +5,15 @@ const SDK_VERSION = process.env.npm_package_version;
 const SDK_API_KEY = process.env.SDK_API_KEY || 'test_api_key';
 const DEFAULT_ENDPOINT = process.env.DEFAULT_ENDPOINT || 'atlas.local';
 
+// Nginx URL Length default Limit
+// See: http://nginx.org/en/docs/http/ngx_http_core_module.html#large_client_header_buffers
+const MAX_REQUEST_URL_LENGTH = 8 * (1 << 10);
+
+const HTTP_METHOD_GET = 'GET';
+const HTTP_METHOD_POST = 'POST';
+const HTTP_HEADER_CONTENT_TYPE = 'Content-Type';
+const HTTP_HEADER_CONTENT_TYPE_APPLICATION_JSON = 'application/json';
+
 const sdkName = 'ATJ';
 const atlasCookieName = 'atlasId';
 
@@ -433,16 +442,21 @@ export default class Utils {
         return r;
     }
 
-    xhr(u, a) {
+    xhr(u, a, m, b) {
         const x = new XMLHttpRequest();
-        x.open('GET', u, a);
+        x.open(m, u, a);
         if (a === true) {
             x.timeout = atlasBeaconTimeout;
         }
         x.withCredentials = true;
 
         try{
-            x.send();
+            if (m === HTTP_METHOD_POST && b) {
+                x.setRequestHeader(HTTP_HEADER_CONTENT_TYPE, HTTP_HEADER_CONTENT_TYPE_APPLICATION_JSON);
+                x.send(new Blob([b], { type: HTTP_HEADER_CONTENT_TYPE_APPLICATION_JSON }));
+            } else {
+                x.send();
+            }
         }catch(e){
             // Nothing to do...
         }
@@ -456,19 +470,33 @@ export default class Utils {
             f = 0;
         }
 
-        let b = JSON.stringify(this.buildIngest(ur, ct, sp));
-        let u = `https://${atlasEndpoint}/${sdkName}-${SDK_VERSION}/${now}/${encodeURIComponent(atlasId)}/${f}`
-            + `/ingest?k=${atlasApiKey}&a=${ac}&c=${ca}&aqe=%`
-            + `&d=${this.compress(encodeURIComponent(b))}`; //endpointUrl
+        const b = JSON.stringify(this.buildIngest(ur, ct, sp));
+        const _u = `https://${atlasEndpoint}/${sdkName}-${SDK_VERSION}/${now}/${encodeURIComponent(atlasId)}/${f}`
+            + `/ingest?k=${atlasApiKey}&a=${ac}&c=${ca}&aqe=%`; //endpointUrl
+
+        let u = _u + `&d=${this.compress(encodeURIComponent(b))}`;
+        let m = HTTP_METHOD_GET;
+
+        // Calculates the number of bytes in the URL string length
+        // and switches to POST if it is greater than MAX_REQUEST_URL_LENGTH
+        if (u.replace(/%../g, '*').length > MAX_REQUEST_URL_LENGTH) {
+            m = HTTP_METHOD_POST;
+            u = _u;
+        }
 
         if ('sendBeacon' in navigator && sendBeaconStatus === true) {
             try {
-                sendBeaconStatus = navigator.sendBeacon(u, null);
+                let blob = null;
+                if (m == HTTP_METHOD_POST && b) {
+                    blob = new Blob([b], { type: HTTP_HEADER_CONTENT_TYPE_APPLICATION_JSON });
+                }
+
+                sendBeaconStatus = navigator.sendBeacon(u, blob);
             } catch (e) {
                 sendBeaconStatus = false;
             }
             if (!sendBeaconStatus) {
-                this.xhr(u, a);
+                this.xhr(u, a, m, b);
             }
             return true;
         } else {
@@ -479,14 +507,25 @@ export default class Utils {
                 const signal = controller.signal;
                 setTimeout(() => controller.abort(), atlasBeaconTimeout);
                 try{
-                    this.targetWindow.fetch(u, {signal, method: 'GET', cache: 'no-store', keepalive: true});
+                    const options = { signal, method: m, cache: 'no-store', keepalive: true };
+                    if (m === HTTP_METHOD_POST && b) {
+                        options['body'] = new Blob([b], { type: HTTP_HEADER_CONTENT_TYPE_APPLICATION_JSON });
+                        options['headers'] = {};
+                        options['headers'][HTTP_HEADER_CONTENT_TYPE] = HTTP_HEADER_CONTENT_TYPE_APPLICATION_JSON;
+                    }
+
+                    this.targetWindow.fetch(u, options);
                 }catch(e){
                     // Nothing to do...
                 }
             } else {
-                this.xhr(u, a);
+                this.xhr(u, a, m, b);
             }
             return true;
         }
+    }
+
+    setSendBeaconStatusForTestUse(st) {
+        sendBeaconStatus = !!st;
     }
 }
