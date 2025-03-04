@@ -100,9 +100,11 @@ Most variables except `system` can be omitted but strongly recommend to specify 
 |trackClick.logLastClick|Boolean|Inherit click information to the next page for Last Click feature|`true`|
 |trackClick.lastClickTtl|Integer|TTL in Sec about how long ATJ keep the last click information|`5`|
 |trackClick.useLastClickOnly|Boolean|If `true`, ATJ use only Last Click, and disable beacons on click event|`false`|
+|trackClick.logAllClicks|Boolean|If `true` then force to log all clicks. It allows both fully automated click tracking and naming events through data attribute|`true`|
 
 - If `enable` is `true` and `targetAttribute` has a value, elements with data-attribute specified as `targetAttribute` is tracked.
 - If `enable` is `true` but `targetAttribute` is not specified or has `false`, all clickable elements are tracked.
+- If  `enable` is `true` and `targetAttribute`, but `logAllClicks` is available and set to `true`, all clicks will be tracked with custome naming by data attribute specified as `targetAttribute`.
 - In case `logLastClick` is enabled, a JSON string with key name `atlasLastClick` is added to Session Storage. (this item will be deleted on next page)
 
 #### trackLink (under options)

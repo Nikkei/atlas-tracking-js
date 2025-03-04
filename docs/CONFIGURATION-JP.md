@@ -100,9 +100,11 @@
 |trackClick.logLastClick|Boolean|クリックに関する情報を次のページに引き継ぎ遷移先で直前のクリックを計測する|`true`|
 |trackClick.lastClickTtl|Integer|直前のクリックについての情報の有効期間（秒）|`5`|
 |trackClick.useLastClickOnly|Boolean|直前のクリック計測のみを利用し、クリックイベント時の計測を無効化するか否か|`false`|
+|trackClick.logAllClicks|Boolean|全てのクリックを強制的に計測する。データ属性の指定と完全な自動計測を両立する|`true`|
 
 - `enable` が `true` であり、 `targetAttribute` に何らかの値が指定されている場合、 `targetAttribute` に指定されたdata属性を持つ要素のみが計測対象となる
 - `enable` が `true` であり、 `targetAttribute` が未指定または `false` の場合、全てのクリッカブル要素が計測対象となる
+- `enable` が `true` であり、 `targetAttribute` に何らかの値が指定され、かつ `logAllClicks` が存在し `true`がセットされている場合、全てのクリックが `targetAttribute` で指定されたdata属性により命名された上で計測される
 - `logLastClick` を用いる場合、 Session Storage にキー名 `atlasLastClick` でJSON文字列が格納される（次ページで削除される）
 
 #### trackLink (オプション以下)
