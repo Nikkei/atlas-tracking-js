@@ -34,7 +34,7 @@
     "mocha-chrome": "^2.2.0",
     "query-string": "^7.1.1",
     "rimraf": "^3.0.2",
-    "rollup": "^2.78.1",
+    "rollup": "^2.79.2",
     "sinon": "^15.0.1",
     "uglify-js": "^3.17.0",
     "webpack": "^5.68.0",
