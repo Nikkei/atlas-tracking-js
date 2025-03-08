@@ -4,6 +4,7 @@ node_modules
 test/integration/pages/assets/*.js
 dist/atj.js
 dist/atj.min.js
+dist/index.js
 dist/atj.zip
 dist/index.html
 test/build
