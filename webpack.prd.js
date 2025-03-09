@@ -5,6 +5,9 @@ module.exports = {
     entry: "./src/index.dist.js",
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'atj.min.js'
+        filename: 'atj.min.js',
+        environment: {
+            arrowFunction: false,
+        }
     }
 };

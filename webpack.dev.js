@@ -5,6 +5,9 @@ module.exports = {
     entry: "./test/index.test.js",
     output: {
         path: path.resolve(__dirname, 'test/build'),
-        filename: 'test.js'
+        filename: 'test.js',
+        environment: {
+            arrowFunction: false,
+        }
     }
 };

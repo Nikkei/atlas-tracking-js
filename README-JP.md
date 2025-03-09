@@ -1,7 +1,5 @@
 # Atlas Tracking JS (ATJ)
 
-[![Circle CI](https://circleci.com/gh/Nikkei/atlas-tracking-js/tree/master.svg?style=svg)](https://circleci.com/gh/Nikkei/atlas-tracking-js/tree/master)
-
 一般的なウェブサイト用 Atlas計測ライブラリ
 
 - ATJはAtlas用の計測SDKです

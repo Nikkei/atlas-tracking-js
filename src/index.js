@@ -135,6 +135,7 @@ export default class AtlasTracking {
                     callback(currTime + timeToCall);
                 }, timeToCall);
                 lastTime = currTime + timeToCall;
+                
                 return id;
             };
         }
