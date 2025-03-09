@@ -1,4 +1,5 @@
 import Utils from '../src/utils';
+import {expect} from 'chai';
 import sinon from 'sinon';
 
 describe('#getP', () => {
