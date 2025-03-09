@@ -4,7 +4,7 @@
   "description": "ATJ: Atlas Tracking JS provides capabilities for measuring user activities on your website.",
   "main": "index.js",
   "scripts": {
-    "test": "pnpm run test:build && mocha-chrome ./test/test.html --no-colors --ignore-exceptions --chrome-launcher.maxConnectionRetries=100",
+    "test": "pnpm run test:build && mocha-chrome ./test/test.html --no-colors --ignore-exceptions --chrome-launcher.maxConnectionRetries=100 --disable-ipv6",
     "test:build": "webpack -m -c ./webpack.common.js -c ./webpack.dev.js",
     "build:npm": "rollup -c --bundleConfigAsCjs",
     "build:dist": "webpack -m -c ./webpack.common.js -c ./webpack.prd.js",
