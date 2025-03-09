@@ -9,25 +9,27 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [16]
+        node: [22]
     steps:
       - name: checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-
-      - name: npm install, build:dist
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - name: pnpm install, build:dist
         env:
           SDK_API_KEY: ${{ secrets.SDK_API_KEY }}
           DEFAULT_ENDPOINT: ${{ secrets.DEFAULT_ENDPOINT }}
         run: |
-          npm install
-          npm run build:dist
+          pnpm install
+          pnpm build:dist
 
       - name: zip dist
         run: |
