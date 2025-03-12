@@ -124,6 +124,7 @@ export default class Utils {
         if(result === null) {
             result = undefined;
         }
+        
         return result;
     }
 
@@ -138,6 +139,7 @@ export default class Utils {
                 return cookie.substring(`${k}=`.length, cookie.length);
             }
         }
+        
         return '';
     }
 
@@ -154,6 +156,7 @@ export default class Utils {
                 return decodeURIComponent(pair[1]);
             }
         }
+        
         return '';
     }
 
@@ -164,6 +167,7 @@ export default class Utils {
         } catch (e) {
             // Nothing to do...
         }
+        
         return r;
     }
 
@@ -188,6 +192,7 @@ export default class Utils {
                 }
             }
         }
+        
         return nav;
     }
 
@@ -215,6 +220,7 @@ export default class Utils {
             };
             t = (this.targetWindow.performance || {}).navigation;
         }
+        
         return {
             'performanceResult': r,
             'navigationType': t
@@ -231,6 +237,7 @@ export default class Utils {
                     listener: listener,
                     capture: capture
                 };
+                
                 return handlerKey++;
             },
             remove: function (handlerKey) {
@@ -396,6 +403,7 @@ export default class Utils {
         f.last_item = t.name || t.id || '-';
         f.last_item_since_page_load = (Date.now() - pl) / 1000;
         f.last_item_since_first_item = f.last_item_since_page_load - f.first_item_since_page_load;
+        
         return f;
     }
 
@@ -427,6 +435,7 @@ export default class Utils {
         igt.user.screen_height = this.targetWindow.screen.height;
         igt.user.screen_width = this.targetWindow.screen.width;
         igt.user.layout = lyt;
+        
         return igt;
     }
 
@@ -439,6 +448,7 @@ export default class Utils {
         r = r.replace(/%22%3A/g, '%v');
         r = r.replace(/%2C%22/g, '%u');
         r = r.replace(/%7D%7D%7D/g, '%t');
+        
         return r;
     }
 
@@ -498,6 +508,7 @@ export default class Utils {
             if (!sendBeaconStatus) {
                 this.xhr(u, a, m, b);
             }
+            
             return true;
         } else {
             const targetWindow = this.targetWindow;
@@ -521,6 +532,7 @@ export default class Utils {
             } else {
                 this.xhr(u, a, m, b);
             }
+            
             return true;
         }
     }
