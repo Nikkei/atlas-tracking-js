@@ -9,8 +9,7 @@
     "build:npm": "rollup -c --bundleConfigAsCjs",
     "build:dist": "webpack -m -c ./webpack.common.js -c ./webpack.prd.js",
     "prepublishOnly": "pnpm run build:npm",
-    "eslint": "eslint --fix ./src --ext .js",
-    "esdoc": "esdoc"
+    "eslint": "eslint --fix ./src --ext .js"
   },
   "author": "Nikkei Inc.",
   "license": "MIT",
@@ -23,13 +22,8 @@
     "babel-loader": "^10.0.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
     "chai": "^5.2.0",
-    "esdoc": "^1.1.0",
-    "esdoc-standard-plugin": "^1.0.0",
     "eslint": "^9.22.0",
     "globals": "^16.0.0",
-    "gulp": "^5.0.0",
-    "gulp-buffer": "^0.0.2",
-    "gulp-tap": "^2.0.0",
     "mocha": "^11.1.0",
     "mocha-chrome": "^2.2.0",
     "rollup": "^4.35.0",
