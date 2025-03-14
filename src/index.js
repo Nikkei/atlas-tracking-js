@@ -339,14 +339,14 @@ export default class AtlasTracking {
         }
         if (options.trackMedia && options.trackMedia.enable) {
             const targetEvents = ['play', 'pause', 'end'];
-            for (const event of targetEvents) {
-                this.eventHandler.remove(eventHandlerKeys['media'][event]);
+            for (let i = 0; i < targetEvents.length; i++) {
+                this.eventHandler.remove(eventHandlerKeys['media'][targetEvents[i]]);
             }
         }
         if (options.trackForm && options.trackForm.enable && options.trackForm.target !== null) {
             const targetEvents = ['focus', 'change'];
-            for (const event of targetEvents) {
-                this.eventHandler.remove(eventHandlerKeys['form'][event]);
+            for (let i = 0; i < targetEvents.length; i++) {
+                this.eventHandler.remove(eventHandlerKeys['form'][targetEvents[i]]);
             }
         }
         if (options.trackPerformance && options.trackPerformance.enable) {
