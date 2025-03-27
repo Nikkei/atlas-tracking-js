@@ -47,16 +47,16 @@ docker run \
 
 #### Initialization
 ```sh
-npm install
+pnpm install
 ```
 
 ### Test
-- You can lint the code by `npm run eslint`
-- For the unit test, run `npm run test`
+- You can lint the code by `pnpm run eslint`
+- For the unit test, run `pnpm run test`
 
 ### Build
-- For the standalone ATJ, `npm run build:dist` (In general, this will fit with most use cases)
-- For generating NPM module, `npm run build:npm`
+- For the standalone ATJ, `pnpm run build:dist` (In general, this will fit with most use cases)
+- For generating NPM module, `pnpm run build:npm`
 
 ## Implementation Guide
 
