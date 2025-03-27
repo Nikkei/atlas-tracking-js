@@ -35,8 +35,8 @@ export default class Utils {
         if (self.crypto && self.crypto.getRandomValues) {
             const u32a = new Uint32Array(3);
             self.crypto.getRandomValues(u32a);
-            for (const num of u32a) {
-                result += num.toString(32);
+            for (let i = 0; i < u32a.length; i++) {
+                result += u32a[i].toString(32);
             }
         }else{
             // For IE compatibility
