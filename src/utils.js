@@ -30,17 +30,18 @@ let sendBeaconStatus = true;
  */
 export default class Utils {
     constructor(targetWindow) {
-        const timestamp = (+new Date()).toString(16);
+        const timestamp = (new Date()).toString(16);
+        const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
         let result = '';
         if (self.crypto && self.crypto.getRandomValues) {
             const u32a = new Uint8Array(32);
             self.crypto.getRandomValues(u32a);
-            for (let i = 0; i < 32; i++) {
-                result += u32a[i].toString(32);
-            }
+            result = Array.from(
+                u32a,
+                (byte) => chars[byte % chars.length],
+            ).join("");
         }else{
             // For IE compatibility
-            const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
             for (let i = 0; i < 32; i++) {
                 result += chars[Math.floor(Math.random() * chars.length)];
             }
