@@ -33,9 +33,9 @@ export default class Utils {
         const timestamp = (+new Date()).toString(16);
         let result = '';
         if (self.crypto && self.crypto.getRandomValues) {
-            const u32a = new Uint32Array(3);
+            const u32a = new Uint8Array(32);
             self.crypto.getRandomValues(u32a);
-            for (let i = 0; i < u32a.length; i++) {
+            for (let i = 0; i < 32; i++) {
                 result += u32a[i].toString(32);
             }
         }else{
@@ -45,7 +45,7 @@ export default class Utils {
                 result += chars[Math.floor(Math.random() * chars.length)];
             }
         }
-        this.uniqueId = `${timestamp}.${result}`;
+        this.uniqueId = `${timestamp}.${(result.substring(0,32))}`;
         this.targetWindow = targetWindow;
     }
 
