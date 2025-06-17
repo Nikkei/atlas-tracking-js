@@ -30,7 +30,7 @@ let sendBeaconStatus = true;
  */
 export default class Utils {
     constructor(targetWindow) {
-        const timestamp = (new Date()).toString(16);
+        const timestamp = Math.floor(Date.now() / 1000).toString(16);
         const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
         let result = '';
         if (self.crypto && self.crypto.getRandomValues) {
