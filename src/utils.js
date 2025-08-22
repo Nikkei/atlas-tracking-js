@@ -365,6 +365,7 @@ export default class Utils {
                 'player_id': t.playerId || undefined,
                 'played_percent': Math.round(t.currentTime / t.duration * 100),
                 'duration': t.duration,
+                'playback_rate': t.playbackRate || 1,
                 'current_time': Math.round(t.currentTime * 10) / 10,
                 'dataset': t.dataset
             };
