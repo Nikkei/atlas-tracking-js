@@ -47,16 +47,16 @@ docker run \
 
 #### 初期設定
 ```sh
-npm install
+pnpm install
 ```
 
 ### テスト
-- 構文チェックは `npm run eslint` でできます
-- ユニットテストを行う場合は `npm run test` を実行
+- 構文チェックは `pnpm run eslint` でできます
+- ユニットテストを行う場合は `pnpm run test` を実行
 
 ### ビルド
-- スタンドアロンのATJは `npm run build:dist` （一般的に、これはほとんどの用途に適合します）
-- NPMモジュールを生成する場合は, `npm run build:npm`
+- スタンドアロンのATJは `pnpm run build:dist` （一般的に、これはほとんどの用途に適合します）
+- NPMモジュールを生成する場合は, `pnpm run build:npm`
 
 ## 実装ガイド
 
