@@ -338,7 +338,7 @@ export default class AtlasTracking {
             this.eventHandler.remove(eventHandlerKeys['viewability']);
         }
         if (options.trackMedia && options.trackMedia.enable) {
-            const targetEvents = ['play', 'pause', 'end'];
+            const targetEvents = ['play', 'pause', 'end', 'ended'];
             for (const event of targetEvents) {
                 this.eventHandler.remove(eventHandlerKeys['media'][event]);
             }
@@ -675,7 +675,7 @@ export default class AtlasTracking {
      * @private
      */
     trackMedia(selector, heartbeat) {
-        const targetEvents = ['play', 'pause', 'end'];
+        const targetEvents = ['play', 'pause', 'end', 'ended'];
         let f = {}; //flags
         for (let i = 0; i < targetEvents.length; i++) {
             this.eventHandler.remove(eventHandlerKeys['media'][targetEvents[i]]);
