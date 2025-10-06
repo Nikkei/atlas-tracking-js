@@ -8,3 +8,4 @@ dist/index.js
 dist/atj.zip
 dist/index.html
 test/build
+test-results/

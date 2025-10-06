@@ -15,4 +15,5 @@ jobs:
         with:
           version: 10
       - run: pnpm install
+      - run: pnpm exec playwright install --with-deps
       - run: pnpm test
