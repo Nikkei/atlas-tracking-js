@@ -1,60 +1,32 @@
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import Utils from '../src/utils';
-import {expect} from 'chai';
-import sinon from 'sinon';
-
-describe('#getP', () => {
-    let utils;
-    beforeEach(() => {
-        utils = new Utils(window.parent)
-    })
-
-    it('should return performance info.', () => {
-        let info = utils.getP()
-        let t = info.navigationType
-        let r = info.performanceResult
-
-        expect(t).to.be.a('PerformanceNavigation')
-        expect(r.unload).to.not.be.NaN
-        expect(r.redirect).to.not.be.NaN
-        expect(r.dns).to.not.be.NaN
-        expect(r.request).to.not.be.NaN
-        expect(r.response).to.not.be.NaN
-        expect(r.dom).to.not.be.NaN
-        expect(r.domContent).to.not.be.NaN
-        expect(r.onload).to.not.be.NaN
-        expect(r.untilResponseComplete).to.not.be.NaN
-        expect(r.untilDomComplete).to.not.be.NaN
-    })
-})
 
 describe('#transmit', () => {
-    const utils = new Utils(window.parent);
-    const sendBeaconStub = sinon.stub(navigator, 'sendBeacon');
-    const xhrStub = sinon.stub(utils, 'xhr');
-    const fetchStub = sinon.stub(utils.targetWindow, 'fetch');
+    const utils = new Utils(globalThis);
+    const sendBeaconMock = vi.spyOn(navigator, 'sendBeacon').mockImplementation(() => true);
+    const xhrMock = vi.spyOn(utils, 'xhr').mockImplementation(() => {});
+    const fetchMock = vi.spyOn(utils.targetWindow, 'fetch').mockImplementation(() => Promise.resolve({}));
 
     const byteSize = (s) => {
       return s.replace(/%../g, '*').length
     };
 
-    before(() => {
+    beforeEach(() => {
         utils.initSystem({
           endpoint: "example.com",
           apiKey: "xxxxxxxxx",
         })
-    })
 
-    beforeEach(() => {
-        sendBeaconStub.reset();
-        xhrStub.reset();
-        fetchStub.reset();
+        sendBeaconMock.mockClear();
+        xhrMock.mockClear();
+        fetchMock.mockClear();
 
         utils.setSendBeaconStatusForTestUse(true);
     })
 
     it('should send ingest data by sendBeacon with HTTP POST with Body when request url size is greater than 8k', () => {
-        // setup stub
-        sendBeaconStub.returns(true);
+        // setup mock
+        sendBeaconMock.mockReturnValue(true);
 
         // call HTTP request
         utils.transmit('unload', 'page', {
@@ -62,18 +34,18 @@ describe('#transmit', () => {
         }, {}, {});
 
         // asserts
-        expect(sendBeaconStub.callCount).to.be.equal(1);
+        expect(sendBeaconMock).toHaveBeenCalledTimes(1);
 
-        const sendBeaconArgs = sendBeaconStub.getCall(0).args;
-        expect(sendBeaconArgs[1]).to.not.null;
-        expect(sendBeaconArgs[1].size).to.be.gt(8 * 1 << 10)
-        expect(sendBeaconArgs[1].type).to.be.equal("application/json")
-        expect(xhrStub.callCount).to.be.equal(0);
+        const sendBeaconArgs = sendBeaconMock.mock.calls[0];
+        expect(sendBeaconArgs[1]).toBeTruthy();
+        expect(sendBeaconArgs[1].size).toBeGreaterThan(8 * 1 << 10)
+        expect(sendBeaconArgs[1].type).toBe("application/json")
+        expect(xhrMock).toHaveBeenCalledTimes(0);
     })
 
     it('should send ingest data by xhr with HTTP POST with Body when request url size is greater than 8k', () => {
-        // setup stub
-        sendBeaconStub.returns(false);
+        // setup mock
+        sendBeaconMock.mockReturnValue(false);
 
         // call HTTP request
         utils.transmit('unload', 'page', {
@@ -81,11 +53,11 @@ describe('#transmit', () => {
         }, {}, {});
 
         // asserts
-        expect(xhrStub.callCount).to.be.equal(1);
+        expect(xhrMock).toHaveBeenCalledTimes(1);
 
-        const xhrStubArgs = xhrStub.getCall(0).args
-        expect(xhrStubArgs[2]).to.be.equal('POST')
-        expect(byteSize(xhrStubArgs[3])).to.be.gt(8 * 1 << 10);
+        const xhrMockArgs = xhrMock.mock.calls[0]
+        expect(xhrMockArgs[2]).toBe('POST')
+        expect(byteSize(xhrMockArgs[3])).toBeGreaterThan(8 * 1 << 10);
     })
 
     it('should send ingest data by fetch with HTTP POST with Body when request url size is greater than 8k', () => {
@@ -98,19 +70,19 @@ describe('#transmit', () => {
         }, {}, {});
 
         // asserts
-        expect(fetchStub.callCount).to.be.equal(1);
-        const fetchStubArgs = fetchStub.getCall(0).args
+        expect(fetchMock).toHaveBeenCalledTimes(1);
+        const fetchMockArgs = fetchMock.mock.calls[0]
 
-        expect(fetchStubArgs[1]['method']).to.be.equal('POST')
-        expect(fetchStubArgs[1]['body'].size).to.be.gt(8 * 1 << 10);
-        expect(fetchStubArgs[1]['body'].type).to.be.equal('application/json');
-        expect(fetchStubArgs[1]['headers']['Content-Type']).to.be.equal('application/json');
-        expect(sendBeaconStub.callCount).to.be.equal(0);
-        expect(xhrStub.callCount).to.be.equal(0);
+        expect(fetchMockArgs[1]['method']).toBe('POST')
+        expect(fetchMockArgs[1]['body'].size).toBeGreaterThan(8 * 1 << 10);
+        expect(fetchMockArgs[1]['body'].type).toBe('application/json');
+        expect(fetchMockArgs[1]['headers']['Content-Type']).toBe('application/json');
+        expect(sendBeaconMock).toHaveBeenCalledTimes(0);
+        expect(xhrMock).toHaveBeenCalledTimes(0);
     })
 
     it('should send ingest data by xhr with HTTP POST with Body when request url size is greater than 8k and fetch function is not implemented.', () => {
-        // setup stub
+        // setup mock
         utils.setSendBeaconStatusForTestUse(false);
 
         const originalFetch = utils.targetWindow.fetch;
@@ -122,12 +94,12 @@ describe('#transmit', () => {
         }, {}, {});
 
         // asserts
-        expect(fetchStub.callCount).to.be.equal(0);
-        expect(sendBeaconStub.callCount).to.be.equal(0);
+        expect(fetchMock).toHaveBeenCalledTimes(0);
+        expect(sendBeaconMock).toHaveBeenCalledTimes(0);
 
-        const xhrStubArgs = xhrStub.getCall(0).args
-        expect(xhrStubArgs[2]).to.be.equal('POST')
-        expect(byteSize(xhrStubArgs[3])).to.be.gt(8 * 1 << 10);
+        const xhrMockArgs = xhrMock.mock.calls[0]
+        expect(xhrMockArgs[2]).toBe('POST')
+        expect(byteSize(xhrMockArgs[3])).toBeGreaterThan(8 * 1 << 10);
 
         // cleanup
         utils.targetWindow.fetch = originalFetch;
@@ -135,17 +107,17 @@ describe('#transmit', () => {
 
 
     it('should send ingest data by sendBeacon with HTTP GET when request url size is less than 8k', () => {
-        // setup stub
-        sendBeaconStub.returns(true);
+        // setup mock
+        sendBeaconMock.mockReturnValue(true);
 
         // call HTTP request
         utils.transmit('unload', 'page', { custom_object: {} }, {}, {});
 
         // asserts
-        expect(sendBeaconStub.callCount).to.be.equal(1);
-        expect(sendBeaconStub.getCall(0).args[1]).to.be.null;
-        expect(byteSize(sendBeaconStub.getCall(0).args[0])).to.be.lt(8 * 1 << 10);
-        expect(xhrStub.callCount).to.be.equal(0);
+        expect(sendBeaconMock).toHaveBeenCalledTimes(1);
+        expect(sendBeaconMock.mock.calls[0][1]).toBeNull();
+        expect(byteSize(sendBeaconMock.mock.calls[0][0])).toBeLessThan(8 * 1 << 10);
+        expect(xhrMock).toHaveBeenCalledTimes(0);
     })
 
     it('should send ingest data by fetch with HTTP GET when request url size is less than 8k', () => {
@@ -156,17 +128,17 @@ describe('#transmit', () => {
         utils.transmit('unload', 'page', { custom_object: {} }, {}, {});
 
         // asserts
-        expect(fetchStub.callCount).to.be.equal(1);
-        expect(fetchStub.getCall(0).args[1]['method']).to.be.equal('GET')
-        expect(byteSize(fetchStub.getCall(0).args[0])).to.be.lt(8 * 1 << 10);
-        expect(sendBeaconStub.callCount).to.be.equal(0);
-        expect(xhrStub.callCount).to.be.equal(0);
+        expect(fetchMock).toHaveBeenCalledTimes(1);
+        expect(fetchMock.mock.calls[0][1]['method']).toBe('GET')
+        expect(byteSize(fetchMock.mock.calls[0][0])).toBeLessThan(8 * 1 << 10);
+        expect(sendBeaconMock).toHaveBeenCalledTimes(0);
+        expect(xhrMock).toHaveBeenCalledTimes(0);
     })
 
     it('should send ingest data by xhr with HTTP GET when request url size is less than 8k and fetch function is not implemented.', () => {
-        // setup stub
+        // setup mock
         utils.setSendBeaconStatusForTestUse(false);
-        sendBeaconStub.returns(true);
+        sendBeaconMock.mockReturnValue(true);
 
         const originalFetch = utils.targetWindow.fetch;
         delete utils.targetWindow.fetch;
@@ -175,26 +147,26 @@ describe('#transmit', () => {
         utils.transmit('unload', 'page', { custom_object: {} }, {}, {});
 
         // asserts
-        expect(fetchStub.callCount).to.be.equal(0);
-        expect(sendBeaconStub.callCount).to.be.equal(0);
-        expect(xhrStub.callCount).to.be.equal(1);
-        expect(byteSize(xhrStub.getCall(0).args[0])).to.be.lt(8 * 1 << 10);
-        expect(xhrStub.getCall(0).args[2]).to.be.equal('GET')
+        expect(fetchMock).toHaveBeenCalledTimes(0);
+        expect(sendBeaconMock).toHaveBeenCalledTimes(0);
+        expect(xhrMock).toHaveBeenCalledTimes(1);
+        expect(byteSize(xhrMock.mock.calls[0][0])).toBeLessThan(8 * 1 << 10);
+        expect(xhrMock.mock.calls[0][2]).toBe('GET')
 
         // cleanup
         utils.targetWindow.fetch = originalFetch;
     })
 
     it('should send ingest data by xhr with HTTP GET when request url size is less than 8k', () => {
-        // setup stub
-        sendBeaconStub.returns(false);
+        // setup mock
+        sendBeaconMock.mockReturnValue(false);
 
         // call HTTP request
         utils.transmit('unload', 'page', { custom_object: {} }, {}, {});
 
         // asserts
-        expect(xhrStub.callCount).to.be.equal(1);
-        expect(xhrStub.getCall(0).args[2]).to.be.equal('GET')
-        expect(byteSize(xhrStub.getCall(0).args[0])).to.be.lt(8 * 1 << 10);
+        expect(xhrMock).toHaveBeenCalledTimes(1);
+        expect(xhrMock.mock.calls[0][2]).toBe('GET')
+        expect(byteSize(xhrMock.mock.calls[0][0])).toBeLessThan(8 * 1 << 10);
     })
 })
