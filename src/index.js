@@ -19,6 +19,7 @@ let visibilityEvent = null;
 let unloadEvent = null;
 let eventHandlerKeys = {
     unload: null,
+    formUnload: null,
     scroll: null,
     infinityScroll: null,
     read: null,
@@ -348,6 +349,7 @@ export default class AtlasTracking {
             for (let i = 0; i < targetEvents.length; i++) {
                 this.eventHandler.remove(eventHandlerKeys['form'][targetEvents[i]]);
             }
+            this.eventHandler.remove(eventHandlerKeys['formUnload']);
         }
         if (options.trackPerformance && options.trackPerformance.enable) {
             targetWindow.removeEventListener('DOMContentLoaded', atlasDOMContentLoadedHandler);
@@ -725,8 +727,8 @@ export default class AtlasTracking {
                 f = this.utils.getF(f, targetEvents[i], ev.target, pageLoadedAt);
             }, false);
         }
-        this.eventHandler.remove(eventHandlerKeys['unload']);
-        eventHandlerKeys['unload'] = this.eventHandler.add(targetWindow, unloadEvent, () => {
+        this.eventHandler.remove(eventHandlerKeys['formUnload']);
+        eventHandlerKeys['formUnload'] = this.eventHandler.add(targetWindow, unloadEvent, () => {
             this.utils.transmit('track', 'form', user, context, {
                 'form': f
             });
