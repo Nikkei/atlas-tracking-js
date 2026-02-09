@@ -24,7 +24,7 @@
     "happy-dom": "^20.0.8",
     "rollup": "^4.35.0",
     "vitest": "^4.0.1",
-    "webpack": "^5.98.0",
+    "webpack": "^5.104.1",
     "webpack-cli": "^6.0.1"
   },
   "repository": {
