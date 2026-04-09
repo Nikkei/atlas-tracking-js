@@ -1,0 +1,36 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", "helpers:pinGitHubActionDigests"],
+  "timezone": "Asia/Tokyo",
+  "schedule": ["before 3am on monday"],
+  "labels": ["dependencies", "renovate"],
+  "packageRules": [
+    {
+      "description": "Delay updates to allow for community vetting of new releases",
+      "minimumReleaseAge": "7 days"
+    },
+    {
+      "description": "Automatically merge non-major updates for devDependencies",
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchDepTypes": ["devDependencies"],
+      "automerge": true
+    },
+    {
+      "description": "Automatically merge patch updates for dependencies",
+      "matchUpdateTypes": ["patch"],
+      "matchDepTypes": ["dependencies"],
+      "automerge": true
+    },
+    {
+      "description": "Automatically merge non-major updates for GitHub Actions",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["minor", "patch", "digest", "pin"],
+      "automerge": true
+    },
+    {
+      "description": "Group all ESLint updates together",
+      "matchPackagePatterns": ["^eslint", "^@typescript-eslint/"],
+      "groupName": "eslint"
+    }
+  ]
+}
