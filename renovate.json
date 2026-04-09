@@ -7,6 +7,7 @@
   "packageRules": [
     {
       "description": "Delay updates to allow for community vetting of new releases",
+      "matchUpdateTypes": ["major", "minor", "patch"],
       "minimumReleaseAge": "7 days"
     },
     {
