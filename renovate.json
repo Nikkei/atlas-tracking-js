@@ -30,7 +30,7 @@
     },
     {
       "description": "Group all ESLint updates together",
-      "matchPackagePatterns": ["^eslint", "^@typescript-eslint/"],
+      "matchPackagePatterns": ["^eslint", "^@eslint/"],
       "groupName": "eslint"
     }
   ]
