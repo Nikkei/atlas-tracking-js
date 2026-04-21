@@ -577,6 +577,7 @@ export default class AtlasTracking {
         const steps = 100 / each;
         let now = Date.now();
         let prev = now;
+        let prevVisible = now;
         let r = {}; //result
         let eiv = 0; //elapsedInVisible
         let cvr = 0; //currentViewRate
@@ -586,11 +587,11 @@ export default class AtlasTracking {
             r = this.utils.getV(target);
             if (r.detail.documentIsVisible !== 'hidden' && r.detail.documentIsVisible !== 'prerender' && r.status.isInView) {
                 now = Date.now();
-                if (now - prev >= 1000) {
-                    prev = now;
+                if (now - prevVisible >= 1000) {
+                    prevVisible = now;
                 }
-                eiv = eiv + (now - prev);
-                prev = now;
+                eiv = eiv + (now - prevVisible);
+                prevVisible = now;
 
                 // Milestone based
                 if(milestones.length > 0 && milestones[0] <= (eiv / 1000)){
@@ -607,6 +608,7 @@ export default class AtlasTracking {
                             'elapsed_since_prev_action': (now - prev) / 1000
                         }
                     });
+                    prev = now;
                     milestones.shift();
                 }
 
@@ -629,6 +631,7 @@ export default class AtlasTracking {
                             });
                             pvr = cvr;
                         }
+                        prev = now;
                     }, 1000);
                 }
             }
