@@ -30,8 +30,11 @@
     },
     {
       "description": "Group all ESLint updates together",
-      "matchPackagePatterns": ["^eslint", "^@eslint/"],
-      "groupName": "eslint"
+      "groupName": "eslint",
+      "matchPackageNames": [
+        "/^eslint/",
+        "/^@eslint//"
+      ]
     }
   ]
 }
