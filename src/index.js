@@ -355,7 +355,7 @@ export default class AtlasTracking {
             targetWindow.removeEventListener('DOMContentLoaded', atlasDOMContentLoadedHandler);
         }
         if (options.trackThroughMessage && options.trackThroughMessage.enable) {
-            targetWindow.removeEventListener('message', atlasMessageHandler);
+            this.eventHandler.remove(eventHandlerKeys['message']);
         }
 
         options = {};
