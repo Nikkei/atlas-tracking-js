@@ -751,11 +751,13 @@ export default class AtlasTracking {
                 // Nothing to do...
             }
             if(msg && msg.data && msg.data.isAtlasEvent){
+                const transmitContext = msg.data.contextOverride ? {...context, ...msg.data.contextOverride} : context;
+                const transmitUser = msg.data.userOverride ? {...user, ...msg.data.userOverride} : user;
                 this.utils.transmit(
                     msg.data.action,
                     msg.data.category,
-                    user,
-                    context,
+                    transmitUser,
+                    transmitContext,
                     attributes
                 );
             }
