@@ -58,8 +58,10 @@ export default class Utils {
         atlasId = this.getC(atlasCookieName);
 
         if (!atlasId || atlasId === '0' || atlasId === 0 || atlasId === '1' || atlasId === 1 || atlasId.length < 5) {
-            atlasId =  this.uniqueId;
+            atlasId = this.getLS(atlasCookieName) || this.uniqueId;
         }
+
+        this.setLS(atlasCookieName, atlasId);
     }
 
     qsM(s, t, d = false) {
@@ -168,8 +170,16 @@ export default class Utils {
         } catch (e) {
             // Nothing to do...
         }
-        
+
         return r;
+    }
+
+    setLS(k, v) {
+        try {
+            this.targetWindow.localStorage[k] = v;
+        } catch (e) {
+            // Nothing to do...
+        }
     }
 
     getNav() {

@@ -168,5 +168,49 @@ describe('#transmit', () => {
         expect(xhrMock).toHaveBeenCalledTimes(1);
         expect(xhrMock.mock.calls[0][2]).toBe('GET')
         expect(byteSize(xhrMock.mock.calls[0][0])).toBeLessThan(8 * 1 << 10);
-    })
-})
+    });
+});
+
+describe('#initSystem', () => {
+    const systemConfig = { endpoint: 'example.com', apiKey: 'xxxxxxxxx' };
+
+    afterEach(() => {
+        localStorage.clear();
+    });
+
+    it('should write atlasId to localStorage after initSystem', () => {
+        const utils = new Utils(globalThis);
+        utils.initSystem(systemConfig);
+
+        expect(localStorage.getItem('atlasId')).not.toBeNull();
+        expect(localStorage.getItem('atlasId').length).toBeGreaterThan(4);
+    });
+
+    it('should read atlasId to localStorage when cookie is not set', () => {
+        const storeId = 'aabbcc.testlocalstorageatlasId';
+        localStorage.setItem('atlasId', storeId);
+        const utils = new Utils(globalThis);
+        utils.initSystem(systemConfig);
+        expect(localStorage.getItem('atlasId')).toBe(storeId);
+    });
+
+    it('should prefer cookie over localStorage when cookie is valid', () => {
+        const storeId = 'aabbcc.testlocalstorageatlasId';
+        localStorage.setItem('atlasId', storeId);
+        const cookieId = 'aabbcc.testcookieatlasId';
+        vi.spyOn(globalThis.document, 'cookie', 'get').mockReturnValue(`atlasId=${cookieId}; path=/;`); 
+
+        const utils = new Utils(globalThis);
+        utils.initSystem(systemConfig);
+        expect(localStorage.getItem('atlasId')).toBe(cookieId);
+        vi.restoreAllMocks();
+    });
+
+    it('should generate a new atlasId and save to localStorage when both cookie and localStorage are not set', () => {
+        const utils = new Utils(globalThis);
+        const expectedId = utils.uniqueId;
+        utils.initSystem(systemConfig);
+
+        expect(localStorage.getItem('atlasId')).toBe(expectedId);
+    });
+});
