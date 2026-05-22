@@ -1,1 +1,6 @@
+allowBuilds:
+  esbuild: true
 minimumReleaseAge: 10080
+onlyBuiltDependencies:
+  - core-js
+  - esbuild

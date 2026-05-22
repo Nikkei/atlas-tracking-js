@@ -37,11 +37,5 @@
   "homepage": "https://github.com/Nikkei/atlas-tracking-js#readme",
   "directories": {
     "test": "test"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "core-js",
-      "esbuild"
-    ]
   }
 }
