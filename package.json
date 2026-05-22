@@ -40,7 +40,8 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": [
-      "core-js"
+      "core-js",
+      "esbuild"
     ]
   }
 }
