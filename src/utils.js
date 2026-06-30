@@ -36,17 +36,14 @@ export default class Utils {
         if (self.crypto && self.crypto.getRandomValues) {
             const u32a = new Uint8Array(32);
             self.crypto.getRandomValues(u32a);
-            result = Array.from(
-                u32a,
-                (byte) => chars[byte % chars.length],
-            ).join("");
-        }else{
+            result = Array.from(u32a, (byte) => chars[byte % chars.length]).join('');
+        } else {
             // For IE compatibility
             for (let i = 0; i < 32; i++) {
                 result += chars[Math.floor(Math.random() * chars.length)];
             }
         }
-        this.uniqueId = `${timestamp}.${(result.substring(0,32))}`;
+        this.uniqueId = `${timestamp}.${result.substring(0, 32)}`;
         this.targetWindow = targetWindow;
     }
 
@@ -57,7 +54,14 @@ export default class Utils {
 
         atlasId = this.getC(atlasCookieName);
 
-        if (!atlasId || atlasId === '0' || atlasId === 0 || atlasId === '1' || atlasId === 1 || atlasId.length < 5) {
+        if (
+            !atlasId ||
+            atlasId === '0' ||
+            atlasId === 0 ||
+            atlasId === '1' ||
+            atlasId === 1 ||
+            atlasId.length < 5
+        ) {
             atlasId = this.getLS(atlasCookieName) || this.uniqueId;
         }
 
@@ -96,7 +100,7 @@ export default class Utils {
                 if (t.hasAttribute(d)) {
                     pt.unshift(t.getAttribute(d));
                 }
-            } 
+            }
 
             if (!e && matches(s)) {
                 if (t.tagName.toLowerCase() === 'a') {
@@ -111,29 +115,28 @@ export default class Utils {
         }
 
         return {
-            'element': e,
-            'category': c,
-            'pathTrackable': pt.join('>'),
-            'pathDom': pd.join('>')
+            element: e,
+            category: c,
+            pathTrackable: pt.join('>'),
+            pathDom: pd.join('>'),
         };
-
     }
 
     getAttr(attributeName, element) {
         let result = null;
-        if(attributeName){
+        if (attributeName) {
             result = element.getAttribute(attributeName);
         }
-        if(result === null) {
+        if (result === null) {
             result = undefined;
         }
-        
+
         return result;
     }
 
     getC(k) {
         const cookies = this.targetWindow.document.cookie.split(';');
-        for(let i = 0; i < cookies.length; i++) {
+        for (let i = 0; i < cookies.length; i++) {
             let cookie = cookies[i];
             while (cookie.charAt(0) === ' ') {
                 cookie = cookie.substring(1, cookie.length);
@@ -142,7 +145,7 @@ export default class Utils {
                 return cookie.substring(`${k}=`.length, cookie.length);
             }
         }
-        
+
         return '';
     }
 
@@ -159,7 +162,7 @@ export default class Utils {
                 return decodeURIComponent(pair[1]);
             }
         }
-        
+
         return '';
     }
 
@@ -184,13 +187,13 @@ export default class Utils {
 
     getNav() {
         let nav = {
-            history_length: this.targetWindow.history.length
+            history_length: this.targetWindow.history.length,
         };
         if ('performance' in this.targetWindow) {
             let p = this.targetWindow.performance;
             if ('getEntriesByType' in p) {
                 let navs = p.getEntriesByType('navigation');
-                if(navs.length >= 1) {
+                if (navs.length >= 1) {
                     nav.type = navs[0].type;
                     nav.redirectCount = navs[0].redirectCount;
                     nav.domContentLoaded = navs[0].domContentLoadedEventStart;
@@ -198,18 +201,20 @@ export default class Utils {
             }
             if ('getEntriesByName' in p) {
                 let paints = p.getEntriesByName('first-paint');
-                if(paints.length >= 1) {
+                if (paints.length >= 1) {
                     nav.first_paint = paints[0].startTime;
                 }
             }
         }
-        
+
         return nav;
     }
 
     getP() {
-        const tsDiff = function(tsStart, tsEnd){
-            return (tsEnd - tsStart < 0 || tsEnd - tsStart > 3600000) ? undefined :  Math.round(tsEnd - tsStart);
+        const tsDiff = function (tsStart, tsEnd) {
+            return tsEnd - tsStart < 0 || tsEnd - tsStart > 3600000
+                ? undefined
+                : Math.round(tsEnd - tsStart);
         };
         let p = {}; // Performance Timing
         let t = {}; // Navigation Type
@@ -217,24 +222,24 @@ export default class Utils {
         if ('performance' in this.targetWindow) {
             p = this.targetWindow.performance.timing;
             r = {
-                'unload': tsDiff(p.unloadEventStart, p.unloadEventEnd),
-                'redirect': tsDiff(p.redirectStart, p.redirectEnd),
-                'dns': tsDiff(p.domainLookupStart, p.domainLookupEnd),
-                'tcp': tsDiff(p.connectStart, p.connectEnd),
-                'request': tsDiff(p.requestStart, p.responseStart),
-                'response': tsDiff(p.responseStart, p.responseEnd),
-                'dom': tsDiff(p.domLoading, p.domContentLoadedEventStart),
-                'domContent': tsDiff(p.domContentLoadedEventStart, p.domContentLoadedEventEnd),
-                'onload': tsDiff(p.loadEventStart, p.loadEventEnd),
-                'untilResponseComplete': tsDiff(p.navigationStart, p.responseEnd),
-                'untilDomComplete': tsDiff(p.navigationStart, p.domContentLoadedEventStart)
+                unload: tsDiff(p.unloadEventStart, p.unloadEventEnd),
+                redirect: tsDiff(p.redirectStart, p.redirectEnd),
+                dns: tsDiff(p.domainLookupStart, p.domainLookupEnd),
+                tcp: tsDiff(p.connectStart, p.connectEnd),
+                request: tsDiff(p.requestStart, p.responseStart),
+                response: tsDiff(p.responseStart, p.responseEnd),
+                dom: tsDiff(p.domLoading, p.domContentLoadedEventStart),
+                domContent: tsDiff(p.domContentLoadedEventStart, p.domContentLoadedEventEnd),
+                onload: tsDiff(p.loadEventStart, p.loadEventEnd),
+                untilResponseComplete: tsDiff(p.navigationStart, p.responseEnd),
+                untilDomComplete: tsDiff(p.navigationStart, p.domContentLoadedEventStart),
             };
             t = (this.targetWindow.performance || {}).navigation;
         }
-        
+
         return {
-            'performanceResult': r,
-            'navigationType': t
+            performanceResult: r,
+            navigationType: t,
         };
     }
 
@@ -246,9 +251,9 @@ export default class Utils {
                     target: target,
                     type: type,
                     listener: listener,
-                    capture: capture
+                    capture: capture,
                 };
-                
+
                 return handlerKey++;
             },
             remove: function (handlerKey) {
@@ -256,7 +261,7 @@ export default class Utils {
                     let e = handlerEvents[handlerKey];
                     e.target.removeEventListener(e.type, e.listener, e.capture);
                 }
-            }
+            },
         };
     }
 
@@ -271,9 +276,14 @@ export default class Utils {
         const vph = this.targetWindow.innerHeight; //viewportHeight
         const dch = this.targetWindow.document.documentElement.scrollHeight; //documentHeight
         const div = this.targetWindow.document.visibilityState || 'unknown'; //documentIsVisible
-        const dvt = 'pageYOffset' in this.targetWindow ?
-            this.targetWindow.pageYOffset :
-            (this.targetWindow.document.documentElement || this.targetWindow.document.body.parentNode || this.targetWindow.document.body).scrollTop; //documentVisibleTop
+        const dvt =
+            'pageYOffset' in this.targetWindow
+                ? this.targetWindow.pageYOffset
+                : (
+                      this.targetWindow.document.documentElement ||
+                      this.targetWindow.document.body.parentNode ||
+                      this.targetWindow.document.body
+                  ).scrollTop; //documentVisibleTop
         const dvb = dvt + vph; //documentVisibleBottom
         const tgh = tgr.height; //targetHeight
         const tmt = tgr.top <= 0 ? 0 : tgr.top; //targetMarginTop
@@ -335,49 +345,49 @@ export default class Utils {
         tsr = tsu / tgh;
 
         return {
-            'detail': {
-                'viewportHeight': vph,
-                'documentHeight': dch,
-                'documentIsVisible': div,
-                'documentVisibleTop': dvt,
-                'documentVisibleBottom': dvb,
-                'targetHeight': tgh,
-                'targetVisibleTop': tvt,
-                'targetVisibleBottom': tvb,
-                'targetMarginTop': tmt,
-                'targetMarginBottom': tmb,
-                'targetScrollUntil': tsu,
-                'targetScrollRate': tsr,
-                'targetViewableRate': tvr,
-                'documentScrollUntil': dsu,
-                'documentScrollRate': dsr
+            detail: {
+                viewportHeight: vph,
+                documentHeight: dch,
+                documentIsVisible: div,
+                documentVisibleTop: dvt,
+                documentVisibleBottom: dvb,
+                targetHeight: tgh,
+                targetVisibleTop: tvt,
+                targetVisibleBottom: tvb,
+                targetMarginTop: tmt,
+                targetMarginBottom: tmb,
+                targetScrollUntil: tsu,
+                targetScrollRate: tsr,
+                targetViewableRate: tvr,
+                documentScrollUntil: dsu,
+                documentScrollRate: dsr,
             },
-            'status': {
-                'isInView': iiv,
-                'location': loc
-            }
+            status: {
+                isInView: iiv,
+                location: loc,
+            },
         };
     }
 
     getM(t) {
         if (t !== void 0) {
             return {
-                'tag': t.nodeName.toLowerCase() || 'na',
-                'id': t.id || 'na',
-                'src': t.src || 'na',
-                'type': t.type || undefined,
-                'codecs': t.codecs || undefined,
-                'muted': t.muted || false,
-                'default_muted': t.defaultMuted || false,
-                'autoplay': t.autoplay || false,
-                'width': t.clientWidth || undefined,
-                'height': t.clientHeight || undefined,
-                'player_id': t.playerId || undefined,
-                'played_percent': Math.round(t.currentTime / t.duration * 100),
-                'duration': t.duration,
-                'playback_rate': t.playbackRate || 1,
-                'current_time': Math.round(t.currentTime * 10) / 10,
-                'dataset': t.dataset
+                tag: t.nodeName.toLowerCase() || 'na',
+                id: t.id || 'na',
+                src: t.src || 'na',
+                type: t.type || undefined,
+                codecs: t.codecs || undefined,
+                muted: t.muted || false,
+                default_muted: t.defaultMuted || false,
+                autoplay: t.autoplay || false,
+                width: t.clientWidth || undefined,
+                height: t.clientHeight || undefined,
+                player_id: t.playerId || undefined,
+                played_percent: Math.round((t.currentTime / t.duration) * 100),
+                duration: t.duration,
+                playback_rate: t.playbackRate || 1,
+                current_time: Math.round(t.currentTime * 10) / 10,
+                dataset: t.dataset,
             };
         }
     }
@@ -393,7 +403,10 @@ export default class Utils {
                 }
             }
             l = a.length;
-        } else if (t.tagName.toLowerCase() === 'input' && (t.type === 'checkbox' || t.type === 'radio')) {
+        } else if (
+            t.tagName.toLowerCase() === 'input' &&
+            (t.type === 'checkbox' || t.type === 'radio')
+        ) {
             if (t.checked) {
                 l = 1;
             } else {
@@ -404,8 +417,8 @@ export default class Utils {
         }
         if (t.type !== 'hidden') {
             f.items_detail[n] = {
-                'status': e,
-                'length': l
+                status: e,
+                length: l,
             };
         }
         if (!f.first_item) {
@@ -415,22 +428,22 @@ export default class Utils {
         f.last_item = t.name || t.id || '-';
         f.last_item_since_page_load = (Date.now() - pl) / 1000;
         f.last_item_since_first_item = f.last_item_since_page_load - f.first_item_since_page_load;
-        
+
         return f;
     }
 
     getUniqueId() {
-        return  this.uniqueId;
+        return this.uniqueId;
     }
 
     buildIngest(u, c, s) {
         let igt = {
-            'user': u,
-            'context': {}
+            user: u,
+            context: {},
         }; //ingest
         let lyt = 'unknown'; //layout
         if (this.targetWindow.orientation) {
-            lyt = ((Math.abs(this.targetWindow.orientation) === 90) ? 'landscape' : 'portrait');
+            lyt = Math.abs(this.targetWindow.orientation) === 90 ? 'landscape' : 'portrait';
         }
 
         for (let i in c) {
@@ -440,14 +453,14 @@ export default class Utils {
             igt.context[i] = s[i];
         }
         const currentTime = new Date();
-        igt.user.timezone = currentTime.getTimezoneOffset() / 60 * -1;
+        igt.user.timezone = (currentTime.getTimezoneOffset() / 60) * -1;
         igt.user.timestamp = currentTime.toISOString();
         igt.user.viewport_height = this.targetWindow.innerHeight;
         igt.user.viewport_width = this.targetWindow.innerWidth;
         igt.user.screen_height = this.targetWindow.screen.height;
         igt.user.screen_width = this.targetWindow.screen.width;
         igt.user.layout = lyt;
-        
+
         return igt;
     }
 
@@ -460,7 +473,7 @@ export default class Utils {
         r = r.replace(/%22%3A/g, '%v');
         r = r.replace(/%2C%22/g, '%u');
         r = r.replace(/%7D%7D%7D/g, '%t');
-        
+
         return r;
     }
 
@@ -472,29 +485,33 @@ export default class Utils {
         }
         x.withCredentials = true;
 
-        try{
+        try {
             if (m === HTTP_METHOD_POST && b) {
-                x.setRequestHeader(HTTP_HEADER_CONTENT_TYPE, HTTP_HEADER_CONTENT_TYPE_APPLICATION_JSON);
+                x.setRequestHeader(
+                    HTTP_HEADER_CONTENT_TYPE,
+                    HTTP_HEADER_CONTENT_TYPE_APPLICATION_JSON,
+                );
                 x.send(new Blob([b], { type: HTTP_HEADER_CONTENT_TYPE_APPLICATION_JSON }));
             } else {
                 x.send();
             }
-        }catch(e){
+        } catch (e) {
             // Nothing to do...
         }
     }
 
     transmit(ac, ca, ur, ct, sp) {
         const now = Date.now();
-        const a = (!(ac === 'unload' && ca === 'page')); //async
+        const a = !(ac === 'unload' && ca === 'page'); //async
         let f = 1; //fpcStatus
         if (this.getC(atlasCookieName) !== atlasId) {
             f = 0;
         }
 
         const b = JSON.stringify(this.buildIngest(ur, ct, sp));
-        const _u = `https://${atlasEndpoint}/${sdkName}-${SDK_VERSION}/${now}/${encodeURIComponent(atlasId)}/${f}`
-            + `/ingest?k=${atlasApiKey}&a=${ac}&c=${ca}&aqe=%`; //endpointUrl
+        const _u =
+            `https://${atlasEndpoint}/${sdkName}-${SDK_VERSION}/${now}/${encodeURIComponent(atlasId)}/${f}` +
+            `/ingest?k=${atlasApiKey}&a=${ac}&c=${ca}&aqe=%`; //endpointUrl
 
         let u = _u + `&d=${this.compress(encodeURIComponent(b))}`;
         let m = HTTP_METHOD_GET;
@@ -520,31 +537,38 @@ export default class Utils {
             if (!sendBeaconStatus) {
                 this.xhr(u, a, m, b);
             }
-            
+
             return true;
         } else {
             const targetWindow = this.targetWindow;
-            if (('fetch' in targetWindow && typeof targetWindow.fetch === 'function')
-                && ('AbortController' in targetWindow && typeof targetWindow.AbortController === 'function')) {
+            if (
+                'fetch' in targetWindow &&
+                typeof targetWindow.fetch === 'function' &&
+                'AbortController' in targetWindow &&
+                typeof targetWindow.AbortController === 'function'
+            ) {
                 const controller = new targetWindow.AbortController();
                 const signal = controller.signal;
                 setTimeout(() => controller.abort(), atlasBeaconTimeout);
-                try{
+                try {
                     const options = { signal, method: m, cache: 'no-store', keepalive: true };
                     if (m === HTTP_METHOD_POST && b) {
-                        options['body'] = new Blob([b], { type: HTTP_HEADER_CONTENT_TYPE_APPLICATION_JSON });
+                        options['body'] = new Blob([b], {
+                            type: HTTP_HEADER_CONTENT_TYPE_APPLICATION_JSON,
+                        });
                         options['headers'] = {};
-                        options['headers'][HTTP_HEADER_CONTENT_TYPE] = HTTP_HEADER_CONTENT_TYPE_APPLICATION_JSON;
+                        options['headers'][HTTP_HEADER_CONTENT_TYPE] =
+                            HTTP_HEADER_CONTENT_TYPE_APPLICATION_JSON;
                     }
 
                     this.targetWindow.fetch(u, options);
-                }catch(e){
+                } catch (e) {
                     // Nothing to do...
                 }
             } else {
                 this.xhr(u, a, m, b);
             }
-            
+
             return true;
         }
     }

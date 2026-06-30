@@ -26,7 +26,7 @@ let eventHandlerKeys = {
     click: null,
     viewability: {},
     media: {},
-    form: {}
+    form: {},
 };
 
 let isInitialized = false;
@@ -34,9 +34,7 @@ let pageLoadedAt, prevActionOccurredAt;
 pageLoadedAt = prevActionOccurredAt = Date.now();
 
 export default class AtlasTracking {
-    constructor() {
-
-    }
+    constructor() {}
 
     /**
      * get current url's query value associated with argument.
@@ -55,7 +53,6 @@ export default class AtlasTracking {
     getCookieValue(k) {
         return this.utils.getC(k) || '';
     }
-
 
     /**
      * get current localStorage value associated with argument.
@@ -97,13 +94,22 @@ export default class AtlasTracking {
      * @param  {Object} obj configuration object.
      */
     config(obj) {
-
         system = obj.system !== void 0 ? obj.system : {};
         targetWindow = system.targetWindow ? window[system.targetWindow] : window['parent'];
-        defaults.url = obj.defaults.pageUrl !== void 0 ? obj.defaults.pageUrl : targetWindow.document.location.href;
-        defaults.referrer = obj.defaults.pageReferrer !== void 0 ? obj.defaults.pageReferrer : targetWindow.document.referrer;
-        defaults.page_title = obj.defaults.pageTitle !== void 0 ? obj.defaults.pageTitle : targetWindow.document.title;
-        defaults.product_family = obj.product.productFamily !== void 0 ? obj.product.productFamily : null;
+        defaults.url =
+            obj.defaults.pageUrl !== void 0
+                ? obj.defaults.pageUrl
+                : targetWindow.document.location.href;
+        defaults.referrer =
+            obj.defaults.pageReferrer !== void 0
+                ? obj.defaults.pageReferrer
+                : targetWindow.document.referrer;
+        defaults.page_title =
+            obj.defaults.pageTitle !== void 0
+                ? obj.defaults.pageTitle
+                : targetWindow.document.title;
+        defaults.product_family =
+            obj.product.productFamily !== void 0 ? obj.product.productFamily : null;
         defaults.product = obj.product.productName !== void 0 ? obj.product.productName : null;
 
         this.utils = new Utils(targetWindow);
@@ -123,7 +129,11 @@ export default class AtlasTracking {
             visibilityEvent = targetWindow.document.createEvent('CustomEvent');
             visibilityEvent.initCustomEvent(visibilityEventName, false, false, {});
         }
-        let requestAnimationFrame = targetWindow.requestAnimationFrame || targetWindow.mozRequestAnimationFrame || targetWindow.webkitRequestAnimationFrame || targetWindow.msRequestAnimationFrame;
+        let requestAnimationFrame =
+            targetWindow.requestAnimationFrame ||
+            targetWindow.mozRequestAnimationFrame ||
+            targetWindow.webkitRequestAnimationFrame ||
+            targetWindow.msRequestAnimationFrame;
 
         if (requestAnimationFrame) {
             targetWindow.requestAnimationFrame = requestAnimationFrame;
@@ -136,7 +146,7 @@ export default class AtlasTracking {
                     callback(currTime + timeToCall);
                 }, timeToCall);
                 lastTime = currTime + timeToCall;
-                
+
                 return id;
             };
         }
@@ -212,11 +222,15 @@ export default class AtlasTracking {
      * re-attach event listeners to DOMs.
      */
     initEventListeners() {
-        if ((options.trackClick && options.trackClick.enable) || (options.trackLink && options.trackLink.enable) || (options.trackDownload && options.trackDownload.enable)) {
+        if (
+            (options.trackClick && options.trackClick.enable) ||
+            (options.trackLink && options.trackLink.enable) ||
+            (options.trackDownload && options.trackDownload.enable)
+        ) {
             this.delegateClickEvents({
-                'trackClick': options.trackClick,
-                'trackLink': options.trackLink,
-                'trackDownload': options.trackDownload
+                trackClick: options.trackClick,
+                trackLink: options.trackLink,
+                trackDownload: options.trackDownload,
             });
         }
         if (options.trackUnload && options.trackUnload.enable) {
@@ -226,10 +240,17 @@ export default class AtlasTracking {
             this.trackScroll(options.trackScroll.granularity, options.trackScroll.threshold);
         }
         if (options.trackInfinityScroll && options.trackInfinityScroll.enable) {
-            this.trackInfinityScroll(options.trackInfinityScroll.step, options.trackInfinityScroll.threshold);
+            this.trackInfinityScroll(
+                options.trackInfinityScroll.step,
+                options.trackInfinityScroll.threshold,
+            );
         }
         if (options.trackRead && options.trackRead.enable) {
-            this.trackRead(options.trackRead.target, options.trackRead.granularity, options.trackRead.milestones);
+            this.trackRead(
+                options.trackRead.target,
+                options.trackRead.granularity,
+                options.trackRead.milestones,
+            );
         }
         if (options.trackViewability && options.trackViewability.enable) {
             this.trackViewability(options.trackViewability.targets);
@@ -261,9 +282,9 @@ export default class AtlasTracking {
         const paramUser = obj.user;
         const paramContext = obj.context;
 
-        if(isInitialized){
+        if (isInitialized) {
             pageLoadedAt = prevActionOccurredAt = Date.now();
-        }else{
+        } else {
             isInitialized = true;
         }
 
@@ -275,9 +296,11 @@ export default class AtlasTracking {
         if (paramContext !== void 0) {
             context = paramContext;
             context.root_id = this.utils.getUniqueId();
-            context.page_title = paramContext.page_title !== void 0 ? paramContext.page_title : defaults.page_title;
+            context.page_title =
+                paramContext.page_title !== void 0 ? paramContext.page_title : defaults.page_title;
             context.url = paramContext.url !== void 0 ? paramContext.url : defaults.url;
-            context.referrer = paramContext.referrer !== void 0 ? paramContext.referrer : defaults.referrer;
+            context.referrer =
+                paramContext.referrer !== void 0 ? paramContext.referrer : defaults.referrer;
             context.product_family = paramContext.product_family || defaults.product_family;
             context.product = paramContext.product || defaults.product;
             context.page_num = paramContext.page_num || 1;
@@ -285,23 +308,23 @@ export default class AtlasTracking {
             context.custom_object = paramContext.custom_object || {};
             context.funnel = paramContext.funnel || {};
 
-            if(options.trackClick.logLastClick){
+            if (options.trackClick.logLastClick) {
                 const ttl = options.trackClick.lastClickTtl || 5;
                 let atlasLastClickJson = '';
                 let atlasLastClickObj = {};
 
-                try{
+                try {
                     atlasLastClickJson = sessionStorage.getItem(lastClickStorageKey);
                     atlasLastClickObj = JSON.parse(atlasLastClickJson) || {};
                     sessionStorage.removeItem(lastClickStorageKey);
-                }catch(e){
+                } catch (e) {
                     // Nothing to do
                 }
 
-                if((Date.now() - atlasLastClickObj.ts) <= (ttl * 1000)){
+                if (Date.now() - atlasLastClickObj.ts <= ttl * 1000) {
                     context.last_click = atlasLastClickObj.attr;
                 }
-            }            
+            }
         }
 
         if (options.trackNavigation && options.trackNavigation.enable) {
@@ -320,7 +343,11 @@ export default class AtlasTracking {
      * remove tracking options and handlers
      */
     disableTracking() {
-        if ((options.trackClick && options.trackClick.enable) || (options.trackLink && options.trackLink.enable) || (options.trackDownload && options.trackDownload.enable)) {
+        if (
+            (options.trackClick && options.trackClick.enable) ||
+            (options.trackLink && options.trackLink.enable) ||
+            (options.trackDownload && options.trackDownload.enable)
+        ) {
             this.eventHandler.remove(eventHandlerKeys['click']);
         }
         if (options.trackUnload && options.trackUnload.enable) {
@@ -379,17 +406,17 @@ export default class AtlasTracking {
         const now = Date.now();
         context.events = events || null;
         this.utils.transmit(action, category, user, context, {
-            'action': {
-                'location': obj.location || undefined,
-                'destination': obj.destination || undefined,
-                'dataset': obj.dataset || undefined,
-                'name': obj.action_name || undefined,
-                'elapsed_since_page_load': (now - pageLoadedAt) / 1000,
-                'elapsed_since_prev_action': (now - prevActionOccurredAt) / 1000,
-                'content_id': obj.content_id || undefined,
-                'content_name': obj.content_name || undefined,
-                'custom_vars': obj.custom_vars || {}
-            }
+            action: {
+                location: obj.location || undefined,
+                destination: obj.destination || undefined,
+                dataset: obj.dataset || undefined,
+                name: obj.action_name || undefined,
+                elapsed_since_page_load: (now - pageLoadedAt) / 1000,
+                elapsed_since_prev_action: (now - prevActionOccurredAt) / 1000,
+                content_id: obj.content_id || undefined,
+                content_name: obj.content_name || undefined,
+                custom_vars: obj.custom_vars || {},
+            },
         });
         context.events = null;
         prevActionOccurredAt = now;
@@ -400,84 +427,122 @@ export default class AtlasTracking {
      */
     delegateClickEvents(obj) {
         this.eventHandler.remove(eventHandlerKeys['click']);
-        eventHandlerKeys['click'] = this.eventHandler.add(targetWindow.document.body, 'click', (ev) => {
-            const trackClickConfig = obj.trackClick;
-            const targetAttribute = trackClickConfig && trackClickConfig.targetAttribute ? trackClickConfig.targetAttribute : false;
-            const targetElement = this.utils.qsM('a, button, [role="button"]', ev.target, targetAttribute);
+        eventHandlerKeys['click'] = this.eventHandler.add(
+            targetWindow.document.body,
+            'click',
+            (ev) => {
+                const trackClickConfig = obj.trackClick;
+                const targetAttribute =
+                    trackClickConfig && trackClickConfig.targetAttribute
+                        ? trackClickConfig.targetAttribute
+                        : false;
+                const targetElement = this.utils.qsM(
+                    'a, button, [role="button"]',
+                    ev.target,
+                    targetAttribute,
+                );
 
-            if(targetElement && targetElement.element){
+                if (targetElement && targetElement.element) {
+                    let elm = targetElement.element;
+                    let ext = (elm.pathname || '').match(/.+\/.+?\.([a-z]+([?#;].*)?$)/);
+                    let attr = {
+                        destination: elm.href || undefined,
+                        dataset: elm.dataset || undefined,
+                        target: elm.target || undefined,
+                        media: elm.media || undefined,
+                        type: elm.type || undefined,
+                        tag: elm.tagName.toLowerCase(),
+                        id: elm.id || undefined,
+                        class: elm.className || undefined,
+                        location: targetElement.pathDom || undefined,
+                        elapsed_since_page_load: (Date.now() - pageLoadedAt) / 1000,
+                    };
 
-                let elm = targetElement.element;
-                let ext = (elm.pathname || '').match(/.+\/.+?\.([a-z]+([?#;].*)?$)/);
-                let attr = {
-                    'destination': elm.href || undefined,
-                    'dataset': elm.dataset || undefined,
-                    'target': elm.target || undefined,
-                    'media': elm.media || undefined,
-                    'type': elm.type || undefined,
-                    'tag': elm.tagName.toLowerCase(),
-                    'id': elm.id || undefined,
-                    'class': elm.className || undefined,
-                    'location': targetElement.pathDom || undefined,
-                    'elapsed_since_page_load': ((Date.now()) - pageLoadedAt) / 1000
-                };
-
-                // Outbound
-                if (obj.trackLink && obj.trackLink.enable && elm.hostname && targetWindow.location.hostname !== elm.hostname && obj.trackLink.internalDomains.indexOf(elm.hostname) < 0) {
-                    attr['name'] = this.utils.getAttr(obj.trackLink.targetAttribute, elm);
-                    attr['text'] = !obj.trackLink.disableText ? (elm.innerText || elm.value || '').substr(0,63) : undefined;
-                    this.utils.transmit('open', 'outbound_link', user, context, {
-                        'link': attr
-                    });
-                }
-
-                // Download
-                if (obj.trackDownload && obj.trackDownload.enable && elm.hostname && ext && obj.trackDownload.fileExtensions.indexOf(ext[1]) >= 0) {
-                    attr['name'] = this.utils.getAttr(obj.trackDownload.targetAttribute, elm);
-                    attr['text'] = !obj.trackDownload.disableText ? (elm.innerText || elm.value || '').substr(0,63) : undefined;
-                    this.utils.transmit('download', 'file', user, context, {
-                        'download': attr
-                    });
-                }
-
-                // Click
-                if (trackClickConfig && trackClickConfig.enable && targetElement) {
-
-                    if(
-                        !targetAttribute
-                        || trackClickConfig.logAllClicks
-                        || (targetAttribute && elm.attributes[targetAttribute])
-                    ){
-                        attr['name'] = targetAttribute ? this.utils.getAttr(trackClickConfig.targetAttribute, elm) : undefined;
-                        attr['text'] = !trackClickConfig.disableText ? (elm.innerText || elm.value || '').substr(0,63) : undefined;
-
-                        if(targetElement.pathTrackable.length > 0){
-                            attr['location'] = targetElement.pathTrackable;
-                        }
-
-                        // Last Click
-                        if(trackClickConfig.logLastClick){
-                            try{
-                                sessionStorage.setItem(lastClickStorageKey, JSON.stringify({
-                                    ts: Date.now(),
-                                    attr: attr
-                                }));
-                            }catch(e){
-                                // Nothing to do
-                            }
-                        }
-
-                        // If useLastClickOnly is false
-                        if(!trackClickConfig.useLastClickOnly){
-                            this.utils.transmit('click', targetElement.category, user, context, {
-                                'action': attr
-                            });
-                        }
+                    // Outbound
+                    if (
+                        obj.trackLink &&
+                        obj.trackLink.enable &&
+                        elm.hostname &&
+                        targetWindow.location.hostname !== elm.hostname &&
+                        obj.trackLink.internalDomains.indexOf(elm.hostname) < 0
+                    ) {
+                        attr['name'] = this.utils.getAttr(obj.trackLink.targetAttribute, elm);
+                        attr['text'] = !obj.trackLink.disableText
+                            ? (elm.innerText || elm.value || '').substr(0, 63)
+                            : undefined;
+                        this.utils.transmit('open', 'outbound_link', user, context, {
+                            link: attr,
+                        });
                     }
 
+                    // Download
+                    if (
+                        obj.trackDownload &&
+                        obj.trackDownload.enable &&
+                        elm.hostname &&
+                        ext &&
+                        obj.trackDownload.fileExtensions.indexOf(ext[1]) >= 0
+                    ) {
+                        attr['name'] = this.utils.getAttr(obj.trackDownload.targetAttribute, elm);
+                        attr['text'] = !obj.trackDownload.disableText
+                            ? (elm.innerText || elm.value || '').substr(0, 63)
+                            : undefined;
+                        this.utils.transmit('download', 'file', user, context, {
+                            download: attr,
+                        });
+                    }
+
+                    // Click
+                    if (trackClickConfig && trackClickConfig.enable && targetElement) {
+                        if (
+                            !targetAttribute ||
+                            trackClickConfig.logAllClicks ||
+                            (targetAttribute && elm.attributes[targetAttribute])
+                        ) {
+                            attr['name'] = targetAttribute
+                                ? this.utils.getAttr(trackClickConfig.targetAttribute, elm)
+                                : undefined;
+                            attr['text'] = !trackClickConfig.disableText
+                                ? (elm.innerText || elm.value || '').substr(0, 63)
+                                : undefined;
+
+                            if (targetElement.pathTrackable.length > 0) {
+                                attr['location'] = targetElement.pathTrackable;
+                            }
+
+                            // Last Click
+                            if (trackClickConfig.logLastClick) {
+                                try {
+                                    sessionStorage.setItem(
+                                        lastClickStorageKey,
+                                        JSON.stringify({
+                                            ts: Date.now(),
+                                            attr: attr,
+                                        }),
+                                    );
+                                } catch (e) {
+                                    // Nothing to do
+                                }
+                            }
+
+                            // If useLastClickOnly is false
+                            if (!trackClickConfig.useLastClickOnly) {
+                                this.utils.transmit(
+                                    'click',
+                                    targetElement.category,
+                                    user,
+                                    context,
+                                    {
+                                        action: attr,
+                                    },
+                                );
+                            }
+                        }
+                    }
                 }
-            }
-        }, false);
+            },
+            false,
+        );
     }
 
     /**
@@ -485,14 +550,19 @@ export default class AtlasTracking {
      */
     setEventToUnload() {
         this.eventHandler.remove(eventHandlerKeys['unload']);
-        eventHandlerKeys['unload'] = this.eventHandler.add(targetWindow, unloadEvent, () => {
-            this.utils.transmit('unload', 'page', user, context, {
-                'action': {
-                    'name': 'leave_from_page',
-                    'elapsed_since_page_load': ((Date.now()) - pageLoadedAt) / 1000
-                }
-            });
-        }, false);
+        eventHandlerKeys['unload'] = this.eventHandler.add(
+            targetWindow,
+            unloadEvent,
+            () => {
+                this.utils.transmit('unload', 'page', user, context, {
+                    action: {
+                        name: 'leave_from_page',
+                        elapsed_since_page_load: (Date.now() - pageLoadedAt) / 1000,
+                    },
+                });
+            },
+            false,
+        );
     }
 
     /**
@@ -508,30 +578,38 @@ export default class AtlasTracking {
         let cvr = 0; //currentViewRate
         let pvr = 0; //prevViewRate
         this.eventHandler.remove(eventHandlerKeys['scroll']);
-        eventHandlerKeys['scroll'] = this.eventHandler.add(targetWindow, visibilityEventName, () => {
-            r = this.utils.getV(null);
-            if (r.detail.documentIsVisible !== 'hidden' && r.detail.documentIsVisible !== 'prerender') {
-                now = Date.now();
-                cvr = Math.round(r.detail.documentScrollRate * steps) * each;
-                if (cvr > pvr && cvr >= 0 && cvr <= 100) {
-                    setTimeout(() => {
-                        if (cvr > pvr) {
-                            this.utils.transmit('scroll', 'page', user, context, {
-                                'scroll_depth': {
-                                    'page_height': r.detail.documentHeight,
-                                    'viewed_until': r.detail.documentScrollUntil,
-                                    'viewed_percent': cvr,
-                                    'elapsed_since_page_load': (now - pageLoadedAt) / 1000,
-                                    'elapsed_since_prev_action': (now - prev) / 1000
-                                }
-                            });
-                            pvr = cvr;
-                        }
-                        prev = now;
-                    }, limit);
+        eventHandlerKeys['scroll'] = this.eventHandler.add(
+            targetWindow,
+            visibilityEventName,
+            () => {
+                r = this.utils.getV(null);
+                if (
+                    r.detail.documentIsVisible !== 'hidden' &&
+                    r.detail.documentIsVisible !== 'prerender'
+                ) {
+                    now = Date.now();
+                    cvr = Math.round(r.detail.documentScrollRate * steps) * each;
+                    if (cvr > pvr && cvr >= 0 && cvr <= 100) {
+                        setTimeout(() => {
+                            if (cvr > pvr) {
+                                this.utils.transmit('scroll', 'page', user, context, {
+                                    scroll_depth: {
+                                        page_height: r.detail.documentHeight,
+                                        viewed_until: r.detail.documentScrollUntil,
+                                        viewed_percent: cvr,
+                                        elapsed_since_page_load: (now - pageLoadedAt) / 1000,
+                                        elapsed_since_prev_action: (now - prev) / 1000,
+                                    },
+                                });
+                                pvr = cvr;
+                            }
+                            prev = now;
+                        }, limit);
+                    }
                 }
-            }
-        }, false);
+            },
+            false,
+        );
     }
 
     /**
@@ -545,30 +623,38 @@ export default class AtlasTracking {
         let cvp = 0; //currentViewRate
         let pvp = 0; //prevViewRate
         this.eventHandler.remove(eventHandlerKeys['infinityScroll']);
-        eventHandlerKeys['infinityScroll'] = this.eventHandler.add(targetWindow, visibilityEventName, () => {
-            r = this.utils.getV(null);
-            if (r.detail.documentIsVisible !== 'hidden' && r.detail.documentIsVisible !== 'prerender') {
-                now = Date.now();
-                cvp = r.detail.documentScrollUntil;
-                if (cvp > pvp && cvp >= pvp && cvp >= step) {
-                    setTimeout(() => {
-                        if (cvp > pvp) {
-                            this.utils.transmit('infinity_scroll', 'page', user, context, {
-                                'scroll_depth': {
-                                    'page_height': r.detail.documentHeight,
-                                    'viewed_until': cvp,
-                                    'viewed_percent': r.detail.documentScrollRate,
-                                    'elapsed_since_page_load': (now - pageLoadedAt) / 1000,
-                                    'elapsed_since_prev_action': (now - prev) / 1000
-                                }
-                            });
-                            pvp = cvp + step;
-                        }
-                        prev = now;
-                    }, limit);
+        eventHandlerKeys['infinityScroll'] = this.eventHandler.add(
+            targetWindow,
+            visibilityEventName,
+            () => {
+                r = this.utils.getV(null);
+                if (
+                    r.detail.documentIsVisible !== 'hidden' &&
+                    r.detail.documentIsVisible !== 'prerender'
+                ) {
+                    now = Date.now();
+                    cvp = r.detail.documentScrollUntil;
+                    if (cvp > pvp && cvp >= pvp && cvp >= step) {
+                        setTimeout(() => {
+                            if (cvp > pvp) {
+                                this.utils.transmit('infinity_scroll', 'page', user, context, {
+                                    scroll_depth: {
+                                        page_height: r.detail.documentHeight,
+                                        viewed_until: cvp,
+                                        viewed_percent: r.detail.documentScrollRate,
+                                        elapsed_since_page_load: (now - pageLoadedAt) / 1000,
+                                        elapsed_since_prev_action: (now - prev) / 1000,
+                                    },
+                                });
+                                pvp = cvp + step;
+                            }
+                            prev = now;
+                        }, limit);
+                    }
                 }
-            }
-        }, false);
+            },
+            false,
+        );
     }
 
     /**
@@ -588,59 +674,68 @@ export default class AtlasTracking {
         let cvr = 0; //currentViewRate
         let pvr = 0; //prevViewRate
         this.eventHandler.remove(eventHandlerKeys['read']);
-        eventHandlerKeys['read'] = this.eventHandler.add(targetWindow, visibilityEventName, () => {
-            r = this.utils.getV(target);
-            if (r.detail.documentIsVisible !== 'hidden' && r.detail.documentIsVisible !== 'prerender' && r.status.isInView) {
-                now = Date.now();
-                if (now - prevVisible >= 1000) {
+        eventHandlerKeys['read'] = this.eventHandler.add(
+            targetWindow,
+            visibilityEventName,
+            () => {
+                r = this.utils.getV(target);
+                if (
+                    r.detail.documentIsVisible !== 'hidden' &&
+                    r.detail.documentIsVisible !== 'prerender' &&
+                    r.status.isInView
+                ) {
+                    now = Date.now();
+                    if (now - prevVisible >= 1000) {
+                        prevVisible = now;
+                    }
+                    eiv = eiv + (now - prevVisible);
                     prevVisible = now;
-                }
-                eiv = eiv + (now - prevVisible);
-                prevVisible = now;
 
-                // Milestone based
-                if(milestones.length > 0 && milestones[0] <= (eiv / 1000)){
-                    this.utils.transmit('read', 'article', user, context, {
-                        'read': {
-                            'mode': 'time',
-                            'milestone': milestones[0],
-                            'page_height': r.detail.documentHeight,
-                            'element_height': r.detail.targetHeight,
-                            'viewed_from': r.detail.targetVisibleTop,
-                            'viewed_until': r.detail.targetVisibleBottom,
-                            'viewed_percent': cvr,
-                            'elapsed_since_page_load': (now - pageLoadedAt) / 1000,
-                            'elapsed_since_prev_action': (now - prev) / 1000
-                        }
-                    });
-                    prev = now;
-                    milestones.shift();
-                }
-
-                // Scroll based
-                cvr = Math.round(r.detail.targetScrollRate * steps) * each;
-                if (cvr > pvr && cvr >= 0 && cvr <= 100) {
-                    setTimeout(() => {
-                        if (cvr > pvr) {
-                            this.utils.transmit('read', 'article', user, context, {
-                                'read': {
-                                    'mode': 'scroll',
-                                    'page_height': r.detail.documentHeight,
-                                    'element_height': r.detail.targetHeight,
-                                    'viewed_from': r.detail.targetVisibleTop,
-                                    'viewed_until': r.detail.targetVisibleBottom,
-                                    'viewed_percent': cvr,
-                                    'elapsed_since_page_load': (now - pageLoadedAt) / 1000,
-                                    'elapsed_since_prev_action': (now - prev) / 1000
-                                }
-                            });
-                            pvr = cvr;
-                        }
+                    // Milestone based
+                    if (milestones.length > 0 && milestones[0] <= eiv / 1000) {
+                        this.utils.transmit('read', 'article', user, context, {
+                            read: {
+                                mode: 'time',
+                                milestone: milestones[0],
+                                page_height: r.detail.documentHeight,
+                                element_height: r.detail.targetHeight,
+                                viewed_from: r.detail.targetVisibleTop,
+                                viewed_until: r.detail.targetVisibleBottom,
+                                viewed_percent: cvr,
+                                elapsed_since_page_load: (now - pageLoadedAt) / 1000,
+                                elapsed_since_prev_action: (now - prev) / 1000,
+                            },
+                        });
                         prev = now;
-                    }, 1000);
+                        milestones.shift();
+                    }
+
+                    // Scroll based
+                    cvr = Math.round(r.detail.targetScrollRate * steps) * each;
+                    if (cvr > pvr && cvr >= 0 && cvr <= 100) {
+                        setTimeout(() => {
+                            if (cvr > pvr) {
+                                this.utils.transmit('read', 'article', user, context, {
+                                    read: {
+                                        mode: 'scroll',
+                                        page_height: r.detail.documentHeight,
+                                        element_height: r.detail.targetHeight,
+                                        viewed_from: r.detail.targetVisibleTop,
+                                        viewed_until: r.detail.targetVisibleBottom,
+                                        viewed_percent: cvr,
+                                        elapsed_since_page_load: (now - pageLoadedAt) / 1000,
+                                        elapsed_since_prev_action: (now - prev) / 1000,
+                                    },
+                                });
+                                pvr = cvr;
+                            }
+                            prev = now;
+                        }, 1000);
+                    }
                 }
-            }
-        }, false);
+            },
+            false,
+        );
     }
 
     /**
@@ -651,32 +746,50 @@ export default class AtlasTracking {
         let r = {}; //results
         let f = {}; //flags
         this.eventHandler.remove(eventHandlerKeys['viewability']);
-        eventHandlerKeys['viewability'] = this.eventHandler.add(targetWindow, visibilityEventName, () => {
-            for (let i = 0; i < targets.length; i++) {
-                if (targets[i]) {
-                    r[i] = this.utils.getV(targets[i]);
-                    if (r[i].status.isInView === true && r[i].detail.documentIsVisible !== 'hidden' && r[i].detail.documentIsVisible !== 'prerender' && r[i].detail.targetViewableRate >= 0.5 && !f[i]) {
-                        setTimeout(() => {
-                            if (r[i].detail.targetViewableRate >= 0.5 && !f[i]) {
-                                now = Date.now();
-                                f[i] = true;
-                                this.utils.transmit('viewable_impression', 'ad', user, context, {
-                                    'viewability': {
-                                        'page_height': r[i].detail.documentHeight,
-                                        'element_order_in_target': i,
-                                        'element_tag': targets[i].tagName,
-                                        'element_class': targets[i].className,
-                                        'element_id': targets[i].id,
-                                        'element_height': r[i].detail.targetHeight,
-                                        'elapsed_since_page_load': (now - pageLoadedAt) / 1000
-                                    }
-                                });
-                            }
-                        }, 1000);
+        eventHandlerKeys['viewability'] = this.eventHandler.add(
+            targetWindow,
+            visibilityEventName,
+            () => {
+                for (let i = 0; i < targets.length; i++) {
+                    if (targets[i]) {
+                        r[i] = this.utils.getV(targets[i]);
+                        if (
+                            r[i].status.isInView === true &&
+                            r[i].detail.documentIsVisible !== 'hidden' &&
+                            r[i].detail.documentIsVisible !== 'prerender' &&
+                            r[i].detail.targetViewableRate >= 0.5 &&
+                            !f[i]
+                        ) {
+                            setTimeout(() => {
+                                if (r[i].detail.targetViewableRate >= 0.5 && !f[i]) {
+                                    now = Date.now();
+                                    f[i] = true;
+                                    this.utils.transmit(
+                                        'viewable_impression',
+                                        'ad',
+                                        user,
+                                        context,
+                                        {
+                                            viewability: {
+                                                page_height: r[i].detail.documentHeight,
+                                                element_order_in_target: i,
+                                                element_tag: targets[i].tagName,
+                                                element_class: targets[i].className,
+                                                element_id: targets[i].id,
+                                                element_height: r[i].detail.targetHeight,
+                                                elapsed_since_page_load:
+                                                    (now - pageLoadedAt) / 1000,
+                                            },
+                                        },
+                                    );
+                                }
+                            }, 1000);
+                        }
                     }
                 }
-            }
-        }, false);
+            },
+            false,
+        );
     }
 
     /**
@@ -687,34 +800,44 @@ export default class AtlasTracking {
         let f = {}; //flags
         for (let i = 0; i < targetEvents.length; i++) {
             this.eventHandler.remove(eventHandlerKeys['media'][targetEvents[i]]);
-            eventHandlerKeys['media'][targetEvents[i]] = this.eventHandler.add(targetWindow.document.body, targetEvents[i], (ev) => {
-                if (this.utils.qsM(selector, ev.target)) {
-                    const details = this.utils.getM(ev.target);
-                    this.utils.transmit(targetEvents[i], details.tag, user, context, {
-                        'media': details
-                    });
-                }
-            }, {capture: true});
+            eventHandlerKeys['media'][targetEvents[i]] = this.eventHandler.add(
+                targetWindow.document.body,
+                targetEvents[i],
+                (ev) => {
+                    if (this.utils.qsM(selector, ev.target)) {
+                        const details = this.utils.getM(ev.target);
+                        this.utils.transmit(targetEvents[i], details.tag, user, context, {
+                            media: details,
+                        });
+                    }
+                },
+                { capture: true },
+            );
         }
 
         this.eventHandler.remove(eventHandlerKeys['media']['timeupdate']);
-        eventHandlerKeys['media']['timeupdate'] = this.eventHandler.add(targetWindow.document, 'timeupdate', (ev) => {
-            if (this.utils.qsM(selector, ev.target)) {
-                const details = this.utils.getM(ev.target);
-                const index = details.tag + '-' + details.id + '-' + details.src;
-                if (f[index]) {
-                    return false;
-                }
-                f[index] = setTimeout(() => {
-                    if (ev.target.paused !== true && ev.target.ended !== true) {
-                        this.utils.transmit('playing', details.tag, user, context, {
-                            'media': details
-                        });
+        eventHandlerKeys['media']['timeupdate'] = this.eventHandler.add(
+            targetWindow.document,
+            'timeupdate',
+            (ev) => {
+                if (this.utils.qsM(selector, ev.target)) {
+                    const details = this.utils.getM(ev.target);
+                    const index = details.tag + '-' + details.id + '-' + details.src;
+                    if (f[index]) {
+                        return false;
                     }
-                    f[index] = false;
-                }, heartbeat * 1000);
-            }
-        }, {capture: true});
+                    f[index] = setTimeout(() => {
+                        if (ev.target.paused !== true && ev.target.ended !== true) {
+                            this.utils.transmit('playing', details.tag, user, context, {
+                                media: details,
+                            });
+                        }
+                        f[index] = false;
+                    }, heartbeat * 1000);
+                }
+            },
+            { capture: true },
+        );
     }
 
     trackForm(target) {
@@ -723,44 +846,63 @@ export default class AtlasTracking {
         }
         const targetEvents = ['focus', 'change'];
         let f = {
-            'name': target.name || target.id || '-',
-            'dataset': target.dataset,
-            'items_detail': {}
+            name: target.name || target.id || '-',
+            dataset: target.dataset,
+            items_detail: {},
         };
         for (let i = 0; i < targetEvents.length; i++) {
             this.eventHandler.remove(eventHandlerKeys['form'][targetEvents[i]]);
-            eventHandlerKeys['form'][targetEvents[i]] = this.eventHandler.add(target, targetEvents[i], (ev) => {
-                f = this.utils.getF(f, targetEvents[i], ev.target, pageLoadedAt);
-            }, false);
+            eventHandlerKeys['form'][targetEvents[i]] = this.eventHandler.add(
+                target,
+                targetEvents[i],
+                (ev) => {
+                    f = this.utils.getF(f, targetEvents[i], ev.target, pageLoadedAt);
+                },
+                false,
+            );
         }
         this.eventHandler.remove(eventHandlerKeys['formUnload']);
-        eventHandlerKeys['formUnload'] = this.eventHandler.add(targetWindow, unloadEvent, () => {
-            this.utils.transmit('track', 'form', user, context, {
-                'form': f
-            });
-        }, false);
+        eventHandlerKeys['formUnload'] = this.eventHandler.add(
+            targetWindow,
+            unloadEvent,
+            () => {
+                this.utils.transmit('track', 'form', user, context, {
+                    form: f,
+                });
+            },
+            false,
+        );
     }
 
     trackThroughMessage() {
         this.eventHandler.remove(eventHandlerKeys['message']);
-        eventHandlerKeys['message'] = this.eventHandler.add(targetWindow, 'message', (msg) => {
-            let attributes = {};
-            try{
-                attributes = JSON.parse(msg.data.attributes);
-            }catch(e){
-                // Nothing to do...
-            }
-            if(msg && msg.data && msg.data.isAtlasEvent){
-                const transmitContext = msg.data.contextOverride ? {...context, ...msg.data.contextOverride} : context;
-                const transmitUser = msg.data.userOverride ? {...user, ...msg.data.userOverride} : user;
-                this.utils.transmit(
-                    msg.data.action,
-                    msg.data.category,
-                    transmitUser,
-                    transmitContext,
-                    attributes
-                );
-            }
-        }, false);
+        eventHandlerKeys['message'] = this.eventHandler.add(
+            targetWindow,
+            'message',
+            (msg) => {
+                let attributes = {};
+                try {
+                    attributes = JSON.parse(msg.data.attributes);
+                } catch (e) {
+                    // Nothing to do...
+                }
+                if (msg && msg.data && msg.data.isAtlasEvent) {
+                    const transmitContext = msg.data.contextOverride
+                        ? { ...context, ...msg.data.contextOverride }
+                        : context;
+                    const transmitUser = msg.data.userOverride
+                        ? { ...user, ...msg.data.userOverride }
+                        : user;
+                    this.utils.transmit(
+                        msg.data.action,
+                        msg.data.category,
+                        transmitUser,
+                        transmitContext,
+                        attributes,
+                    );
+                }
+            },
+            false,
+        );
     }
 }
