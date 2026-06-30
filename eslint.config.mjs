@@ -18,16 +18,8 @@ export default [
             },
         },
         rules: {
-            'newline-before-return': 'error',
             'no-console': 'off',
             'no-var': 'error',
-            indent: [
-                'error',
-                4,
-                {
-                    SwitchCase: 1,
-                },
-            ],
         },
     },
 ]
