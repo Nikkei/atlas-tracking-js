@@ -8,7 +8,9 @@
     "build:npm": "rollup -c --bundleConfigAsCjs",
     "build:dist": "webpack -m -c ./webpack.common.js -c ./webpack.prd.js",
     "prepublishOnly": "pnpm run build:npm",
-    "eslint": "eslint --fix ./src --ext .js"
+    "eslint": "eslint --fix ./src --ext .js",
+    "format": "oxfmt src/ test/",
+    "format:check": "oxfmt --check src/ test/"
   },
   "author": "Nikkei Inc.",
   "license": "MIT",
@@ -22,6 +24,7 @@
     "eslint": "^10.0.0",
     "globals": "^17.0.0",
     "happy-dom": "^20.8.9",
+    "oxfmt": "^0.56.0",
     "rollup": "^4.59.0",
     "vitest": "^4.0.1",
     "webpack": "^5.104.1",
