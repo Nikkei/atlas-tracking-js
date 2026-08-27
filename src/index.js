@@ -339,7 +339,7 @@ export default class AtlasTracking {
             this.eventHandler.remove(eventHandlerKeys['viewability']);
         }
         if (options.trackMedia && options.trackMedia.enable) {
-            const targetEvents = ['play', 'pause', 'ended'];
+            const targetEvents = ['play', 'pause', 'ended', 'timeupdate'];
             for (let i = 0; i < targetEvents.length; i++) {
                 this.eventHandler.remove(eventHandlerKeys['media'][targetEvents[i]]);
             }
