@@ -688,7 +688,7 @@ export default class AtlasTracking {
         for (let i = 0; i < targetEvents.length; i++) {
             this.eventHandler.remove(eventHandlerKeys['media'][targetEvents[i]]);
             eventHandlerKeys['media'][targetEvents[i]] = this.eventHandler.add(targetWindow.document.body, targetEvents[i], (ev) => {
-                if (this.utils.qsM(selector, ev.target)) {
+                if (this.utils.qsM(selector, ev.target).element) {
                     const details = this.utils.getM(ev.target);
                     this.utils.transmit(targetEvents[i], details.tag, user, context, {
                         'media': details
@@ -699,7 +699,7 @@ export default class AtlasTracking {
 
         this.eventHandler.remove(eventHandlerKeys['media']['timeupdate']);
         eventHandlerKeys['media']['timeupdate'] = this.eventHandler.add(targetWindow.document, 'timeupdate', (ev) => {
-            if (this.utils.qsM(selector, ev.target)) {
+            if (this.utils.qsM(selector, ev.target).element) {
                 const details = this.utils.getM(ev.target);
                 const index = details.tag + '-' + details.id + '-' + details.src;
                 if (f[index]) {
