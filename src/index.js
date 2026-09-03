@@ -366,7 +366,7 @@ export default class AtlasTracking {
             this.eventHandler.remove(eventHandlerKeys['viewability']);
         }
         if (options.trackMedia && options.trackMedia.enable) {
-            const targetEvents = ['play', 'pause', 'ended'];
+            const targetEvents = ['play', 'pause', 'ended', 'timeupdate'];
             for (let i = 0; i < targetEvents.length; i++) {
                 this.eventHandler.remove(eventHandlerKeys['media'][targetEvents[i]]);
             }
@@ -804,7 +804,7 @@ export default class AtlasTracking {
                 targetWindow.document.body,
                 targetEvents[i],
                 (ev) => {
-                    if (this.utils.qsM(selector, ev.target)) {
+                    if (this.utils.qsM(selector, ev.target).element) {
                         const details = this.utils.getM(ev.target);
                         this.utils.transmit(targetEvents[i], details.tag, user, context, {
                             media: details,
@@ -820,7 +820,7 @@ export default class AtlasTracking {
             targetWindow.document,
             'timeupdate',
             (ev) => {
-                if (this.utils.qsM(selector, ev.target)) {
+                if (this.utils.qsM(selector, ev.target).element) {
                     const details = this.utils.getM(ev.target);
                     const index = details.tag + '-' + details.id + '-' + details.src;
                     if (f[index]) {
