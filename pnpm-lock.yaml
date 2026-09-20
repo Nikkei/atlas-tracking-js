@@ -34,7 +34,7 @@ importers:
         version: 17.11.0
       happy-dom:
         specifier: ^20.8.9
-        version: 20.11.12
+        version: 20.14.5
       oxfmt:
         specifier: ^0.56.0
         version: 0.56.0
@@ -43,7 +43,7 @@ importers:
         version: 4.63.0
       vitest:
         specifier: ^4.0.1
-        version: 4.0.1(@types/node@25.5.0)(happy-dom@20.11.12)(supports-color@8.1.1)(terser@5.46.0)
+        version: 4.0.1(@types/node@25.5.0)(happy-dom@20.14.5)(supports-color@8.1.1)(terser@5.46.0)
       webpack:
         specifier: ^5.104.1
         version: 5.104.1(esbuild@0.25.11)(webpack-cli@7.2.2)
@@ -1534,8 +1534,8 @@ packages:
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
 
-  happy-dom@20.11.12:
-    resolution: {integrity: sha512-7+mrTTD+6fOG3dx0URrDLrCX8QDTE+YujSOQD4VPZcYze/yJ0vVhRKaIBTjqlk+R4NetxVz21odnevHYIjIJ+g==}
+  happy-dom@20.14.5:
+    resolution: {integrity: sha512-x/RzkpWO40bTjIoT30iQtt64FLLmH/iRcUCN2X//bLx7H3ifkdfPXyqsro/OYtqzIAhiLMMA7mmiOR9C3NOKjQ==}
     engines: {node: '>=20.0.0'}
 
   has-flag@4.0.0:
@@ -3585,7 +3585,7 @@ snapshots:
 
   graceful-fs@4.2.11: {}
 
-  happy-dom@20.11.12:
+  happy-dom@20.14.5:
     dependencies:
       '@types/node': 25.5.0
       '@types/whatwg-mimetype': 3.0.2
@@ -4011,7 +4011,7 @@ snapshots:
       fsevents: 2.3.3
       terser: 5.46.0
 
-  vitest@4.0.1(@types/node@25.5.0)(happy-dom@20.11.12)(supports-color@8.1.1)(terser@5.46.0):
+  vitest@4.0.1(@types/node@25.5.0)(happy-dom@20.14.5)(supports-color@8.1.1)(terser@5.46.0):
     dependencies:
       '@vitest/expect': 4.0.1
       '@vitest/mocker': 4.0.1(vite@7.1.12(@types/node@25.5.0)(terser@5.46.0))
@@ -4035,7 +4035,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 25.5.0
-      happy-dom: 20.11.12
+      happy-dom: 20.14.5
     transitivePeerDependencies:
       - jiti
       - less
